@@ -19,8 +19,7 @@
   <script type="text/babel">
     const NAV_TABS = [
       { id: 'about', label: 'About' },
-      { id: 'game', label: 'Play Game', mobileLabel: 'Play' }, // New: Game Tab
-      { id: 'journey', label: 'Life Journey', mobileLabel: 'Life' },
+      { id: 'journey', label: 'Life Journey', mobileLabel: 'Life' }, // Journey tab will now house the game
       { id: 'resume', label: 'Resume', mobileLabel: 'Resume' },
       { id: 'contact', label: 'Contact', mobileLabel: 'Contact' },
       { id: 'privacy', label: 'Privacy Policy', mobileLabel: 'Privacy' }
@@ -180,7 +179,7 @@
       );
     }
 
-    // New: PathfinderGame Component
+    // PathfinderGame Component
     function PathfinderGame({ onGameWin }) {
         const GRID_SIZE = 7; // Increased grid size for more challenge
         const [board, setBoard] = React.useState([]);
@@ -193,13 +192,16 @@
             let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
             let startR, startC, endR, endC;
 
-            // Ensure start and end are not too close
+            // Ensure start and end are not too close and not the same spot
             do {
                 startR = Math.floor(Math.random() * GRID_SIZE);
                 startC = Math.floor(Math.random() * GRID_SIZE);
                 endR = Math.floor(Math.random() * GRID_SIZE);
                 endC = Math.floor(Math.random() * GRID_SIZE);
-            } while (Math.abs(startR - endR) + Math.abs(startC - endC) < GRID_SIZE / 2); // Ensure sufficient distance
+            } while (
+                (startR === endR && startC === endC) || // Ensure start and end are different
+                (Math.abs(startR - endR) + Math.abs(startC - endC) < GRID_SIZE / 2) // Ensure sufficient distance
+            );
 
             newBoard[startR][startC] = 'S';
             newBoard[endR][endC] = 'E';
@@ -253,15 +255,15 @@
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
             };
-        }, [playerPos, board, gameStatus]);
+        }, [playerPos, board, gameStatus]); // Re-run effect if playerPos, board, or gameStatus changes
 
         React.useEffect(() => {
             // Check win condition
-            if (playerPos.row === endPos.row && playerPos.col === endPos.col) {
+            if (playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
                 setGameStatus('won');
                 onGameWin(); // Trigger win action in parent
             }
-        }, [playerPos, endPos, onGameWin]);
+        }, [playerPos, endPos, onGameWin, gameStatus]); // Add gameStatus to dependencies
 
         return (
             <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
@@ -312,14 +314,21 @@
         );
     }
 
-    function Journey({ gameWon }) { // Added gameWon prop
+    // Journey Component - now conditionally renders game or timeline
+    function Journey() {
       const [showDetails, setShowDetails] = React.useState({});
+      // New state to control whether the game or the journey timeline is shown
+      const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
 
       const toggleDetails = (index) => {
         setShowDetails(prev => ({
           ...prev,
           [index]: !prev[index] // This toggles the state, so clicking an open tab will close it
         }));
+      };
+
+      const handleGameWin = () => {
+        setGameWon(true);
       };
 
       const timelineItems = [
@@ -370,52 +379,60 @@ Both projects involved end-to-end development, from requirements gathering to de
           logoUrl: "ericsson.webp"
         }
       ];
+
       return (
         <section className="bg-gradient-to-br from-indigo-50/70 via-blue-50/70 to-white p-7 rounded-3xl shadow-2xl mb-10">
           <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">My Life Journey &amp; Experiences</h2>
-          {gameWon && ( // Conditional message for game completion
-            <p className="text-center text-gray-800 text-lg mb-6 font-semibold animate-section-in">
-              Congratulations on navigating the puzzle! It seems you've mastered the art of finding a path. Now, allow me to share the journey I've walked.
-            </p>
-          )}
-          <p className="text-center text-gray-700 mb-6">Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
-          <div className="mt-10">
-            <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
-            <ol className="timeline-list">
-              {timelineItems.map((item, i) => (
-                <li className="timeline-item" key={i}>
-                  <span className="timeline-dot">{i+1}</span>
-                  <div className="flex-1">
-                    <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
-                      <div className="flex-grow">
-                        <h4 className="font-bold text-slate-800">{item.title}</h4>
-                        <span className="block text-gray-500 text-xs mb-1">{item.time}</span>
-                        <p className="text-slate-700">{item.desc}</p>
-                      </div>
-                      {item.logoUrl && (
-                        <img src={item.logoUrl} alt={`${item.title} logo`} className="w-10 h-10 object-contain ml-4 mt-1 flex-shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/40x40/f1f5f9/1e293b?text=Logo';" />
-                      )}
-                      {/* New indicator arrow at the bottom-right */}
-                      {!showDetails[i] && (
-                        <div className="absolute bottom-2 right-2"> {/* Positioned at bottom-right */}
-                          <svg className="w-6 h-6 text-gray-400 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7"></path>
-                          </svg>
+          
+          {!gameWon ? (
+            // Render the game if not won yet
+            <PathfinderGame onGameWin={handleGameWin} />
+          ) : (
+            // Render the journey content if game is won
+            <>
+              <p className="text-center text-gray-800 text-lg mb-6 font-semibold animate-section-in">
+                Congratulations on navigating the puzzle! It seems you've mastered the art of finding a path. Now, allow me to share the journey I've walked.
+              </p>
+              <p className="text-center text-gray-700 mb-6">Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
+              <div className="mt-10">
+                <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
+                <ol className="timeline-list">
+                  {timelineItems.map((item, i) => (
+                    <li className="timeline-item" key={i}>
+                      <span className="timeline-dot">{i+1}</span>
+                      <div className="flex-1">
+                        <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
+                          <div className="flex-grow">
+                            <h4 className="font-bold text-slate-800">{item.title}</h4>
+                            <span className="block text-gray-500 text-xs mb-1">{item.time}</span>
+                            <p className="text-slate-700">{item.desc}</p>
+                          </div>
+                          {item.logoUrl && (
+                            <img src={item.logoUrl} alt={`${item.title} logo`} className="w-10 h-10 object-contain ml-4 mt-1 flex-shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/40x40/f1f5f9/1e293b?text=Logo';" />
+                          )}
+                          {/* New indicator arrow at the bottom-right */}
+                          {!showDetails[i] && (
+                            <div className="absolute bottom-2 right-2"> {/* Positioned at bottom-right */}
+                              <svg className="w-6 h-6 text-gray-400 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7"></path>
+                              </svg>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    {/* Added onClick to timeline-details as well */}
-                    <div className={`timeline-details mt-2${showDetails[i] ? ' open' : ''}`} onClick={() => toggleDetails(i)}>
-                      {showDetails[i] && (
-                        <p>{item.fullDesc}</p>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <p className="text-center text-gray-700 mt-8 text-lg font-semibold">Learning and developing skills to contribute and make a meaningful impact!</p>
-          </div>
+                        {/* Added onClick to timeline-details as well */}
+                        <div className={`timeline-details mt-2${showDetails[i] ? ' open' : ''}`} onClick={() => toggleDetails(i)}>
+                          {showDetails[i] && (
+                            <p>{item.fullDesc}</p>
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <p className="text-center text-gray-700 mt-8 text-lg font-semibold">Learning and developing skills to contribute and make a meaningful impact!</p>
+              </div>
+            </>
+          )}
         </section>
       );
     }
@@ -677,17 +694,6 @@ Both projects involved end-to-end development, from requirements gathering to de
 
           <div className="border-t border-gray-300 my-6"></div>
 
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">6. Your Rights</h3>
-          <p className="text-gray-700 mb-4">
-            Depending on your location, you may have rights to:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 mb-4 pl-4">
-            <li>Request access to data collected about you.</li>
-            <li>Request deletion of your data. To make such requests, please contact us using the email below.</li>
-          </ul>
-
-          <div className="border-t border-gray-300 my-6"></div>
-
           <h3 className="text-2xl font-bold text-gray-800 mb-4">7. Contact Us</h3>
           <p className="text-gray-700 mb-4">
             If you have questions about this Privacy Policy, contact: <a href={`mailto:${contactEmail}`} className="text-blue-700 hover:underline">{contactEmail}</a>
@@ -702,7 +708,6 @@ Both projects involved end-to-end development, from requirements gathering to de
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
       // New state for controlling animation direction
       const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
-      const [hasWonGame, setHasWonGame] = React.useState(false); // New state for game win
 
       React.useEffect(() => {
         const handleResize = () => {
@@ -731,13 +736,6 @@ Both projects involved end-to-end development, from requirements gathering to de
             setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
         }
         setActiveTabState(tabId);
-      };
-
-      // Callback for when the game is won
-      const handleGameWin = () => {
-          setHasWonGame(true);
-          // Immediately navigate to the journey tab after winning
-          setActiveTab('journey', 'game-win');
       };
 
 
@@ -774,8 +772,7 @@ Both projects involved end-to-end development, from requirements gathering to de
       // Map of components for easier rendering
       const components = {
         about: <About showSection={setActiveTab} />,
-        game: <PathfinderGame onGameWin={handleGameWin} />, // New: Game component
-        journey: <Journey gameWon={hasWonGame} />, // Pass gameWon prop
+        journey: <Journey />, // Journey component now handles the game logic
         resume: <Resume />,
         contact: <Contact />,
         privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
@@ -794,7 +791,7 @@ Both projects involved end-to-end development, from requirements gathering to de
                 {components[activeTab]}
             </div>
           </main>
-          <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">\
+          <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
             © 2025 - Crafted with ❤️ and lots of ☕
             <span className="mx-2">|</span>
             <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
