@@ -187,12 +187,29 @@
         const [endPos, setEndPos] = React.useState({ row: 0, col: 0 });
         const [gameStatus, setGameStatus] = React.useState('playing'); // playing, won, lost
 
+        // Refs to hold the *latest* state values for the event listener
+        const playerPosRef = React.useRef(playerPos);
+        const boardRef = React.useRef(board);
+        const gameStatusRef = React.useRef(gameStatus);
+
+        // Update refs whenever the state changes
+        React.useEffect(() => {
+            playerPosRef.current = playerPos;
+        }, [playerPos]);
+
+        React.useEffect(() => {
+            boardRef.current = board;
+        }, [board]);
+
+        React.useEffect(() => {
+            gameStatusRef.current = gameStatus;
+        }, [gameStatus]);
+
         // Function to generate a random board
-        const generateBoard = () => {
+        const generateBoard = React.useCallback(() => {
             let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
             let startR, startC, endR, endC;
 
-            // Ensure start and end are not too close and not the same spot
             do {
                 startR = Math.floor(Math.random() * GRID_SIZE);
                 startC = Math.floor(Math.random() * GRID_SIZE);
@@ -213,7 +230,7 @@
                 do {
                     r = Math.floor(Math.random() * GRID_SIZE);
                     c = Math.floor(Math.random() * GRID_SIZE);
-                } while (newBoard[r][c] !== '');
+                } while (newBoard[r][c] !== '' && newBoard[r][c] !== 'S' && newBoard[r][c] !== 'E'); // Avoid placing obstacles on S or E
                 newBoard[r][c] = 'X';
             }
 
@@ -221,16 +238,17 @@
             setEndPos({ row: endR, col: endC });
             setBoard(newBoard);
             setGameStatus('playing');
-        };
+        }, []); // Empty dependency array: this function itself doesn't need to change
 
+        // Effect for initial board generation and keyboard listener setup
         React.useEffect(() => {
-            generateBoard(); // Generate board on component mount
+            generateBoard(); // Initial board generation when component mounts
 
             const handleKeyDown = (e) => {
-                if (gameStatus !== 'playing') return;
+                if (gameStatusRef.current !== 'playing') return; // Use ref for latest game status
 
-                let newRow = playerPos.row;
-                let newCol = playerPos.col;
+                let newRow = playerPosRef.current.row; // Use ref for latest player position
+                let newCol = playerPosRef.current.col;
 
                 switch (e.key) {
                     case 'ArrowUp': newRow--; break;
@@ -240,30 +258,29 @@
                     default: return; // Ignore other keys
                 }
 
-                // Check boundaries
                 if (newRow >= 0 && newRow < GRID_SIZE && newCol >= 0 && newCol < GRID_SIZE) {
-                    // Check for obstacle
-                    if (board[newRow][newCol] === 'X') {
-                        setGameStatus('lost'); // Player hit an obstacle
+                    if (boardRef.current[newRow][newCol] === 'X') { // Use ref for latest board
+                        setGameStatus('lost');
                     } else {
-                        setPlayerPos({ row: newRow, col: newCol });
+                        setPlayerPos({ row: newRow, col: newCol }); // Set state directly for re-render
                     }
                 }
             };
 
             window.addEventListener('keydown', handleKeyDown);
+
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
             };
-        }, [playerPos, board, gameStatus]); // Re-run effect if playerPos, board, or gameStatus changes
+        }, [generateBoard]); // Dependency only on generateBoard, which is stable due to useCallback
 
+        // Effect to check win condition, depends on player position and game status
         React.useEffect(() => {
-            // Check win condition
             if (playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
                 setGameStatus('won');
-                onGameWin(); // Trigger win action in parent
+                onGameWin();
             }
-        }, [playerPos, endPos, onGameWin, gameStatus]); // Add gameStatus to dependencies
+        }, [playerPos, endPos, onGameWin, gameStatus]);
 
         return (
             <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
