@@ -13,7 +13,7 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   100% { box-shadow: 0 0 32px 2px #0f172add, 0 0 0 8px #3341553d; }
 }
 .logo-text {
-  font-family: 'Orbitron', 'Inter', sans-serif;
+  font-family: 'Pacifico', 'Orbitron', 'Inter', sans-serif;
   font-size: 1.4rem;
   letter-spacing: 2px;
   font-weight: 800;
