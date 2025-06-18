@@ -16,7 +16,7 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   font-family: 'Pacifico', 'Orbitron', 'Inter', sans-serif;
   font-size: 1.4rem;
   letter-spacing: 2px;
-  font-weight: 800;
+  font-weight: 400;
   text-shadow: 0 2px 8px #33415599;
   color: #fff;
   transition: letter-spacing 0.3s;
