@@ -26,6 +26,7 @@
 
     function Navbar({ activeTab, setActiveTab }) {
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+      const [isLogoAnimating, setIsLogoAnimating] = React.useState(false); // New state for logo animation
 
       React.useEffect(() => {
         const handleResize = () => {
@@ -35,10 +36,21 @@
         return () => window.removeEventListener('resize', handleResize);
       }, []);
 
+      const handleLogoClick = () => {
+        setIsLogoAnimating(true);
+        // Reset animation after it completes
+        setTimeout(() => {
+          setIsLogoAnimating(false);
+        }, 600); // Match the animation duration (0.6s)
+      };
+
       return (
         <header className="bg-white/75 backdrop-blur shadow sticky top-0 z-50 transition">
-          <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between py-3 px-4 md:px-8">
-            <span className="logo-frame group cursor-pointer select-none">
+          <div className="container mx-auto flex flex-row items-center py-3 px-4 md:px-8"> {/* Changed to flex-row and items-center for mobile layout */}
+            <span
+              className={`logo-frame group cursor-pointer select-none ${isLogoAnimating ? 'animate-firecracker' : ''}`}
+              onClick={handleLogoClick} {/* Added onClick handler for logo animation */}
+            >
               {/* Conditional rendering for logo and text */}
               {isMobile ? (
                 <img src="logo.webp" alt="Logo" className="h-8 w-auto" /> /* Adjust height/width as needed for mobile */
@@ -50,8 +62,8 @@
               )}
               <span className="absolute -top-3 -right-6 hidden md:inline-block animate-bounce text-2xl text-blue-900">★</span>
             </span>
-            <nav className="w-full md:w-auto">
-              <ul className="flex flex-row md:flex-row items-center gap-1 justify-center w-full">
+            <nav className="ml-auto"> {/* Pushes nav to the right, leaving space */}
+              <ul className="flex flex-row items-center gap-1"> {/* Removed w-full from ul */}
                 {NAV_TABS.map(tab => (
                   // Only render the privacy tab if it's not mobile or if it's not the privacy tab
                   (isMobile && tab.id === 'privacy') ? null : (
