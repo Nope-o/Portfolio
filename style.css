@@ -66,13 +66,57 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   opacity: 1; transform: scaleX(1);
 }
 .nav-link.active { font-weight: 700; }
+
+/* Desktop-specific styles for the header (expanded state is default) */
+@media (min-width: 769px) { /* Applies to screens larger than 768px */
+  .header-expanded .logo-text {
+    font-size: 1.4rem; /* Ensure original size on desktop */
+  }
+}
+
+/* Mobile-specific styles for the header (expanded state by default, compact on scroll) */
 @media (max-width: 768px) {
+  /* Default mobile (expanded) state */
   .logo-text {
-    font-size: 1rem;
+    font-size: 1rem; /* Smaller font for mobile to fit better */
   }
   .nav-link { width: 100%; font-size: 1.1rem;}
   .nav-link .nav-underline { left: 30%; right: 30%; height: 4px;}
+
+  /* Compact header state on scroll down for mobile */
+  .header-compact .logo-frame {
+    /* Logo frame (logo image only) will be compact and align left */
+    width: auto;
+    margin-right: 1rem; /* Add some space between logo and nav on compact */
+  }
+
+  .header-compact .logo-text {
+    /* Hide the name when compact */
+    display: none;
+  }
+
+  .header-compact .container {
+    /* Change container to flex-row to put logo and nav side-by-side */
+    flex-direction: row;
+    justify-content: space-between; /* Space out logo and nav */
+    align-items: center; /* Vertically align them */
+    padding-top: 0.5rem; /* Reduce padding when compact */
+    padding-bottom: 0.5rem; /* Reduce padding when compact */
+  }
+
+  .header-compact nav {
+    /* Navigation should be visible and take remaining space */
+    display: block;
+    width: auto;
+  }
+
+  .header-compact nav ul {
+    /* Align tabs to the right within the compact nav */
+    justify-content: flex-end;
+  }
 }
+
+
 @media (max-width: 768px) {
   .about-flex-mobile {
     flex-direction: column !important;
