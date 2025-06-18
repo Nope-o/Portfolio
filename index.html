@@ -41,15 +41,13 @@
             const currentScrollY = window.scrollY;
 
             // Define scroll thresholds for hysteresis
-            const scrollDownThreshold = 60; // User scrolls down past this to become compact
-            const scrollUpThreshold = 40;   // User scrolls up past this to revert to expanded
+            const scrollDownThreshold = 80; // User scrolls down past this to become compact
+            const scrollUpThreshold = 60;   // User scrolls up past this to revert to expanded
 
-            // Check if scrolling down AND current scroll is beyond the down threshold AND not already compact
+            // Only change state if scrolling past a threshold AND the state is different
             if (currentScrollY > lastScrollY.current && currentScrollY > scrollDownThreshold && !isScrolledDown) {
               setIsScrolledDown(true);
-            }
-            // Check if scrolling up AND current scroll is below the up threshold AND currently compact
-            else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold && isScrolledDown) {
+            } else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold && isScrolledDown) {
               setIsScrolledDown(false);
             }
             lastScrollY.current = currentScrollY;
@@ -69,7 +67,7 @@
           window.removeEventListener('resize', handleResize);
           window.removeEventListener('scroll', handleScroll);
         };
-      }, [isMobile]); // Re-run effect if isMobile changes
+      }, [isMobile, isScrolledDown]); // Added isScrolledDown to dependency array for reliable updates
 
       const handleLogoClick = () => {
         setAnimateLogo(true); // Trigger animation
@@ -502,7 +500,7 @@ Both projects involved end-to-end development, from requirements gathering to de
             <li>Personal identifiers like your name or email address.</li>
             <li>Any sensitive data.</li>
             <li>Any data through cookies or local storage.</li>
-          </ul>
+            </ul>
 
           <div className="border-t border-gray-300 my-6"></div>
 
