@@ -67,10 +67,18 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
 }
 .nav-link.active { font-weight: 700; }
 
+/* Base header styles (default, detailed view) */
+/* The header transition properties are defined here for both expanded and compact states */
+header {
+  transition: all 0.3s ease-in-out; /* Smooth transition for height, padding, shadow */
+  will-change: height, padding, box-shadow; /* Hint to browser for optimization */
+}
+
 /* Desktop-specific styles for the header (expanded state is default) */
 @media (min-width: 769px) { /* Applies to screens larger than 768px */
   .header-expanded .logo-text {
     font-size: 1.4rem; /* Ensure original size on desktop */
+    will-change: font-size, letter-spacing;
   }
 }
 
@@ -79,12 +87,14 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   /* Default mobile (expanded) state for .logo-text */
   .logo-text {
     font-size: 1rem; /* Smaller font for mobile to fit better */
+    will-change: font-size, letter-spacing;
   }
 
   /* Default mobile (expanded) state for nav links */
   .nav-link {
     width: 100%;
     font-size: 1.1rem;
+    will-change: font-size, padding;
   }
   .nav-link .nav-underline {
     left: 30%;
@@ -109,6 +119,7 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
     justify-content: center; /* Horizontally center content */
     margin-right: 0.5rem; /* Small margin to right of logo, between logo and tabs */
     box-shadow: 0 0 10px #0f172a60; /* Adjust compact shadow if desired */
+    will-change: transform, padding, border-radius, box-shadow;
   }
 
   .header-compact .logo-frame img {
@@ -143,6 +154,7 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   .header-compact .nav-link {
     font-size: 0.85rem; /* Increased font size for tabs when compact */
     padding: 0.3rem 0.6rem; /* Increased padding for tabs when compact */
+    will-change: font-size, padding;
   }
   .header-compact .nav-link .nav-underline {
     height: 2px; /* Smaller underline */
