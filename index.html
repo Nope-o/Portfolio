@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react-dom.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link rel="icon" href="logoo.webp" type="image/webp">
 </head>
@@ -39,14 +39,11 @@
         const handleScroll = () => {
           if (isMobile) { // Only apply this behavior on mobile
             const currentScrollY = window.scrollY;
-            const scrollDownThreshold = 60; // Scroll down threshold to trigger compact
-            const scrollUpThreshold = 40; // Scroll up threshold to revert to expanded (creates hysteresis)
-
-            if (currentScrollY > lastScrollY.current && currentScrollY > scrollDownThreshold) {
-              // Scrolling down past the scroll-down threshold
+            // Check if scrolling down and scroll position is past a threshold
+            if (currentScrollY > lastScrollY.current && currentScrollY > 50) { // 50px threshold
               setIsScrolledDown(true);
-            } else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold) {
-              // Scrolling up past the scroll-up threshold
+            } else if (currentScrollY < lastScrollY.current) {
+              // Scrolling up
               setIsScrolledDown(false);
             }
             lastScrollY.current = currentScrollY;
