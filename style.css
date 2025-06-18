@@ -74,25 +74,51 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   }
 }
 
-/* Mobile-specific styles for the header (expanded state by default, compact on scroll) */
+/* Mobile-specific styles for the header */
 @media (max-width: 768px) {
-  /* Default mobile (expanded) state */
+  /* Default mobile (expanded) state for .logo-text */
   .logo-text {
     font-size: 1rem; /* Smaller font for mobile to fit better */
   }
-  .nav-link { width: 100%; font-size: 1.1rem;}
-  .nav-link .nav-underline { left: 30%; right: 30%; height: 4px;}
 
-  /* Compact header state on scroll down for mobile */
+  /* Default mobile (expanded) state for nav links */
+  .nav-link {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+  .nav-link .nav-underline {
+    left: 30%;
+    right: 30%;
+    height: 4px;
+  }
+
+  /* Compact header state when scrolled down for mobile */
+  .header-compact {
+    padding-top: 0.5rem; /* Reduce padding to make it smaller */
+    padding-bottom: 0.5rem;
+  }
+
   .header-compact .logo-frame {
-    /* Logo frame (logo image only) will be compact and align left */
-    width: auto;
-    margin-right: 1rem; /* Add some space between logo and nav on compact */
+    /* Make logo frame a square box */
+    padding: 4px; /* Adjust padding for square look */
+    border-radius: 8px; /* Square shape */
+    height: 40px; /* Fixed height for consistent compact size */
+    width: 40px; /* Fixed width for consistent compact size */
+    display: flex; /* Use flexbox for centering image within the box */
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    margin-right: 0.5rem; /* Small margin to right of logo, between logo and tabs */
+    box-shadow: 0 0 10px #0f172a60; /* Adjust compact shadow if desired */
+  }
+
+  .header-compact .logo-frame img {
+    height: 28px; /* Adjust image size within the compact box */
+    width: 28px;
+    margin: 0; /* Remove any existing margins on the image */
   }
 
   .header-compact .logo-text {
-    /* Hide the name when compact */
-    display: none;
+    display: none; /* Hide the name when compact */
   }
 
   .header-compact .container {
@@ -100,19 +126,28 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
     flex-direction: row;
     justify-content: space-between; /* Space out logo and nav */
     align-items: center; /* Vertically align them */
-    padding-top: 0.5rem; /* Reduce padding when compact */
-    padding-bottom: 0.5rem; /* Reduce padding when compact */
   }
 
   .header-compact nav {
     /* Navigation should be visible and take remaining space */
     display: block;
-    width: auto;
+    width: auto; /* Allow nav to take only necessary width */
   }
 
   .header-compact nav ul {
     /* Align tabs to the right within the compact nav */
     justify-content: flex-end;
+    gap: 0.25rem; /* Reduce gap between tabs to fit more */
+  }
+
+  .header-compact .nav-link {
+    font-size: 0.75rem; /* Even smaller font size for tabs when compact */
+    padding: 0.2rem 0.4rem; /* Even smaller padding for tabs when compact */
+  }
+  .header-compact .nav-link .nav-underline {
+    height: 2px; /* Smaller underline */
+    left: 10%;
+    right: 10%;
   }
 }
 
