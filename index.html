@@ -39,7 +39,15 @@
         <header className="bg-white/75 backdrop-blur shadow sticky top-0 z-50 transition">
           <div className="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between py-3 px-4 md:px-8">
             <span className="logo-frame group cursor-pointer select-none">
-              <span className="logo-text group-hover:tracking-widest transition-all">Madhav Kataria</span>
+              {/* Conditional rendering for logo and text */}
+              {isMobile ? (
+                <img src="logo.webp" alt="Logo" className="h-8 w-auto" /> /* Adjust height/width as needed for mobile */
+              ) : (
+                <>
+                  <img src="logo.webp" alt="Logo" className="h-8 w-auto inline-block mr-2" /> {/* Adjust height/width as needed for desktop */}
+                  <span className="logo-text group-hover:tracking-widest transition-all">Madhav Kataria</span>
+                </>
+              )}
               <span className="absolute -top-3 -right-6 hidden md:inline-block animate-bounce text-2xl text-blue-900">★</span>
             </span>
             <nav className="w-full md:w-auto">
