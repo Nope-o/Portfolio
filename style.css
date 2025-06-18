@@ -141,8 +141,8 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
   }
 
   .header-compact .nav-link {
-    font-size: 0.75rem; /* Even smaller font size for tabs when compact */
-    padding: 0.2rem 0.4rem; /* Even smaller padding for tabs when compact */
+    font-size: 0.85rem; /* Increased font size for tabs when compact */
+    padding: 0.3rem 0.6rem; /* Increased padding for tabs when compact */
   }
   .header-compact .nav-link .nav-underline {
     height: 2px; /* Smaller underline */
