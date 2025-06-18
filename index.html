@@ -28,9 +28,10 @@
     function Navbar({ activeTab, setActiveTab }) {
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
       const [animateLogo, setAnimateLogo] = React.useState(false); // State for logo animation
-      const [isScrolledDown, setIsScrolledDown] = React.useState(false); // New state for scroll detection
+      const [isScrolledDown, setIsScrolledDown] = React.useState(false); // State for scroll detection for header
       const lastScrollY = React.useRef(0); // Ref to store last scroll position
 
+      // Effect to handle window resize and scroll for header compact/detailed view
       React.useEffect(() => {
         const handleResize = () => {
           setIsMobile(window.innerWidth <= 768);
@@ -40,7 +41,7 @@
           if (isMobile) { // Only apply this behavior on mobile
             const currentScrollY = window.scrollY;
 
-            // Define scroll thresholds for hysteresis
+            // Define scroll thresholds for hysteresis to prevent flickering
             const scrollDownThreshold = 80; // User scrolls down past this to become compact
             const scrollUpThreshold = 60;   // User scrolls up past this to revert to expanded
 
@@ -76,7 +77,7 @@
       };
 
       // Determine header classes based on scroll state for mobile
-      const headerClasses = `bg-white/75 backdrop-blur shadow sticky top-0 z-50 transition-all duration-100 ease-in-out
+      const headerClasses = `bg-white/75 backdrop-blur shadow sticky top-0 z-50 transition-all duration-300 ease-in-out
                              ${isMobile && isScrolledDown ? 'header-compact' : 'header-expanded'}`;
 
       // Conditional classes for the main content wrapper (logo and nav)
