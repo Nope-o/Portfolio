@@ -76,12 +76,12 @@
                              ${isMobile && isScrolledDown ? 'header-compact' : 'header-expanded'}`;
 
       // Conditional classes for the main content wrapper (logo and nav)
-      const mainContentWrapperClasses = `container mx-auto py-3 px-4 md:px-8
-                                         flex ${isMobile && isScrolledDown ? 'flex-row items-center justify-between' : 'flex-col items-center justify-center md:flex-row md:justify-between md:items-center'}`;
+      const mainContentWrapperClasses = `container mx-auto px-4 md:px-8
+                                         flex ${isMobile && isScrolledDown ? 'flex-row items-center justify-between py-2' : 'flex-col items-center justify-center py-3 md:flex-row md:justify-between md:items-center'}`;
 
       // Conditional classes for logo frame
       const logoFrameClasses = `logo-frame group cursor-pointer select-none
-                                ${isMobile && isScrolledDown ? 'flex-shrink-0 mr-4' : 'w-full text-center mb-4 md:w-auto md:text-left md:mb-0'}
+                                ${isMobile && isScrolledDown ? 'flex-shrink-0' : 'w-full text-center mb-4 md:w-auto md:text-left md:mb-0'}
                                 ${animateLogo ? "logo-burst" : ""}`;
 
       // Conditional classes for logo text
