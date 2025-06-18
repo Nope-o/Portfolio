@@ -10,7 +10,7 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
 }
 @keyframes logoPulse {
   0% { box-shadow: 0 0 14px #0f172abb, 0 0 0 0 #0f172a60; }
-  100% { box-shadow: 0 0 25px 2px #0f172add, 0 0 0 8px #3341553d; }
+  100% { box-shadow: 0 0 40px 1px #0f172add, 0 0 0 4px #3341553d; }
 }
 .logo-text {
   font-family: 'Pacifico', 'Orbitron', 'Inter', sans-serif;
