@@ -19,6 +19,7 @@
   <script type="text/babel">
     const NAV_TABS = [
       { id: 'about', label: 'About' },
+      { id: 'game', label: 'Play Game', mobileLabel: 'Play' }, // New: Game Tab
       { id: 'journey', label: 'Life Journey', mobileLabel: 'Life' },
       { id: 'resume', label: 'Resume', mobileLabel: 'Resume' },
       { id: 'contact', label: 'Contact', mobileLabel: 'Contact' },
@@ -179,7 +180,139 @@
       );
     }
 
-    function Journey() {
+    // New: PathfinderGame Component
+    function PathfinderGame({ onGameWin }) {
+        const GRID_SIZE = 7; // Increased grid size for more challenge
+        const [board, setBoard] = React.useState([]);
+        const [playerPos, setPlayerPos] = React.useState({ row: 0, col: 0 });
+        const [endPos, setEndPos] = React.useState({ row: 0, col: 0 });
+        const [gameStatus, setGameStatus] = React.useState('playing'); // playing, won, lost
+
+        // Function to generate a random board
+        const generateBoard = () => {
+            let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
+            let startR, startC, endR, endC;
+
+            // Ensure start and end are not too close
+            do {
+                startR = Math.floor(Math.random() * GRID_SIZE);
+                startC = Math.floor(Math.random() * GRID_SIZE);
+                endR = Math.floor(Math.random() * GRID_SIZE);
+                endC = Math.floor(Math.random() * GRID_SIZE);
+            } while (Math.abs(startR - endR) + Math.abs(startC - endC) < GRID_SIZE / 2); // Ensure sufficient distance
+
+            newBoard[startR][startC] = 'S';
+            newBoard[endR][endC] = 'E';
+
+            // Add obstacles (around 20-30% of the cells, avoiding S and E)
+            const numObstacles = Math.floor(GRID_SIZE * GRID_SIZE * 0.25);
+            for (let i = 0; i < numObstacles; i++) {
+                let r, c;
+                do {
+                    r = Math.floor(Math.random() * GRID_SIZE);
+                    c = Math.floor(Math.random() * GRID_SIZE);
+                } while (newBoard[r][c] !== '');
+                newBoard[r][c] = 'X';
+            }
+
+            setPlayerPos({ row: startR, col: startC });
+            setEndPos({ row: endR, col: endC });
+            setBoard(newBoard);
+            setGameStatus('playing');
+        };
+
+        React.useEffect(() => {
+            generateBoard(); // Generate board on component mount
+
+            const handleKeyDown = (e) => {
+                if (gameStatus !== 'playing') return;
+
+                let newRow = playerPos.row;
+                let newCol = playerPos.col;
+
+                switch (e.key) {
+                    case 'ArrowUp': newRow--; break;
+                    case 'ArrowDown': newRow++; break;
+                    case 'ArrowLeft': newCol--; break;
+                    case 'ArrowRight': newCol++; break;
+                    default: return; // Ignore other keys
+                }
+
+                // Check boundaries
+                if (newRow >= 0 && newRow < GRID_SIZE && newCol >= 0 && newCol < GRID_SIZE) {
+                    // Check for obstacle
+                    if (board[newRow][newCol] === 'X') {
+                        setGameStatus('lost'); // Player hit an obstacle
+                    } else {
+                        setPlayerPos({ row: newRow, col: newCol });
+                    }
+                }
+            };
+
+            window.addEventListener('keydown', handleKeyDown);
+            return () => {
+                window.removeEventListener('keydown', handleKeyDown);
+            };
+        }, [playerPos, board, gameStatus]);
+
+        React.useEffect(() => {
+            // Check win condition
+            if (playerPos.row === endPos.row && playerPos.col === endPos.col) {
+                setGameStatus('won');
+                onGameWin(); // Trigger win action in parent
+            }
+        }, [playerPos, endPos, onGameWin]);
+
+        return (
+            <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
+                <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
+                <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** to move!</p>
+                <div className="game-grid mb-6">
+                    {board.map((row, rIdx) => (
+                        <div key={rIdx} className="game-row">
+                            {row.map((cell, cIdx) => {
+                                const isPlayer = playerPos.row === rIdx && playerPos.col === cIdx;
+                                const isStart = board[rIdx][cIdx] === 'S';
+                                const isEnd = board[rIdx][cIdx] === 'E';
+                                const isObstacle = board[rIdx][cIdx] === 'X';
+
+                                let cellClass = 'game-cell';
+                                if (isPlayer) cellClass += ' player-cell';
+                                else if (isStart) cellClass += ' start-cell';
+                                else if (isEnd) cellClass += ' end-cell';
+                                else if (isObstacle) cellClass += ' obstacle-cell';
+
+                                return (
+                                    <div key={cIdx} className={cellClass}>
+                                        {isPlayer ? '🚶‍♂️' : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </div>
+
+                {gameStatus === 'won' && (
+                    <div className="game-message won-message">
+                        Congratulations! You've found your path!
+                    </div>
+                )}
+                {gameStatus === 'lost' && (
+                    <div className="game-message lost-message">
+                        Oops! You hit an obstacle. Try again!
+                    </div>
+                )}
+                <button
+                    onClick={generateBoard}
+                    className="mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-6 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse"
+                >
+                    {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
+                </button>
+            </section>
+        );
+    }
+
+    function Journey({ gameWon }) { // Added gameWon prop
       const [showDetails, setShowDetails] = React.useState({});
 
       const toggleDetails = (index) => {
@@ -240,6 +373,11 @@ Both projects involved end-to-end development, from requirements gathering to de
       return (
         <section className="bg-gradient-to-br from-indigo-50/70 via-blue-50/70 to-white p-7 rounded-3xl shadow-2xl mb-10">
           <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">My Life Journey &amp; Experiences</h2>
+          {gameWon && ( // Conditional message for game completion
+            <p className="text-center text-gray-800 text-lg mb-6 font-semibold animate-section-in">
+              Congratulations on navigating the puzzle! It seems you've mastered the art of finding a path. Now, allow me to share the journey I've walked.
+            </p>
+          )}
           <p className="text-center text-gray-700 mb-6">Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
           <div className="mt-10">
             <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
@@ -564,6 +702,7 @@ Both projects involved end-to-end development, from requirements gathering to de
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
       // New state for controlling animation direction
       const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
+      const [hasWonGame, setHasWonGame] = React.useState(false); // New state for game win
 
       React.useEffect(() => {
         const handleResize = () => {
@@ -577,7 +716,7 @@ Both projects involved end-to-end development, from requirements gathering to de
 
       // Custom setActiveTab function to control animations
       const setActiveTab = (tabId, origin = 'click') => {
-        const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
+        const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy'); // 'privacy' not part of swipe navigation
         const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
         const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
 
@@ -592,6 +731,13 @@ Both projects involved end-to-end development, from requirements gathering to de
             setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
         }
         setActiveTabState(tabId);
+      };
+
+      // Callback for when the game is won
+      const handleGameWin = () => {
+          setHasWonGame(true);
+          // Immediately navigate to the journey tab after winning
+          setActiveTab('journey', 'game-win');
       };
 
 
@@ -628,7 +774,8 @@ Both projects involved end-to-end development, from requirements gathering to de
       // Map of components for easier rendering
       const components = {
         about: <About showSection={setActiveTab} />,
-        journey: <Journey />,
+        game: <PathfinderGame onGameWin={handleGameWin} />, // New: Game component
+        journey: <Journey gameWon={hasWonGame} />, // Pass gameWon prop
         resume: <Resume />,
         contact: <Contact />,
         privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
@@ -647,7 +794,7 @@ Both projects involved end-to-end development, from requirements gathering to de
                 {components[activeTab]}
             </div>
           </main>
-          <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
+          <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">\
             © 2025 - Crafted with ❤️ and lots of ☕
             <span className="mx-2">|</span>
             <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
