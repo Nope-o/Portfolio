@@ -39,23 +39,19 @@
         const handleScroll = () => {
           if (isMobile) { // Only apply this behavior on mobile
             const currentScrollY = window.scrollY;
-            // Check if scrolling down and scroll position is past a threshold
-            // OLD: if (currentScrollY > lastScrollY.current && currentScrollY > 50) { // 50px threshold
-            // OLD:   setIsScrolledDown(true);
-            // OLD: } else if (currentScrollY < lastScrollY.current) {
-            // OLD:   setIsScrolledDown(false);
-            // OLD: }
 
-            // NEW: Added hysteresis to prevent flickering
-            const scrollDownThreshold = 60; // Scroll down threshold to trigger compact
-            const scrollUpThreshold = 40;   // Scroll up threshold to revert to expanded
+            // Define scroll thresholds for hysteresis
+            const scrollDownThreshold = 60; // User scrolls down past this to become compact
+            const scrollUpThreshold = 40;   // User scrolls up past this to revert to expanded
 
-            if (currentScrollY > lastScrollY.current && currentScrollY > scrollDownThreshold) {
+            // Check if scrolling down AND current scroll is beyond the down threshold AND not already compact
+            if (currentScrollY > lastScrollY.current && currentScrollY > scrollDownThreshold && !isScrolledDown) {
               setIsScrolledDown(true);
-            } else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold) {
+            }
+            // Check if scrolling up AND current scroll is below the up threshold AND currently compact
+            else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold && isScrolledDown) {
               setIsScrolledDown(false);
             }
-
             lastScrollY.current = currentScrollY;
           } else {
             // Ensure it's never compact on desktop
