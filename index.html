@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Madhav Kataria - Personal Website</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Link to the external CSS file -->
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link rel="icon" href="logoo.webp" type="image/webp">
 </head>
@@ -25,27 +24,26 @@
       { id: 'privacy', label: 'Privacy Policy', mobileLabel: 'Privacy' }
     ];
 
+    // Components (About, Journey, Resume, Contact, PrivacyPolicy) remain the same.
+    // They are defined as functions outside the App component.
+
     function Navbar({ activeTab, setActiveTab }) {
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
       const [animateLogo, setAnimateLogo] = React.useState(false); // State for logo animation
       const [isScrolledDown, setIsScrolledDown] = React.useState(false); // State for scroll detection for header
       const lastScrollY = React.useRef(0); // Ref to store last scroll position
 
-      // Effect to handle window resize and scroll for header compact/detailed view
       React.useEffect(() => {
         const handleResize = () => {
           setIsMobile(window.innerWidth <= 768);
         };
 
         const handleScroll = () => {
-          if (isMobile) { // Only apply this behavior on mobile
+          if (isMobile) {
             const currentScrollY = window.scrollY;
+            const scrollDownThreshold = 80;
+            const scrollUpThreshold = 60;
 
-            // Define scroll thresholds for hysteresis to prevent flickering
-            const scrollDownThreshold = 80; // User scrolls down past this to become compact
-            const scrollUpThreshold = 60;   // User scrolls up past this to revert to expanded
-
-            // Only change state if scrolling past a threshold AND the state is different
             if (currentScrollY > lastScrollY.current && currentScrollY > scrollDownThreshold && !isScrolledDown) {
               setIsScrolledDown(true);
             } else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold && isScrolledDown) {
@@ -53,52 +51,44 @@
             }
             lastScrollY.current = currentScrollY;
           } else {
-            // Ensure it's never compact on desktop
             setIsScrolledDown(false);
           }
         };
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('scroll', handleScroll);
-        // Initial check on mount
         handleResize();
-        handleScroll(); // Call once on mount to set initial state
+        handleScroll();
 
         return () => {
           window.removeEventListener('resize', handleResize);
           window.removeEventListener('scroll', handleScroll);
         };
-      }, [isMobile, isScrolledDown]); // Added isScrolledDown to dependency array for reliable updates
+      }, [isMobile, isScrolledDown]);
 
       const handleLogoClick = () => {
-        setAnimateLogo(true); // Trigger animation
-        setTimeout(() => setAnimateLogo(false), 1000); // Reset after 1 second
-        setActiveTab('about', 'click'); // Navigate to About section
+        setAnimateLogo(true);
+        setTimeout(() => setAnimateLogo(false), 1000);
+        setActiveTab('about', 'click');
       };
 
-      // Determine header classes based on scroll state for mobile
       const headerClasses = `bg-white/75 backdrop-blur shadow sticky top-0 z-50 transition-all duration-300 ease-in-out
                              ${isMobile && isScrolledDown ? 'header-compact' : 'header-expanded'}`;
 
-      // Conditional classes for the main content wrapper (logo and nav)
       const mainContentWrapperClasses = `container mx-auto px-4 md:px-8
                                          flex ${isMobile && isScrolledDown ? 'flex-row items-center justify-between py-2' : 'flex-col items-center justify-center py-3 md:flex-row md:justify-between md:items-center'}`;
 
-      // Conditional classes for logo frame
       const logoFrameClasses = `logo-frame group cursor-pointer select-none
                                 ${isMobile && isScrolledDown ? 'flex-shrink-0' : 'w-full text-center mb-4 md:w-auto md:text-left md:mb-0'}
                                 ${animateLogo ? "logo-burst" : ""}`;
 
-      // Conditional classes for logo text
       const logoTextClasses = `logo-text group-hover:tracking-widest transition-all
-                               ${isMobile && isScrolledDown ? 'hidden' : ''}`; // Hidden when compact
+                               ${isMobile && isScrolledDown ? 'hidden' : ''}`;
 
-      // Conditional classes for navigation container
       const navContainerClasses = `w-full ${isMobile && isScrolledDown ? 'block' : 'block md:block'} md:w-auto`;
 
-      // Conditional classes for navigation list
       const navListClasses = `flex flex-row items-center gap-1 w-full
-                              ${isMobile && isScrolledDown ? 'justify-end' : 'justify-center'}`; // Tabs to right on compact, centered otherwise
+                              ${isMobile && isScrolledDown ? 'justify-end' : 'justify-center'}`;
 
       return (
         <header className={headerClasses}>
@@ -185,7 +175,7 @@
       const toggleDetails = (index) => {
         setShowDetails(prev => ({
           ...prev,
-          [index]: !prev[index] // This toggles the state, so clicking an open tab will close it
+          [index]: !prev[index]
         }));
       };
 
@@ -257,16 +247,14 @@ Both projects involved end-to-end development, from requirements gathering to de
                       {item.logoUrl && (
                         <img src={item.logoUrl} alt={`${item.title} logo`} className="w-10 h-10 object-contain ml-4 mt-1 flex-shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/40x40/f1f5f9/1e293b?text=Logo';" />
                       )}
-                      {/* New indicator arrow at the bottom-right */}
                       {!showDetails[i] && (
-                        <div className="absolute bottom-2 right-2"> {/* Positioned at bottom-right */}
+                        <div className="absolute bottom-2 right-2">
                           <svg className="w-6 h-6 text-gray-400 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7"></path>
                           </svg>
                         </div>
                       )}
                     </div>
-                    {/* Added onClick to timeline-details as well */}
                     <div className={`timeline-details mt-2${showDetails[i] ? ' open' : ''}`} onClick={() => toggleDetails(i)}>
                       {showDetails[i] && (
                         <p>{item.fullDesc}</p>
@@ -296,9 +284,8 @@ Both projects involved end-to-end development, from requirements gathering to de
         html2pdf().set(opt).from(element).save();
       }
       return (
-        <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative"> {/* Added relative positioning here */}
+        <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative">
           <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
-          {/* Download button moved to top right corner */}
           <div className="absolute top-4 right-4">
             <button onClick={downloadResume} className="text-blue-700 font-semibold text-sm hover:underline flex items-center">
               Download
@@ -461,19 +448,17 @@ Both projects involved end-to-end development, from requirements gathering to de
       );
     }
 
-    function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
-      // Get current date for "Effective Date"
+    function PrivacyPolicy({ setActiveTab }) {
       const effectiveDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      const yourName = "Madhav Kataria"; // Replaced with your name
-      const yourWebsiteName = "Madhav Kataria - Personal Website"; // Replaced with your website name
-      const yourDomain = "madhav-kataria.site"; // Replaced with your actual domain
-      const contactEmail = "contact.madhavkataria@gmail.com"; // Replaced with your contact email
+      const yourName = "Madhav Kataria";
+      const yourWebsiteName = "Madhav Kataria - Personal Website";
+      const yourDomain = "madhav-kataria.site";
+      const contactEmail = "contact.madhavkataria@gmail.com";
 
       return (
-        <section className="bg-white p-8 rounded-3xl shadow-2xl mb-10 mx-auto max-w-2xl relative"> {/* Added relative for positioning back button */}
-          {/* Back button */}
+        <section className="bg-white p-8 rounded-3xl shadow-2xl mb-10 mx-auto max-w-2xl relative">
           <button
-            onClick={() => setActiveTab('about', 'click')} /* Pass 'click' origin */
+            onClick={() => setActiveTab('about', 'click')}
             className="absolute top-4 left-4 w-12 h-12 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors duration-200"
             aria-label="Go back to About section"
           >
@@ -560,10 +545,16 @@ Both projects involved end-to-end development, from requirements gathering to de
 
     function App() {
       const [activeTab, setActiveTabState] = React.useState('about');
-      const [touchStartX, setTouchStartX] = React.useState(0);
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
-      // New state for controlling animation direction
-      const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
+
+      // New states for swipe functionality
+      const [startX, setStartX] = React.useState(0);
+      const [currentTranslate, setCurrentTranslate] = React.useState(0);
+      const [prevTranslate, setPrevTranslate] = React.useState(0); // For calculation during drag
+      const [isDragging, setIsDragging] = React.useState(false);
+      const [transitionDuration, setTransitionDuration] = React.useState('0.3s'); // For snap animation
+
+      const navigableTabs = React.useMemo(() => NAV_TABS.filter(tab => tab.id !== 'privacy'), []);
 
       React.useEffect(() => {
         const handleResize = () => {
@@ -573,59 +564,71 @@ Both projects involved end-to-end development, from requirements gathering to de
         return () => window.removeEventListener('resize', handleResize);
       }, []);
 
-      React.useEffect(()=>{ window.scrollTo({top:0, behavior:'smooth'}); }, [activeTab]);
+      // Effect to update currentTranslate when activeTab changes (e.g., from navbar click)
+      React.useEffect(() => {
+        const currentIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+        if (currentIndex !== -1) {
+          setCurrentTranslate(-currentIndex * 100);
+          setTransitionDuration('0.3s'); // Ensure transition for clicks/programmatic changes
+        }
+      }, [activeTab, navigableTabs]);
 
-      // Custom setActiveTab function to control animations
+      // Scroll to top when tab changes
+      React.useEffect(() => { window.scrollTo({top:0, behavior:'smooth'}); }, [activeTab]);
+
       const setActiveTab = (tabId, origin = 'click') => {
-        const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
-        const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
-        const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
+        if (activeTab === tabId) return; // Prevent unnecessary updates
 
-        if (origin === 'swipe' && isMobile) {
-            // Determine swipe direction based on index change
-            if (newIndex > oldIndex) {
-                setTransitionDirection('slide-in-right'); // Swiped left, new content slides in from right
-            } else if (newIndex < oldIndex) {
-                setTransitionDirection('slide-in-left'); // Swiped right, new content slides in from left
-            }
-        } else {
-            setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
+        // Only change transitionDuration for programmatic clicks, not for swipe snaps
+        // Swipe snaps will set it directly in handleTouchEnd
+        if (origin === 'click') {
+            setTransitionDuration('0.3s'); // Or your desired duration for clicks
         }
         setActiveTabState(tabId);
       };
 
-
       const handleTouchStart = (e) => {
-        // Only enable swipe if not on privacy policy page and on mobile
-        if (isMobile && activeTab !== 'privacy') {
-          setTouchStartX(e.touches[0].clientX);
-        }
-      };
-
-      const handleTouchEnd = (e) => {
-        if (isMobile && activeTab !== 'privacy') {
-          const touchEndX = e.changedTouches[0].clientX;
-          const swipeDistance = touchEndX - touchStartX;
-          const swipeThreshold = 75; // Minimum distance for a swipe
-
-          const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
+        if (isMobile && activeTab !== 'privacy') { // Privacy tab is not swipeable
+          setStartX(e.touches[0].clientX);
           const currentIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
-
-          if (swipeDistance > swipeThreshold) {
-            // Swiped right (to previous tab)
-            if (currentIndex > 0) {
-              setActiveTab(navigableTabs[currentIndex - 1].id, 'swipe');
-            }
-          } else if (swipeDistance < -swipeThreshold) {
-            // Swiped left (to next tab)
-            if (currentIndex < navigableTabs.length - 1) {
-              setActiveTab(navigableTabs[currentIndex + 1].id, 'swipe');
-            }
-          }
+          setPrevTranslate(-currentIndex * 100); // Store initial position before drag
+          setIsDragging(true);
+          setTransitionDuration('0s'); // No transition during drag
         }
       };
 
-      // Map of components for easier rendering
+      const handleTouchMove = (e) => {
+        if (!isDragging) return;
+
+        const currentX = e.touches[0].clientX;
+        const diffX = currentX - startX;
+        // Calculate new translate percentage based on current drag and screen width
+        const newTranslate = prevTranslate + (diffX / window.innerWidth) * 100;
+        setCurrentTranslate(newTranslate);
+      };
+
+      const handleTouchEnd = () => {
+        if (!isDragging) return;
+
+        setIsDragging(false);
+        setTransitionDuration('0.3s'); // Re-enable transition for snapping
+
+        const movedBy = currentTranslate - prevTranslate; // How much it moved from its starting position
+        const swipeThreshold = 20; // % of screen width to trigger a swipe
+
+        let newTabIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+
+        if (movedBy > swipeThreshold && newTabIndex > 0) { // Swiped right
+          newTabIndex--;
+        } else if (movedBy < -swipeThreshold && newTabIndex < navigableTabs.length - 1) { // Swiped left
+          newTabIndex++;
+        }
+
+        const newActiveTabId = navigableTabs[newTabIndex].id;
+        setActiveTabState(newActiveTabId); // Update active tab
+        setCurrentTranslate(-newTabIndex * 100); // Snap to the correct position for the new tab
+      };
+
       const components = {
         about: <About showSection={setActiveTab} />,
         journey: <Journey />,
@@ -634,18 +637,39 @@ Both projects involved end-to-end development, from requirements gathering to de
         privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
       };
 
+      // Calculate the width of the slider container based on the number of navigable tabs
+      const sliderWidth = navigableTabs.length * 100;
+
       return (
         <>
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
           <main
-            className="container mx-auto max-w-3xl px-4 py-8 overflow-hidden" /* Re-added overflow-hidden to main */
+            className="container mx-auto max-w-3xl px-4 py-8 overflow-hidden relative" /* Added relative for slider positioning */
             onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd} /* Handle cases where touch is interrupted */
           >
-            {/* Conditional rendering with animation class and key for re-render */}
-            <div key={activeTab} className={transitionDirection}>
-                {components[activeTab]}
-            </div>
+            {/* Conditional rendering for Privacy Policy - outside the swipeable area */}
+            {activeTab === 'privacy' ? (
+              <div key="privacy-section" className="animate-section-in">
+                {components.privacy}
+              </div>
+            ) : (
+              <div
+                className="content-slider"
+                style={{
+                  transform: `translateX(${currentTranslate}%)`,
+                  transition: `transform ${transitionDuration} ease-out`
+                }}
+              >
+                {navigableTabs.map(tab => (
+                  <div key={tab.id} className="slide-panel">
+                    {components[tab.id]}
+                  </div>
+                ))}
+              </div>
+            )}
           </main>
           <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
             © 2025 - Crafted with ❤️ and lots of ☕
