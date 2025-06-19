@@ -246,18 +246,7 @@ Both projects involved end-to-end development, from requirements gathering to de
         <ol className="timeline-list">
           {timelineItems.map((item, i) => (
             <li key={i} className="timeline-item">
-              <span className="timeline-dot">
-                {item.logoUrl ? (
-                  <img
-                    src={item.logoUrl}
-                    alt={`${item.title} icon`}
-                    className={`w-full h-full object-contain p-1 rounded-full transition-transform duration-300 ${showDetails[i] ? 'timeline-icon-active' : ''}`}
-                    onError="this.onerror=null;this.src='https://placehold.co/40x40/f1f5f9/1e293b?text=Logo';"
-                  />
-                ) : (
-                  <span className="text-white">{i + 1}</span>
-                )}
-              </span>
+              <span className="timeline-dot">{i + 1}</span>
               <div className="flex-1">
                 <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
                   <div className="flex-grow">
@@ -265,7 +254,9 @@ Both projects involved end-to-end development, from requirements gathering to de
                     <span className="block text-gray-500 text-xs mb-1">{item.time}</span>
                     <p className="text-slate-700">{item.desc}</p>
                   </div>
-                  {/* Removed duplicate logo rendering here */}
+                  {item.logoUrl && (
+                    <img src={item.logoUrl} alt={`${item.title} logo`} className="w-10 h-10 object-contain ml-4 mt-1 flex-shrink-0" onError="this.onerror=null;this.src='https://placehold.co/40x40/f1f5f9/1e293b?text=Logo';" />
+                  )}
                   {/* New indicator arrow at the bottom-right */}
                   {!showDetails[i] && (
                     <div className="absolute bottom-2 right-2"> {/* Positioned at bottom-right */}
@@ -484,7 +475,7 @@ function Contact() {
  */
 function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
   // Get current date for "Effective Date"
-  const effectiveDate = new Date().toLocaleDateDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const effectiveDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const yourName = "Madhav Kataria"; // Replaced with your name
   const yourWebsiteName = "Madhav Kataria - Personal Website"; // Replaced with your website name
   const yourDomain = "madhav-kataria.site"; // Replaced with your actual domain
