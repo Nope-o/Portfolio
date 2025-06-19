@@ -409,7 +409,7 @@ function PathfinderGame({ onGameWin }) {
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
-      <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center"> {/* Removed minHeight */}
+      <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
         <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
         <p className="text-gray-700 mb-6">Loading game... Please wait.</p>
       </section>
@@ -419,7 +419,7 @@ function PathfinderGame({ onGameWin }) {
   const playerEmoji = '👻'; // Ghost emoji as the character
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center"> {/* Removed minHeight */}
+    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
       <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
 
@@ -467,19 +467,17 @@ function PathfinderGame({ onGameWin }) {
         </div>
       )}
 
-      {/* Mobile-only controls container */}
-      {/* Changed to be flex-col and mb-6 to push it further down */}
-      <div className="flex flex-col items-center px-4 md:hidden w-full mb-6">
-        {/* Reset button */}
-        <button
-          onClick={generateBoard}
-          className="control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse mb-4" {/* Added mb-4 for spacing */}
-        >
-          {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
-        </button>
+      {/* Mobile-only Reset button - Absolutely positioned */}
+      <button
+        onClick={generateBoard}
+        className="absolute bottom-4 left-4 control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse md:hidden"
+      >
+        {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
+      </button>
 
-        {/* Directional buttons */}
-        <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40">
+      {/* Mobile-only directional buttons - Absolutely positioned */}
+      <div className="absolute bottom-4 right-4 md:hidden">
+        <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40"> {/* Changed to grid-rows-2 */}
           {/* Row 1 */}
           <div></div> {/* Empty block 1 */}
           <button onClick={() => movePlayer('up')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↑</button> {/* Block 2: Up */}
@@ -623,7 +621,7 @@ Both projects involved end-to-end development, from requirements gathering to de
             <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
             <ol className="timeline-list">
               {timelineItems.map((item, i) => (
-                <li key={i} className="timeline-item">
+                <li className="timeline-item" key={i}>
                   <span className="timeline-dot">{i + 1}</span>
                   <div className="flex-1">
                     <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
