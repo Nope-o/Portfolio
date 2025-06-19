@@ -1,0 +1,454 @@
+body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e293b 0%, #334155 60%, #f1f5f9 100%);}
+.logo-frame {
+  background: #0f172a;
+  padding: 4px 12px;
+  border-radius: 16px 6px 16px 6px;
+  box-shadow: 0 0 14px #0f172aaa;
+  display: inline-block;
+  animation: logoPulse 2.2s infinite alternate;
+  border: 2.5px solid #fff;
+}
+@keyframes logoPulse {
+  0% { box-shadow: 0 0 14px #0f172abb, 0 0 0 0 #0f172a60; }
+  100% { box-shadow: 0 0 40px 1px #0f172add, 0 0 0 4px #3341553d; }
+}
+.logo-text {
+  font-family: 'Pacifico', 'Orbitron', 'Inter', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  font-weight: 400;
+  text-shadow: 0 2px 8px #33415599;
+  color: #fff;
+  transition: letter-spacing 0.3s;
+  position: relative;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  text-fill-color: unset !important;
+}
+.logo-frame:hover .logo-text { letter-spacing: 4px; }
+.about-bg {
+  background: linear-gradient(120deg, #1e293b 60%, #0f172a 100%);
+}
+.about-photo-bg {
+  background: linear-gradient(135deg, #0f172a 70%, #334155 100%);
+  border-radius: 9999px;
+  box-shadow: 0 6px 32px #0f172a99;
+  padding: 8px;
+  display: inline-block;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.about-photo-bg:hover {
+  box-shadow: 0 12px 40px #0f172acc;
+  transform: scale(1.04);
+}
+.about-main-title {
+  color: #f8fafc;
+  font-weight: 800;
+}
+.about-main-title span { color: #f8fafc; }
+.about-strong { color: #38bdf8; font-weight: 600; }
+.about-value { color: #f1f5f9; }
+.nav-link { position: relative; transition: color 0.2s;}
+.nav-link .nav-underline {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 20%; right: 20%; bottom: 0.1em; height: 3px;
+  background: #0f172a;
+  border-radius: 2px;
+  opacity: 0; transform: scaleX(0);
+  transition: all 0.3s cubic-bezier(.4,0,.2,1); /* Adjusted duration */
+}
+.nav-link.active, .nav-link:hover { color: #0f172a !important; }
+.nav-link.active .nav-underline, .nav-link:hover .nav-underline {
+  opacity: 1; transform: scaleX(1);
+}
+.nav-link.active { font-weight: 700; }
+
+/* Base header styles (default, detailed view) */
+/* The header transition properties are defined here for both expanded and compact states */
+header {
+  transition: all 0.3s ease-in-out; /* Smooth transition for height, padding, shadow */
+  will-change: height, padding, box-shadow; /* Hint to browser for optimization */
+}
+
+/* Desktop-specific styles for the header (expanded state is default) */
+@media (min-width: 769px) { /* Applies to screens larger than 768px */
+  .header-expanded .logo-text {
+    font-size: 1.4rem; /* Ensure original size on desktop */
+    will-change: font-size, letter-spacing;
+  }
+}
+
+/* Mobile-specific styles for the header */
+@media (max-width: 768px) {
+  /* Default mobile (expanded) state for .logo-text */
+  .logo-text {
+    font-size: 1rem; /* Smaller font for mobile to fit better */
+    will-change: font-size, letter-spacing;
+  }
+
+  /* Default mobile (expanded) state for nav links */
+  .nav-link {
+    width: 100%;
+    font-size: 1.1rem;
+    will-change: font-size, padding;
+  }
+  .nav-link .nav-underline {
+    left: 30%;
+    right: 30%;
+    height: 4px;
+  }
+
+  /* Compact header state when scrolled down for mobile */
+  .header-compact {
+    padding-top: 0.5rem; /* Reduce padding to make it smaller */
+    padding-bottom: 0.5rem;
+  }
+
+  .header-compact .logo-frame {
+    /* Make logo frame a square box */
+    padding: 4px; /* Adjust padding for square look */
+    border-radius: 8px; /* Square shape */
+    height: 40px; /* Fixed height for consistent compact size */
+    width: 40px; /* Fixed width for consistent compact size */
+    display: flex; /* Use flexbox for centering image within the box */
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    margin-right: 0.5rem; /* Small margin to right of logo, between logo and tabs */
+    box-shadow: 0 0 10px #0f172a60; /* Adjust compact shadow if desired */
+    will-change: transform, padding, border-radius, box-shadow;
+  }
+
+  .header-compact .logo-frame img {
+    height: 28px; /* Adjust image size within the compact box */
+    width: 28px;
+    margin: 0; /* Remove any existing margins on the image */
+  }
+
+  .header-compact .logo-text {
+    display: none; /* Hide the name when compact */
+  }
+
+  .header-compact .container {
+    /* Change container to flex-row to put logo and nav side-by-side */
+    flex-direction: row;
+    justify-content: space-between; /* Space out logo and nav */
+    align-items: center; /* Vertically align them */
+  }
+
+  .header-compact nav {
+    /* Navigation should be visible and take remaining space */
+    display: block;
+    width: auto; /* Allow nav to take only necessary width */
+  }
+
+  .header-compact nav ul {
+    /* Align tabs to the right within the compact nav */
+    justify-content: flex-end;
+    gap: 0.25rem; /* Reduce gap between tabs to fit more */
+  }
+
+  .header-compact .nav-link {
+    font-size: 0.85rem; /* Increased font size for tabs when compact */
+    padding: 0.3rem 0.6rem; /* Increased padding for tabs when compact */
+    will-change: font-size, padding;
+  }
+  .header-compact .nav-link .nav-underline {
+    height: 2px; /* Smaller underline */
+    left: 10%;
+    right: 10%;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .about-flex-mobile {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .about-photo-mobile {
+    margin-bottom: 1.2rem !important;
+    margin-top: 0.1rem !important;
+  }
+  .about-text-mobile {
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100%;
+  }
+}
+.timeline-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #2628a3, #0a2449 90%);
+  color: white;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px #6366f18a;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  max-width: 2.5rem;
+  max-height: 2.5rem;
+  z-index: 1;
+  border: 3px solid #fff;
+  position: relative;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+@media (min-width: 641px) {
+  .timeline-list { border-left: 2px solid #c0cbf5; margin-left: 1.75rem; padding-left: 2.25rem;}
+  .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -2.6rem;
+    top: 0;
+    margin-bottom: 0;
+    margin-top: 0.16rem;
+  }
+  .timeline-content {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px #6366f113;
+    padding: 1rem 1.5rem;
+    margin-left: 0;
+    min-width: 0;
+    flex: 1;
+    cursor: pointer;
+    transition: background 0.4s, box-shadow 0.3s;
+    position: relative; /* Added for absolute positioning of new arrow */
+  }
+  .timeline-content:hover {
+    background: #eef2ff;
+    box-shadow: 0 6px 32px #6366f124;
+  }
+  .timeline-details {
+    background: #eef2ff;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    margin-top: 0.75rem;
+    margin-left: 0;
+    flex: 1;
+    font-size: 0.95rem;
+    color: #334155;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s, transform 0.4s; /* Adjusted duration */
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+    will-change: max-height, opacity, transform;
+  }
+  .timeline-details.open {
+    max-height: 1000px; /* Changed from max-content to a fixed height for smoother transition */
+    margin-left: 20px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 640px) {
+  .timeline-list { border-left: 0; margin-left: 0; padding-left: 0;}
+  .timeline-item { display: block; margin-bottom: 2.5rem;}
+  .timeline-dot { margin: 0 auto 0.6rem auto; position: static;}
+  .timeline-content {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px #6366f113;
+    padding: 1rem 1rem;
+    margin-left: 0;
+    margin-top: 0;
+    cursor: pointer;
+    transition: background 0.4s, box-shadow 0.3s;
+    position: relative; /* Added for absolute positioning of new arrow */
+  }
+  .timeline-content:hover {
+    background: #eef2ff;
+    box-shadow: 0 6px 32px #6366f124;
+  }
+  .timeline-details {
+    background: #eef2ff;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: #334155;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s, transform 0.4s; /* Adjusted duration */
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+    will-change: max-height, opacity, transform;
+  }
+  .timeline-details.open {
+    max-height: 1000px; /* Changed from max-content to a fixed height for smoother transition */
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.pulse { animation: buttonPulse 2s infinite;}
+@keyframes buttonPulse { 0%{box-shadow:0 0 0 0 #33415599;}70%{box-shadow:0 0 0 10px #0f172a00;}100%{box-shadow:0 0 0 0 #33415599;} }
+/* Animation for section in (default for initial load and desktop clicks) */
+.animate-section-in {
+  animation: sectionIn 0.45s cubic-bezier(.53,.06,.49,.96);
+}
+@keyframes sectionIn {
+  0% { opacity: 0; transform: translateY(40px) scale(.98);}
+  80% { opacity: 1; transform: translateY(-7px) scale(1.005);}
+  100% { opacity: 1; transform: translateY(0) scale(1);}
+}
+/* Card float-in animation */
+.card-float-in {
+  opacity: 0;
+  transform: translateY(32px) scale(.97);
+  animation: cardFloatIn 0.77s cubic-bezier(.53,.06,.49,.96) forwards;
+}
+.card-float-in:nth-child(1) { animation-delay: 0.05s;}
+.card-float-in:nth-child(2) { animation-delay: 0.09s;}
+.card-float-in:nth-child(3) { animation-delay: 0.14s;}
+.card-float-in:nth-child(4) { animation-delay: 0.19s;}
+.card-float-in:nth-child(5) { animation-delay: 0.23s;}
+@keyframes cardFloatIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+/* New animation for the indicator arrow */
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+.animate-bounce-slow {
+  animation: bounceSlow 1.5s infinite;
+}
+/* Animation for the contact emoji */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+}
+
+/* New swipe animations */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+/* Pathfinder Game Specific Styles */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-size, 7), 1fr); /* Default 7 columns */
+    grid-template-rows: repeat(var(--grid-size, 7), 1fr); /* Default 7 rows */
+    width: 350px; /* Fixed width for the grid */
+    height: 350px; /* Fixed height for the grid */
+    border: 3px solid #334155;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    background-color: #e2e8f0; /* Light background for cells */
+}
+
+.game-row {
+    display: contents; /* Allows cells to directly align with grid columns */
+}
+
+.game-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cbd5e1; /* Subtle cell borders */
+    font-size: 1.5rem; /* Larger icons for clarity */
+    transition: background-color 0.2s ease-out;
+    user-select: none; /* Prevent text selection */
+}
+
+.player-cell {
+    background-color: #93c5fd; /* Light blue for player */
+    position: relative;
+    z-index: 2;
+    animation: pulseGlow 1.5s infinite alternate; /* Subtle pulse for player */
+}
+
+.start-cell {
+    background-color: #d1fae5; /* Light green for start */
+    font-weight: bold;
+}
+
+.end-cell {
+    background-color: #fecaca; /* Light red for end */
+    font-weight: bold;
+}
+
+.obstacle-cell {
+    background-color: #64748b; /* Darker gray for obstacles */
+    color: white;
+}
+
+.game-message {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+.won-message {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.lost-message {
+    background-color: #fecaca;
+    color: #b91c1c;
+}
+
+/* Animations for game elements */
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 #93c5fd; }
+    100% { box-shadow: 0 0 0 10px rgba(147, 197, 253, 0); }
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 640px) {
+    .game-grid {
+        width: 300px; /* Smaller grid on mobile */
+        height: 300px;
+        font-size: 1.2rem; /* Adjust icon size */
+    }
+}
