@@ -381,8 +381,12 @@
                                 const playerEmoji = '🚶‍♂️'; // Always the male character
 
                                 return (
-                                    <div key={cIdx} className={`${cellClass} ${isPlayer && playerOrientation === 'left' ? 'player-face-left' : ''}`}>
-                                        {isPlayer ? playerEmoji : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
+                                    <div key={cIdx} className={`${cellClass}`}>
+                                        {isPlayer ? (
+                                            <span className={`${playerOrientation === 'left' ? 'player-face-left' : ''}`}>
+                                                {playerEmoji}
+                                            </span>
+                                        ) : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
                                     </div>
                                 );
                             })}
@@ -406,6 +410,21 @@
                 >
                     {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
                 </button>
+
+                {/* Mobile Controls (visible only on small screens) */}
+                <div className="md:hidden mt-6 flex flex-col items-center">
+                    <div className="grid grid-cols-3 gap-2 w-48">
+                        <div className="col-start-2">
+                            <button onClick={() => movePlayer('up')} className="control-button bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-xl w-full">↑</button>
+                        </div>
+                        <button onClick={() => movePlayer('left')} className="control-button bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-xl">←</button>
+                        <div className="opacity-0"></div> {/* Placeholder for grid alignment */}
+                        <button onClick={() => movePlayer('right')} className="control-button bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-xl">→</button>
+                        <div className="col-start-2">
+                            <button onClick={() => movePlayer('down')} className="control-button bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-xl w-full">↓</button>
+                        </div>
+                    </div>
+                </div>
             </section>
         );
     }
@@ -420,21 +439,25 @@
             <p className="text-xl text-gray-700 mt-2">The path to knowledge is now open.</p>
             <span className="text-6xl animate-pulse-emoji">🎉</span>
           </div>
+          {/* Firecracker effects */}
+          <div className="firecracker firecracker-1"></div>
+          <div className="firecracker firecracker-2"></div>
+          <div className="firecracker firecracker-3"></div>
+          <div className="firecracker firecracker-4"></div>
+          <div className="firecracker firecracker-5"></div>
         </div>
       );
     }
 
     // Journey Component - now conditionally renders game or timeline
-    function Journey() {
+    function Journey({ setAppWinAnimation }) { // Receive setAppWinAnimation prop
       const [showDetails, setShowDetails] = React.useState({});
       // New state to control whether the game or the journey timeline is shown
       const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
-      const [showWinAnimation, setShowWinAnimation] = React.useState(false); // State for win animation
 
       // Reset gameWon state and win animation state when Journey component mounts
       React.useEffect(() => {
         setGameWon(false);
-        setShowWinAnimation(false);
       }, []); // Empty dependency array means this runs once on mount
 
       const toggleDetails = (index) => {
@@ -445,9 +468,9 @@
       };
 
       const handleGameWin = () => {
-        setShowWinAnimation(true); // Show the animation
+        setAppWinAnimation(true); // Show the full-page animation
         setTimeout(() => {
-          setShowWinAnimation(false); // Hide animation after some time
+          setAppWinAnimation(false); // Hide animation after some time
           setGameWon(true); // Then reveal the journey
         }, 2000); // 2 seconds for the animation to play
       };
@@ -505,7 +528,7 @@ Both projects involved end-to-end development, from requirements gathering to de
         <section className="bg-gradient-to-br from-indigo-50/70 via-blue-50/70 to-white p-7 rounded-3xl shadow-2xl mb-10">
           <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">My Life Journey &amp; Experiences</h2>
           
-          {showWinAnimation && <WinAnimationOverlay />} {/* Render animation if active */}
+          {/* WinAnimationOverlay is now handled by the App component */}
 
           {!gameWon ? (
             // Render the game if not won yet
@@ -831,6 +854,9 @@ Both projects involved end-to-end development, from requirements gathering to de
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
       // New state for controlling animation direction
       const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
+      // New state for controlling full-page win animation
+      const [showFullPageWinAnimation, setShowFullPageWinAnimation] = React.useState(false);
+
 
       React.useEffect(() => {
         const handleResize = () => {
@@ -895,7 +921,7 @@ Both projects involved end-to-end development, from requirements gathering to de
       // Map of components for easier rendering
       const components = {
         about: <About showSection={setActiveTab} />,
-        journey: <Journey />, // Journey component now handles the game logic
+        journey: <Journey setAppWinAnimation={setShowFullPageWinAnimation} />, // Pass the new prop
         resume: <Resume />,
         contact: <Contact />,
         privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
@@ -919,6 +945,7 @@ Both projects involved end-to-end development, from requirements gathering to de
             <span className="mx-2">|</span>
             <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
           </footer>
+          {showFullPageWinAnimation && <WinAnimationOverlay />} {/* Render full-page animation here */}
         </>
       );
     }
