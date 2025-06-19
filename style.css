@@ -364,29 +364,6 @@ header {
 .slide-in-right {
   animation: slideInRight 0.5s ease-out forwards;
 }
-@media (max-width: 640px) {
-    .game-grid {
-        width: 300px;
-        height: 300px;
-        font-size: 1.2rem;
-    }
-
-    /* New styles for gaming buttons on mobile */
-    .game-buttons { /* Assuming your buttons are within a container with this class */
-        margin-top: 30px; /* Increase this value to move the buttons further down */
-        /* You might also want to adjust alignment or width */
-        display: flex;
-        flex-direction: column; /* Stack buttons vertically if desired */
-        align-items: center; /* Center them horizontally */
-        width: 100%; /* Make the container take full width */
-    }
-
-    .game-action-button { /* Styles for individual buttons if needed */
-        padding: 10px 15px; /* Adjust padding for better touch targets */
-        font-size: 1rem; /* Adjust font size */
-        margin-bottom: 10px; /* Add some space between stacked buttons */
-    }
-}
 
 /* Pathfinder Game Specific Styles */
 .game-grid {
@@ -473,5 +450,20 @@ header {
         width: 300px; /* Smaller grid on mobile */
         height: 300px;
         font-size: 1.2rem; /* Adjust icon size */
+    }
+
+    /* Styles for gaming buttons on mobile */
+    .game-controls { /* Assuming your buttons are within a container with this class */
+        margin-top: 30px; /* Adjust this value to move the buttons further down */
+        display: flex; /* Use flexbox for layout */
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: center; /* Center buttons horizontally */
+        width: 100%; /* Make the container take full width */
+    }
+
+    .game-button { /* Styles for individual buttons if needed */
+        padding: 10px 15px; /* Adjust padding for better touch targets */
+        font-size: 1rem; /* Adjust font size */
+        margin-bottom: 10px; /* Add space between stacked buttons */
     }
 }
