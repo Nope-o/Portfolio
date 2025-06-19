@@ -251,16 +251,6 @@ header {
   margin-bottom: var(--space-sm);
   flex-shrink: 0;
 }
-@keyframes iconPop {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.1) rotate(5deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-
-.timeline-icon-active {
-  animation: iconPop 0.4s ease-in-out;
-}
-
 @media (min-width: 641px) {
   .timeline-list { border-left: 2px solid #c0cbf5; margin-left: 1.75rem; padding-left: 2.25rem;}
   .timeline-item {
