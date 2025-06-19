@@ -299,7 +299,7 @@ function Resume() {
     html2pdf().set(opt).from(element).save();
   }
   return (
-    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative"> {/* Added relative positioning here */}
+    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative resume-section"> {/* Added resume-section class */}
       <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
       {/* Download button moved to top right corner */}
       <div className="absolute top-4 right-4">
@@ -431,10 +431,10 @@ function Contact() {
   }
 
   return (
-    <section className="bg-gradient-to-br from-indigo-50/80 via-blue-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-lg mx-auto">
+    <section className="bg-gradient-to-br from-indigo-50/80 via-blue-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-lg mx-auto contact-section"> {/* Added contact-section class */}
       <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Contact Me</h2>
       <p className="text-center text-gray-700 mb-6 flex items-center justify-center">
-        This isn’t just a form — it’s the start of a good conversation. &nbsp; <span className="text-4xl animate-bounce">😉</span>
+        This isn’t just a form — it’s the start of a good conversation. &nbsp; <span className="text-4xl animate-wiggle">😉</span> {/* Changed bounce to wiggle for contact emoji */}
       </p>
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
@@ -482,7 +482,7 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
   const contactEmail = "contact.madhavkataria@gmail.com"; // Replaced with your contact email
 
   return (
-    <section className="bg-white p-8 rounded-3xl shadow-2xl mb-10 mx-auto max-w-2xl relative"> {/* Added relative for positioning back button */}
+    <section className="bg-white p-8 rounded-3xl shadow-2xl mb-10 mx-auto max-w-2xl relative privacy-section"> {/* Added privacy-section class */}
       {/* Back button */}
       <button
         onClick={() => setActiveTab('about', 'click')} /* Pass 'click' origin */
@@ -560,6 +560,27 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
 }
 
 /**
+ * BackToTopButton Component: Displays a button to scroll to the top of the page.
+ * @param {object} props - Component props.
+ * @param {boolean} props.isVisible - Whether the button should be visible.
+ * @param {function} props.onClick - Function to call when the button is clicked.
+ */
+function BackToTopButton({ isVisible, onClick }) {
+  return (
+    <button
+      className={`back-to-top ${isVisible ? 'show' : ''}`}
+      onClick={onClick}
+      aria-label="Scroll to top"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+  );
+}
+
+
+/**
  * App Component: The main application component that manages tabs and global animations.
  */
 function App() {
@@ -568,6 +589,8 @@ function App() {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   // New state for controlling animation direction
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
+  // State for back to top button visibility
+  const [showBackToTop, setShowBackToTop] = React.useState(false);
 
 
   // Effect to handle window resize for mobile view detection
@@ -575,8 +598,25 @@ function App() {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
+
+    // Handle scroll for back to top button visibility
+    const handleScroll = () => {
+      if (window.scrollY > 300) { // Show button after scrolling 300px
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll);
+    handleResize(); // Initial check
+    handleScroll(); // Initial check
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   // Effect to scroll to top when active tab changes
@@ -637,6 +677,11 @@ function App() {
     }
   };
 
+  // Function to scroll to the top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Map of components for easier rendering
   const components = {
     about: <About showSection={setActiveTab} />,
@@ -664,6 +709,7 @@ function App() {
         <span className="mx-2">|</span>
         <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
       </footer>
+      <BackToTopButton isVisible={showBackToTop} onClick={scrollToTop} />
     </>
   );
 }
