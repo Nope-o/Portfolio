@@ -478,7 +478,7 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
   const effectiveDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const yourName = "Madhav Kataria"; // Replaced with your name
   const yourWebsiteName = "Madhav Kataria - Personal Website"; // Replaced with your website name
-  const yourDomain = "madhav-kataria.site"; // Replaced with your actual domain
+  const yourDomain = "www.madhav-kataria.site"; // Replaced with your actual domain
   const contactEmail = "contact.madhavkataria@gmail.com"; // Replaced with your contact email
 
   return (
@@ -508,7 +508,7 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
       <p className="text-gray-700 mb-4">
         When you visit our Site, we may automatically collect certain information about your visit, including your IP address. This is done through basic scripts and is used solely for analytics or security purposes.
       </p>
-      <p className="text-700 mb-4">We do not collect:</p>
+      <p className="text-700 mb-4">We <strong>do not</strong> collect:</p>
       <ul className="list-disc list-inside text-gray-700 mb-4 pl-4">
         <li>Personal identifiers like your name or email address.</li>
         <li>Any sensitive data.</li>
@@ -525,21 +525,21 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
         <li>Perform basic usage analytics.</li>
       </ul>
       <p className="text-gray-700 mb-4">
-        This information is not shared with third parties and is only accessible to us.
+        This information <strong>is not</strong> shared with third parties and is only accessible to us.
       </p>
 
       <div className="border-t border-gray-300 my-6"></div>
 
       <h3 className="text-2xl font-bold text-gray-800 mb-4">3. Cookies and Tracking</h3>
       <p className="text-gray-700 mb-4">
-        We do not use cookies or similar tracking technologies on this website. Your device does not store any data from our site beyond standard browser caching.
+        We <strong>do not</strong> use cookies or similar tracking technologies on this website. Your device <strong>does not</strong> store any data from our site beyond standard browser caching.
       </p>
 
       <div className="border-t border-gray-300 my-6"></div>
 
       <h3 className="text-2xl font-bold text-gray-800 mb-4">4. Data Sharing</h3>
       <p className="text-700 mb-4">
-        We do not share, sell, or rent your data to anyone. The information is kept secure and used strictly for internal, non-commercial purposes.
+        We <strong>do not</strong> share, sell, or rent your data to anyone. The information is kept secure and used strictly for internal, non-commercial purposes.
       </p>
 
       <div className="border-t border-gray-300 my-6"></div>
