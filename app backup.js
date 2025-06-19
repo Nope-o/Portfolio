@@ -173,6 +173,46 @@ function About({ showSection }) {
   );
 }
 
+// Initialize Tone.js instruments for sound effects
+const winSynth = new Tone.PolySynth(Tone.Synth, {
+  envelope: {
+    attack: 0.02,
+    decay: 0.1,
+    sustain: 0.1,
+    release: 0.5,
+  },
+}).toDestination();
+
+const loseSynth = new Tone.NoiseSynth({
+  envelope: {
+    attack: 0.01,
+    decay: 0.2,
+    sustain: 0,
+    release: 0.3,
+  },
+}).toDestination();
+
+// Function to play a winning sound
+function playWinSound() {
+  // Ensure Tone.js is started (required for sound to play)
+  if (Tone.context.state !== 'running') {
+    Tone.start();
+  }
+  // Play a triumphant arpeggio
+  winSynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n");
+}
+
+// Function to play a losing sound
+function playLoseSound() {
+  // Ensure Tone.js is started
+  if (Tone.context.state !== 'running') {
+    Tone.start();
+  }
+  // Play a short, discordant noise
+  loseSynth.triggerAttackRelease("4n");
+}
+
+
 /**
  * PathfinderGame Component: Implements a simple grid-based pathfinding game.
  * Players navigate a grid, avoiding obstacles to reach a destination.
@@ -223,6 +263,7 @@ function PathfinderGame({ onGameWin }) {
       // Check for obstacle
       if (boardRef.current[newRow][newCol] === 'X') {
         setGameStatus('lost');
+        playLoseSound(); // Play lose sound when hitting obstacle
       } else {
         setPlayerPos({ row: newRow, col: newCol });
         setPlayerOrientation(currentOrientation); // Update player orientation
@@ -301,6 +342,7 @@ function PathfinderGame({ onGameWin }) {
   React.useEffect(() => {
     if (isBoardInitialized && playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
       setGameStatus('won');
+      playWinSound(); // Play win sound when reaching destination
       onGameWin();
     }
   }, [playerPos, endPos, gameStatus, onGameWin, isBoardInitialized]);
