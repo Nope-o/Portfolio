@@ -451,25 +451,4 @@ header {
         height: 300px;
         font-size: 1.2rem; /* Adjust icon size */
     }
-
-    /* Styles for gaming buttons on mobile */
-    .game-controls { /* Assuming your buttons are within a container with this class */
-        margin-top: 70px; /* Increased this value to move the buttons further down */
-        display: flex; /* Use flexbox for layout */
-        flex-direction: column; /* Stack buttons vertically */
-        align-items: center; /* Center buttons horizontally */
-        width: 100%; /* Make the container take full width */
-    }
-
-    .game-button { /* Styles for individual directional buttons */
-        padding: 10px 15px; /* Adjust padding for better touch targets */
-        font-size: 1rem; /* Adjust font size */
-        margin-bottom: 10px; /* Add space between stacked buttons */
-    }
-
-    /* Specific style for smaller game buttons (Reset, Try Again) */
-    .small-game-button {
-        font-size: 0.85rem; /* Smaller font size for these buttons */
-        padding: 8px 12px; /* Slightly smaller padding */
-    }
 }
