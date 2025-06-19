@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Madhav Kataria - Personal Website</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Link to the external CSS file -->
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -415,7 +414,7 @@
                             {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
                         </button>
 
-                        <div className="grid grid-cols-3 gap-1 w-32"> {/* Smaller grid for directional buttons */}
+                        <div className="grid grid-cols-3 gap-1 w-40"> {/* Changed w-32 to w-40 for better alignment */}
                             <div className="col-start-2">
                                 <button onClick={() => movePlayer('up')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↑</button>
                             </div>
@@ -529,7 +528,7 @@ Both projects involved end-to-end development, from requirements gathering to de
           title: "Recognized for Automation & Quality",
           time: "Ongoing",
           desc: "Received multiple HCL certificates and client appreciation for automation, reports, highest resolve count and user satisfaction, with work recognized by Ericsson's Global Quality Head.",
-          fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and reports, highest resolve count and user satisfaction, leading to measurable improvements in efficiency and decision-making. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
+          fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
           logoUrl: "ericsson.webp"
         }
       ];
