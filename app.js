@@ -467,17 +467,18 @@ function PathfinderGame({ onGameWin }) {
         </div>
       )}
 
-      {/* Mobile-only Reset button - Absolutely positioned */}
-      <button
-        onClick={generateBoard}
-        className="absolute bottom-4 left-4 control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse md:hidden"
-      >
-        {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
-      </button>
+      {/* Mobile-only controls container */}
+      <div className="absolute bottom-4 left-0 w-full flex justify-between px-4 md:hidden">
+        {/* Reset button */}
+        <button
+          onClick={generateBoard}
+          className="control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse"
+        >
+          {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
+        </button>
 
-      {/* Mobile-only directional buttons - Absolutely positioned */}
-      <div className="absolute bottom-4 right-4 md:hidden">
-        <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40"> {/* Changed to grid-rows-2 */}
+        {/* Directional buttons */}
+        <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40">
           {/* Row 1 */}
           <div></div> {/* Empty block 1 */}
           <button onClick={() => movePlayer('up')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↑</button> {/* Block 2: Up */}
@@ -621,7 +622,7 @@ Both projects involved end-to-end development, from requirements gathering to de
             <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
             <ol className="timeline-list">
               {timelineItems.map((item, i) => (
-                <li className="timeline-item" key={i}>
+                <li key={i} className="timeline-item">
                   <span className="timeline-dot">{i + 1}</span>
                   <div className="flex-1">
                     <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
