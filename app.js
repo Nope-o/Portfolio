@@ -313,7 +313,7 @@ function Resume() {
       <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
         <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure.
-          Having nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, 2+ years as a consultant to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade Dashboards and Reports with <strong>Power BI</strong>.</p>
+          Having nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, 2+ years as a consultant for <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade Dashboards and Reports with <strong>Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Demonstrated ability to analyze complex organizational data within the IT Infrastructure domain, with a consistent focus on identifying patterns, improving processes, and monitoring SLA and KPI performance.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
