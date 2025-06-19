@@ -109,7 +109,7 @@
             >
               <img
                 src="logoo.webp"
-                alt="Madhav Kataria Logo"
+                alt="Madhav Kataria"
                 className="h-6 sm:h-8 w-auto inline-block mr-2 -mt-[0.1rem]"
               />
               <span className={logoTextClasses}>Madhav Kataria</span>
@@ -209,7 +209,7 @@
 
             let newRow = playerPosRef.current.row;
             let newCol = playerPosRef.current.col;
-            let currentOrientation = playerOrientation;
+            let currentOrientation = playerOrientation; // Keep current orientation by default
 
             switch (direction) {
                 case 'up': newRow--; break;
@@ -306,12 +306,18 @@
             }
         }, [playerPos, endPos, gameStatus, onGameWin, isBoardInitialized]);
 
-        // Touch handlers
+        // Touch handlers for the game grid itself
         const handleTouchStart = (e) => {
             if (gameStatusRef.current !== 'playing') return;
             e.preventDefault(); // Prevent scrolling the page
             touchStartX.current = e.touches[0].clientX;
             touchStartY.current = e.touches[0].clientY;
+        };
+
+        const handleTouchMove = (e) => {
+            // Prevent default page scrolling while touching the game board
+            if (gameStatusRef.current !== 'playing') return;
+            e.preventDefault();
         };
 
         const handleTouchEnd = (e) => {
@@ -340,7 +346,7 @@
         // Show loading message until the board is initialized
         if (gameStatus === 'loading' || !isBoardInitialized) {
             return (
-                <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
+                <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '450px' }}>
                     <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
                     <p className="text-gray-700 mb-6">Loading game... Please wait.</p>
                 </section>
@@ -348,12 +354,13 @@
         }
 
         return (
-            <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
+            <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '450px' }}>
                 <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
                 <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
                 <div
                     className="game-grid mb-6"
                     onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                 >
                     {board.map((row, rIdx) => (
@@ -370,12 +377,15 @@
                                 else if (isEnd) cellClass += ' end-cell';
                                 else if (isObstacle) cellClass += ' obstacle-cell';
 
-                                // Render player emoji based on orientation
-                                const playerEmoji = playerOrientation === 'left' ? '🚶‍♀️' : '🚶‍♂️';
+                                const playerEmoji = '🚶‍♂️'; // Always the male character
 
                                 return (
-                                    <div key={cIdx} className={cellClass}>
-                                        {isPlayer ? playerEmoji : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
+                                    <div key={cIdx} className={`${cellClass}`}>
+                                        {isPlayer ? (
+                                            <span className={`${playerOrientation === 'left' ? 'player-face-left' : ''}`}>
+                                                {playerEmoji}
+                                            </span>
+                                        ) : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
                                     </div>
                                 );
                             })}
@@ -393,12 +403,31 @@
                         Oops! You hit an obstacle. Try again!
                     </div>
                 )}
-                <button
-                    onClick={generateBoard}
-                    className="mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-6 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse"
-                >
-                    {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
-                </button>
+                
+                {/* Mobile-only control buttons */}
+                <div className="absolute bottom-4 left-4 md:static md:bottom-auto md:left-auto">
+                    <button
+                        onClick={generateBoard}
+                        className="control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse"
+                    >
+                        {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
+                    </button>
+                </div>
+
+                <div className="absolute bottom-4 right-4 md:hidden"> {/* Only visible on mobile */}
+                    <div className="grid grid-cols-3 gap-1 w-32"> {/* Smaller grid for directional buttons */}
+                        <div className="col-start-2">
+                            <button onClick={() => movePlayer('up')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↑</button>
+                        </div>
+                        <button onClick={() => movePlayer('left')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg">←</button>
+                        <div className="opacity-0"></div> {/* Placeholder for alignment */}
+                        <button onClick={() => movePlayer('right')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg">→</button>
+                        <div className="col-start-2">
+                            <button onClick={() => movePlayer('down')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↓</button>
+                        </div>
+                    </div>
+                </div>
+
             </section>
         );
     }
@@ -413,21 +442,25 @@
             <p className="text-xl text-gray-700 mt-2">The path to knowledge is now open.</p>
             <span className="text-6xl animate-pulse-emoji">🎉</span>
           </div>
+          {/* Firecracker effects */}
+          <div className="firecracker firecracker-1"></div>
+          <div className="firecracker firecracker-2"></div>
+          <div className="firecracker firecracker-3"></div>
+          <div className="firecracker firecracker-4"></div>
+          <div className="firecracker firecracker-5"></div>
         </div>
       );
     }
 
     // Journey Component - now conditionally renders game or timeline
-    function Journey() {
+    function Journey({ setAppWinAnimation }) { // Receive setAppWinAnimation prop
       const [showDetails, setShowDetails] = React.useState({});
       // New state to control whether the game or the journey timeline is shown
       const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
-      const [showWinAnimation, setShowWinAnimation] = React.useState(false); // State for win animation
 
       // Reset gameWon state and win animation state when Journey component mounts
       React.useEffect(() => {
         setGameWon(false);
-        setShowWinAnimation(false);
       }, []); // Empty dependency array means this runs once on mount
 
       const toggleDetails = (index) => {
@@ -438,9 +471,9 @@
       };
 
       const handleGameWin = () => {
-        setShowWinAnimation(true); // Show the animation
+        setAppWinAnimation(true); // Show the full-page animation
         setTimeout(() => {
-          setShowWinAnimation(false); // Hide animation after some time
+          setAppWinAnimation(false); // Hide animation after some time
           setGameWon(true); // Then reveal the journey
         }, 2000); // 2 seconds for the animation to play
       };
@@ -498,7 +531,7 @@ Both projects involved end-to-end development, from requirements gathering to de
         <section className="bg-gradient-to-br from-indigo-50/70 via-blue-50/70 to-white p-7 rounded-3xl shadow-2xl mb-10">
           <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">My Life Journey &amp; Experiences</h2>
           
-          {showWinAnimation && <WinAnimationOverlay />} {/* Render animation if active */}
+          {/* WinAnimationOverlay is now handled by the App component */}
 
           {!gameWon ? (
             // Render the game if not won yet
@@ -824,6 +857,9 @@ Both projects involved end-to-end development, from requirements gathering to de
       const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
       // New state for controlling animation direction
       const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
+      // New state for controlling full-page win animation
+      const [showFullPageWinAnimation, setShowFullPageWinAnimation] = React.useState(false);
+
 
       React.useEffect(() => {
         const handleResize = () => {
@@ -888,7 +924,7 @@ Both projects involved end-to-end development, from requirements gathering to de
       // Map of components for easier rendering
       const components = {
         about: <About showSection={setActiveTab} />,
-        journey: <Journey />, // Journey component now handles the game logic
+        journey: <Journey setAppWinAnimation={setShowFullPageWinAnimation} />, // Pass the new prop
         resume: <Resume />,
         contact: <Contact />,
         privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
@@ -912,6 +948,7 @@ Both projects involved end-to-end development, from requirements gathering to de
             <span className="mx-2">|</span>
             <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
           </footer>
+          {showFullPageWinAnimation && <WinAnimationOverlay />} {/* Render full-page animation here */}
         </>
       );
     }
