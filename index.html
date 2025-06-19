@@ -109,7 +109,7 @@
             >
               <img
                 src="logoo.webp"
-                alt="Madhav Kataria Logo"
+                alt="Madhav Kataria"
                 className="h-6 sm:h-8 w-auto inline-block mr-2 -mt-[0.1rem]"
               />
               <span className={logoTextClasses}>Madhav Kataria</span>
@@ -209,7 +209,7 @@
 
             let newRow = playerPosRef.current.row;
             let newCol = playerPosRef.current.col;
-            let currentOrientation = playerOrientation;
+            let currentOrientation = playerOrientation; // Keep current orientation by default
 
             switch (direction) {
                 case 'up': newRow--; break;
@@ -314,6 +314,12 @@
             touchStartY.current = e.touches[0].clientY;
         };
 
+        const handleTouchMove = (e) => {
+            // Prevent default page scrolling while touching the game board
+            if (gameStatusRef.current !== 'playing') return;
+            e.preventDefault();
+        };
+
         const handleTouchEnd = (e) => {
             if (gameStatusRef.current !== 'playing') return;
 
@@ -354,6 +360,7 @@
                 <div
                     className="game-grid mb-6"
                     onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove} /* Added touchmove handler */
                     onTouchEnd={handleTouchEnd}
                 >
                     {board.map((row, rIdx) => (
@@ -371,10 +378,10 @@
                                 else if (isObstacle) cellClass += ' obstacle-cell';
 
                                 // Render player emoji based on orientation
-                                const playerEmoji = playerOrientation === 'left' ? '🚶‍♀️' : '🚶‍♂️';
+                                const playerEmoji = '🚶‍♂️'; // Always the male character
 
                                 return (
-                                    <div key={cIdx} className={cellClass}>
+                                    <div key={cIdx} className={`${cellClass} ${isPlayer && playerOrientation === 'left' ? 'player-face-left' : ''}`}>
                                         {isPlayer ? playerEmoji : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
                                     </div>
                                 );
