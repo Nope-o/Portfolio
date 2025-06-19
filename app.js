@@ -468,7 +468,7 @@ function PathfinderGame({ onGameWin }) {
       )}
 
       {/* Mobile-only controls container */}
-      <div className="absolute bottom-50 left-0 w-full flex justify-between px-4 md:hidden">
+      <div className="absolute bottom-30 left-0 w-full flex justify-between px-4 md:hidden">
         {/* Reset button */}
         <button
           onClick={generateBoard}
