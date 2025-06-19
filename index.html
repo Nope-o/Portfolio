@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link rel="icon" href="logoo.webp" type="image/webp">
 </head>
 <body class="min-h-screen flex flex-col">
@@ -188,6 +188,10 @@
         const [gameStatus, setGameStatus] = React.useState('loading'); // 'loading', 'playing', 'won', 'lost'
         const [isBoardInitialized, setIsBoardInitialized] = React.useState(false); // New state to confirm board is ready
 
+        // Touch state
+        const touchStartX = React.useRef(0);
+        const touchStartY = React.useRef(0);
+
         // Refs to hold the *latest* state values for the event listener (to avoid stale closures)
         const playerPosRef = React.useRef(playerPos);
         const boardRef = React.useRef(board);
@@ -197,6 +201,32 @@
         React.useEffect(() => { playerPosRef.current = playerPos; }, [playerPos]);
         React.useEffect(() => { boardRef.current = board; }, [board]);
         React.useEffect(() => { gameStatusRef.current = gameStatus; }, [gameStatus]);
+
+        // Function to move the player
+        const movePlayer = React.useCallback((direction) => {
+            if (gameStatusRef.current !== 'playing') return;
+
+            let newRow = playerPosRef.current.row;
+            let newCol = playerPosRef.current.col;
+
+            switch (direction) {
+                case 'up': newRow--; break;
+                case 'down': newRow++; break;
+                case 'left': newCol--; break;
+                case 'right': newCol++; break;
+                default: return;
+            }
+
+            // Check boundaries
+            if (newRow >= 0 && newRow < GRID_SIZE && newCol >= 0 && newCol < GRID_SIZE) {
+                // Check for obstacle
+                if (boardRef.current[newRow][newCol] === 'X') {
+                    setGameStatus('lost');
+                } else {
+                    setPlayerPos({ row: newRow, col: newCol });
+                }
+            }
+        }, []);
 
         // Function to generate a random board
         const generateBoard = React.useCallback(() => {
@@ -224,7 +254,7 @@
                 do {
                     r = Math.floor(Math.random() * GRID_SIZE);
                     c = Math.floor(Math.random() * GRID_SIZE);
-                } while (newBoard[r][c] !== ''); // Ensure obstacle is placed on an empty cell
+                } while (newBoard[r][c] !== '' && newBoard[r][c] !== 'S' && newBoard[r][c] !== 'E'); // Ensure obstacle is placed on an empty cell
                 newBoard[r][c] = 'X';
             }
 
@@ -233,40 +263,25 @@
             setBoard(newBoard);
             setGameStatus('playing'); // Set game status to playing only after board is generated
             setIsBoardInitialized(true); // Mark board as initialized
-        }, []); // generateBoard is stable, no dependencies
+        }, []);
 
-        // Effect to initialize board when component mounts or generateBoard changes
+        // Effect to initialize board when component mounts
         React.useEffect(() => {
             generateBoard();
-        }, [generateBoard]); // Dependency ensures this runs when generateBoard is defined (once on mount)
+        }, [generateBoard]); // generateBoard is memoized, so this runs once on mount
 
         // Effect for keyboard event listener
         React.useEffect(() => {
             const handleKeyDown = (e) => {
-                // Only process input if board is initialized and game is playing
                 if (!isBoardInitialized || gameStatusRef.current !== 'playing') {
                     return;
                 }
-
-                let newRow = playerPosRef.current.row; // Use ref for latest player position
-                let newCol = playerPosRef.current.col;
-
                 switch (e.key) {
-                    case 'ArrowUp': newRow--; break;
-                    case 'ArrowDown': newRow++; break;
-                    case 'ArrowLeft': newCol--; break;
-                    case 'ArrowRight': newCol++; break;
-                    default: return; // Ignore other keys
-                }
-
-                // Check boundaries
-                if (newRow >= 0 && newRow < GRID_SIZE && newCol >= 0 && newCol < GRID_SIZE) {
-                    // Check for obstacle
-                    if (boardRef.current[newRow][newCol] === 'X') { // Use ref for latest board
-                        setGameStatus('lost'); // Player hit an obstacle
-                    } else {
-                        setPlayerPos({ row: newRow, col: newCol }); // Update player position
-                    }
+                    case 'ArrowUp': movePlayer('up'); break;
+                    case 'ArrowDown': movePlayer('down'); break;
+                    case 'ArrowLeft': movePlayer('left'); break;
+                    case 'ArrowRight': movePlayer('right'); break;
+                    default: return;
                 }
             };
 
@@ -274,15 +289,45 @@
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
             };
-        }, [isBoardInitialized]); // Depend on isBoardInitialized so listener re-attaches once board is ready
+        }, [isBoardInitialized, movePlayer]); // Depend on isBoardInitialized and memoized movePlayer
 
-        // Effect to check win condition. Runs whenever playerPos, endPos, gameStatus, or isBoardInitialized changes.
+        // Effect to check win condition.
         React.useEffect(() => {
             if (isBoardInitialized && playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
-                setGameStatus('won'); // Set status to won
-                onGameWin(); // Call parent callback
+                setGameStatus('won');
+                onGameWin();
             }
         }, [playerPos, endPos, gameStatus, onGameWin, isBoardInitialized]);
+
+        // Touch handlers
+        const handleTouchStart = (e) => {
+            if (gameStatusRef.current !== 'playing') return;
+            touchStartX.current = e.touches[0].clientX;
+            touchStartY.current = e.touches[0].clientY;
+        };
+
+        const handleTouchEnd = (e) => {
+            if (gameStatusRef.current !== 'playing') return;
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+
+            const dx = touchEndX - touchStartX.current;
+            const dy = touchEndY - touchStartY.current;
+
+            const sensitivity = 30; // Min pixels for a valid swipe
+
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > sensitivity) {
+                // Horizontal swipe
+                if (dx > 0) movePlayer('right');
+                else movePlayer('left');
+            } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > sensitivity) {
+                // Vertical swipe
+                if (dy > 0) movePlayer('down');
+                else movePlayer('up');
+            }
+        };
+
 
         // Show loading message until the board is initialized
         if (gameStatus === 'loading' || !isBoardInitialized) {
@@ -297,8 +342,12 @@
         return (
             <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
                 <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
-                <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** to move!</p>
-                <div className="game-grid mb-6">
+                <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
+                <div
+                    className="game-grid mb-6"
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                >
                     {board.map((row, rIdx) => (
                         <div key={rIdx} className="game-row">
                             {row.map((cell, cIdx) => {
@@ -348,6 +397,11 @@
       const [showDetails, setShowDetails] = React.useState({});
       // New state to control whether the game or the journey timeline is shown
       const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
+
+      // Reset gameWon state when Journey component mounts (i.e., when the tab is navigated to)
+      React.useEffect(() => {
+        setGameWon(false);
+      }, []); // Empty dependency array means this runs once on mount
 
       const toggleDetails = (index) => {
         setShowDetails(prev => ({
