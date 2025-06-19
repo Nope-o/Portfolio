@@ -370,8 +370,9 @@ header {
     display: grid;
     grid-template-columns: repeat(var(--grid-size, 7), 1fr); /* Default 7 columns */
     grid-template-rows: repeat(var(--grid-size, 7), 1fr); /* Default 7 rows */
-    width: 350px; /* Fixed width for the grid */
-    height: 350px; /* Fixed height for the grid */
+    /* Remove fixed width/height and use responsive units */
+    width: min(90vw, 500px); /* Max 500px, but responsive to viewport width */
+    height: min(90vw, 500px); /* Keep aspect ratio with width */
     border: 3px solid #334155;
     border-radius: 12px;
     overflow: hidden;
@@ -388,7 +389,7 @@ header {
     align-items: center;
     justify-content: center;
     border: 1px solid #cbd5e1; /* Subtle cell borders */
-    font-size: 1.5rem; /* Larger icons for clarity */
+    font-size: clamp(0.8rem, 3vw, 2.5rem); /* Responsive font size for icons */
     transition: background-color 0.2s ease-out;
     user-select: none; /* Prevent text selection */
 }
@@ -445,10 +446,11 @@ header {
     to { opacity: 1; transform: scale(1); }
 }
 
-@media (max-width: 640px) {
+/* No need for specific mobile game-grid styles if using responsive units */
+/* @media (max-width: 640px) {
     .game-grid {
-        width: 300px; /* Smaller grid on mobile */
+        width: 300px;
         height: 300px;
-        font-size: 1.2rem; /* Adjust icon size */
+        font-size: 1.2rem;
     }
-}
+} */
