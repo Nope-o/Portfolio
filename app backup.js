@@ -192,6 +192,18 @@ const loseSynth = new Tone.NoiseSynth({
   },
 }).toDestination();
 
+// New: Synth for movement sound
+const moveSynth = new Tone.MembraneSynth({
+  pitchDecay: 0.02,
+  octaves: 2,
+  envelope: {
+    attack: 0.001,
+    decay: 0.1,
+    sustain: 0,
+    release: 0.05,
+  },
+}).toDestination();
+
 // Function to play a winning sound
 function playWinSound() {
   // Ensure Tone.js is started (required for sound to play)
@@ -210,6 +222,16 @@ function playLoseSound() {
   }
   // Play a short, discordant noise
   loseSynth.triggerAttackRelease("4n");
+}
+
+// New: Function to play a movement sound
+function playMoveSound() {
+  // Ensure Tone.js is started
+  if (Tone.context.state !== 'running') {
+    Tone.start();
+  }
+  // Play a subtle percussive sound
+  moveSynth.triggerAttackRelease("C2", "16n");
 }
 
 
@@ -267,6 +289,7 @@ function PathfinderGame({ onGameWin }) {
       } else {
         setPlayerPos({ row: newRow, col: newCol });
         setPlayerOrientation(currentOrientation); // Update player orientation
+        playMoveSound(); // Play move sound on successful movement
       }
     }
   }, [playerOrientation]); // Added playerOrientation as a dependency
