@@ -173,6 +173,68 @@ function About({ showSection }) {
   );
 }
 
+// Initialize Tone.js instruments for sound effects
+const winSynth = new Tone.PolySynth(Tone.Synth, {
+  envelope: {
+    attack: 0.02,
+    decay: 0.1,
+    sustain: 0.1,
+    release: 0.5,
+  },
+}).toDestination();
+
+const loseSynth = new Tone.NoiseSynth({
+  envelope: {
+    attack: 0.01,
+    decay: 0.2,
+    sustain: 0,
+    release: 0.3,
+  },
+}).toDestination();
+
+// New: Synth for movement sound
+const moveSynth = new Tone.MembraneSynth({
+  pitchDecay: 0.02,
+  octaves: 2,
+  envelope: {
+    attack: 0.001,
+    decay: 0.1,
+    sustain: 0,
+    release: 0.05,
+  },
+}).toDestination();
+
+// Function to play a winning sound
+function playWinSound() {
+  // Ensure Tone.js is started (required for sound to play)
+  if (Tone.context.state !== 'running') {
+    Tone.start();
+  }
+  // Play a triumphant arpeggio
+  winSynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n");
+}
+
+// Function to play a losing sound
+function playLoseSound() {
+  // Ensure Tone.js is started
+  if (Tone.context.state !== 'running') {
+    Tone.start();
+  }
+  // Play a short, discordant noise
+  loseSynth.triggerAttackRelease("4n");
+}
+
+// New: Function to play a movement sound
+function playMoveSound() {
+  // Ensure Tone.js is started
+  if (Tone.context.state !== 'running') {
+    Tone.start();
+  }
+  // Play a subtle percussive sound
+  moveSynth.triggerAttackRelease("C2", "16n");
+}
+
+
 /**
  * PathfinderGame Component: Implements a simple grid-based pathfinding game.
  * Players navigate a grid, avoiding obstacles to reach a destination.
@@ -187,10 +249,6 @@ function PathfinderGame({ onGameWin }) {
   const [gameStatus, setGameStatus] = React.useState('loading'); // 'loading', 'playing', 'won', 'lost'
   const [isBoardInitialized, setIsBoardInitialized] = React.useState(false); // New state to confirm board is ready
   const [playerOrientation, setPlayerOrientation] = React.useState('right'); // 'right' or 'left'
-
-  // Touch state for swipe gestures
-  const touchStartX = React.useRef(0);
-  const touchStartY = React.useRef(0);
 
   // Refs to hold the *latest* state values for the event listener (to avoid stale closures)
   const playerPosRef = React.useRef(playerPos);
@@ -223,9 +281,11 @@ function PathfinderGame({ onGameWin }) {
       // Check for obstacle
       if (boardRef.current[newRow][newCol] === 'X') {
         setGameStatus('lost');
+        playLoseSound(); // Play lose sound when hitting obstacle
       } else {
         setPlayerPos({ row: newRow, col: newCol });
         setPlayerOrientation(currentOrientation); // Update player orientation
+        playMoveSound(); // Play move sound on successful movement
       }
     }
   }, [playerOrientation]); // Added playerOrientation as a dependency
@@ -301,50 +361,15 @@ function PathfinderGame({ onGameWin }) {
   React.useEffect(() => {
     if (isBoardInitialized && playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
       setGameStatus('won');
+      playWinSound(); // Play win sound when reaching destination
       onGameWin();
     }
   }, [playerPos, endPos, gameStatus, onGameWin, isBoardInitialized]);
 
-  // Touch handlers for the game grid itself
-  const handleTouchStart = (e) => {
-    if (gameStatusRef.current !== 'playing') return;
-    e.preventDefault(); // Prevent scrolling the page
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e) => {
-    // Prevent default page scrolling while touching the game board
-    if (gameStatusRef.current !== 'playing') return;
-    e.preventDefault();
-  };
-
-  const handleTouchEnd = (e) => {
-    if (gameStatusRef.current !== 'playing') return;
-
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-
-    const dx = touchEndX - touchStartX.current;
-    const dy = touchEndY - touchStartY.current;
-
-    const sensitivity = 30; // Min pixels for a valid swipe
-
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > sensitivity) {
-      // Horizontal swipe
-      if (dx > 0) movePlayer('right');
-      else movePlayer('left');
-    } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > sensitivity) {
-      // Vertical swipe
-      if (dy > 0) movePlayer('down');
-      else movePlayer('up');
-    }
-  };
-
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
-      <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
+      <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center"> {/* Removed minHeight */}
         <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
         <p className="text-gray-700 mb-6">Loading game... Please wait.</p>
       </section>
@@ -354,15 +379,11 @@ function PathfinderGame({ onGameWin }) {
   const playerEmoji = '👻'; // Ghost emoji as the character
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
+    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center"> {/* Removed minHeight */}
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
       <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
 
-      <div className="game-grid mb-6"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <div className="game-grid mb-6">
         {board.map((row, rIdx) => (
           <div key={rIdx} className="game-row">
             {row.map((cell, cIdx) => {
@@ -402,17 +423,19 @@ function PathfinderGame({ onGameWin }) {
         </div>
       )}
 
-      {/* Mobile-only Reset button - Absolutely positioned */}
-      <button
-        onClick={generateBoard}
-        className="absolute bottom-4 left-4 control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse md:hidden"
-      >
-        {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
-      </button>
+      {/* Mobile-only controls container */}
+      {/* Changed to be flex-col and mb-6 to push it further down */}
+      <div className="flex flex-col items-center px-4 md:hidden w-full mb-6">
+        {/* Reset button */}
+        <button
+          onClick={generateBoard}
+          className="control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse mb-4" {/* Added mb-4 for spacing */}
+        >
+          {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
+        </button>
 
-      {/* Mobile-only directional buttons - Absolutely positioned */}
-      <div className="absolute bottom-4 right-4 md:hidden">
-        <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40"> {/* Changed to grid-rows-2 */}
+        {/* Directional buttons */}
+        <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40">
           {/* Row 1 */}
           <div></div> {/* Empty block 1 */}
           <button onClick={() => movePlayer('up')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↑</button> {/* Block 2: Up */}
@@ -556,7 +579,7 @@ Both projects involved end-to-end development, from requirements gathering to de
             <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
             <ol className="timeline-list">
               {timelineItems.map((item, i) => (
-                <li className="timeline-item" key={i}>
+                <li key={i} className="timeline-item">
                   <span className="timeline-dot">{i + 1}</span>
                   <div className="flex-1">
                     <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
@@ -877,7 +900,6 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
  */
 function App() {
   const [activeTab, setActiveTabState] = React.useState('about');
-  const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   // New state for controlling animation direction
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
@@ -903,12 +925,12 @@ function App() {
    * @param {string} origin - The origin of the tab change ('click' or 'swipe').
    */
   const setActiveTab = (tabId, origin = 'click') => {
-    const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy'); // 'privacy' not part of swipe navigation
-    const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
-    const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
+    // Swipe navigation for main tabs (excluding privacy)
+    if (origin === 'swipe' && isMobile && tabId !== 'privacy') {
+      const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
+      const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+      const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
 
-    if (origin === 'swipe' && isMobile) {
-      // Determine swipe direction based on index change
       if (newIndex > oldIndex) {
         setTransitionDirection('slide-in-right'); // Swiped left, new content slides in from right
       } else if (newIndex < oldIndex) {
@@ -918,38 +940,6 @@ function App() {
       setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
     }
     setActiveTabState(tabId);
-  };
-
-  // Touch start handler for swipe navigation
-  const handleTouchStart = (e) => {
-    // Only enable swipe if not on privacy policy page and on mobile
-    if (isMobile && activeTab !== 'privacy') {
-      setTouchStartX(e.touches[0].clientX);
-    }
-  };
-
-  // Touch end handler for swipe navigation
-  const handleTouchEnd = (e) => {
-    if (isMobile && activeTab !== 'privacy') {
-      const touchEndX = e.changedTouches[0].clientX;
-      const swipeDistance = touchEndX - touchStartX;
-      const swipeThreshold = 75; // Minimum distance for a swipe
-
-      const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
-      const currentIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
-
-      if (swipeDistance > swipeThreshold) {
-        // Swiped right (to previous tab)
-        if (currentIndex > 0) {
-          setActiveTab(navigableTabs[currentIndex - 1].id, 'swipe');
-        }
-      } else if (swipeDistance < -swipeThreshold) {
-        // Swiped left (to next tab)
-        if (currentIndex < navigableTabs.length - 1) {
-          setActiveTab(navigableTabs[currentIndex + 1].id, 'swipe');
-        }
-      }
-    }
   };
 
   // Map of components for easier rendering
@@ -966,8 +956,6 @@ function App() {
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <main
         className="container mx-auto max-w-3xl px-4 py-8 overflow-hidden" /* Re-added overflow-hidden to main */
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Conditional rendering with animation class and key for re-render */}
         <div key={activeTab} className={transitionDirection}>
