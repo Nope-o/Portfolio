@@ -313,7 +313,7 @@ function Resume() {
       <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
         <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure.
-          Have nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
+          Having nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, 2+ years as a consultant to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade Dashboards and Reports with <strong>Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Demonstrated ability to analyze complex organizational data within the IT Infrastructure domain, with a consistent focus on identifying patterns, improving processes, and monitoring SLA and KPI performance.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
@@ -380,10 +380,10 @@ function Resume() {
             </div>
             <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
             <ul className="list-disc ml-6 text-gray-700">
-              <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
-              <li>Work recognized by the Global Quality and Process head of Ericsson</li>
-              <li>Contributed to drafting useful Knowledge Based Articles (KBA)</li>
-              <li>Represented at State Level for Cloud Computing at Skill India (Bangalore)</li>
+              <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedbacks.</li>
+              <li>Work recognized by the Global Quality and Process Head of Ericsson.</li>
+              <li>Contributed to drafting useful Knowledge Based Articles (KBA).</li>
+              <li>Represented at State Level for cloud computing at Skill India (Bangalore).</li>
             </ul>
           </div>
         </div>
