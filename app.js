@@ -409,7 +409,7 @@ function PathfinderGame({ onGameWin }) {
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
-      <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
+      <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center"> {/* Removed minHeight */}
         <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
         <p className="text-gray-700 mb-6">Loading game... Please wait.</p>
       </section>
@@ -419,7 +419,7 @@ function PathfinderGame({ onGameWin }) {
   const playerEmoji = '👻'; // Ghost emoji as the character
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
+    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center"> {/* Removed minHeight */}
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
       <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
 
@@ -468,11 +468,12 @@ function PathfinderGame({ onGameWin }) {
       )}
 
       {/* Mobile-only controls container */}
-      <div className="absolute bottom-30 left-0 w-full flex justify-between px-4 md:hidden">
+      {/* Changed to be flex-col and mb-6 to push it further down */}
+      <div className="flex flex-col items-center px-4 md:hidden w-full mb-6">
         {/* Reset button */}
         <button
           onClick={generateBoard}
-          className="control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse"
+          className="control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse mb-4" {/* Added mb-4 for spacing */}
         >
           {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
         </button>
