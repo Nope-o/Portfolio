@@ -454,22 +454,22 @@ header {
 
     /* Styles for gaming buttons on mobile */
     .game-controls { /* Assuming your buttons are within a container with this class */
-        margin-top: 50px; /* Increased this value to move the buttons further down */
+        margin-top: 70px; /* Increased this value to move the buttons further down */
         display: flex; /* Use flexbox for layout */
         flex-direction: column; /* Stack buttons vertically */
         align-items: center; /* Center buttons horizontally */
         width: 100%; /* Make the container take full width */
     }
 
-    .game-button { /* Styles for individual buttons if needed */
+    .game-button { /* Styles for individual directional buttons */
         padding: 10px 15px; /* Adjust padding for better touch targets */
         font-size: 1rem; /* Adjust font size */
         margin-bottom: 10px; /* Add space between stacked buttons */
     }
 
-    /* Specific style for the "Play Again" button */
-    .play-again-button { /* **You need to add this class to your "Play Again" button in HTML** */
-        font-size: 0.85rem; /* Smaller font size for this specific button */
+    /* Specific style for smaller game buttons (Reset, Try Again) */
+    .small-game-button {
+        font-size: 0.85rem; /* Smaller font size for these buttons */
         padding: 8px 12px; /* Slightly smaller padding */
     }
 }
