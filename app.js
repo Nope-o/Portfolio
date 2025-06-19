@@ -250,6 +250,10 @@ function PathfinderGame({ onGameWin }) {
   const [isBoardInitialized, setIsBoardInitialized] = React.useState(false); // New state to confirm board is ready
   const [playerOrientation, setPlayerOrientation] = React.useState('right'); // 'right' or 'left'
 
+  // Touch state for swipe gestures
+  const touchStartX = React.useRef(0);
+  const touchStartY = React.useRef(0);
+
   // Refs to hold the *latest* state values for the event listener (to avoid stale closures)
   const playerPosRef = React.useRef(playerPos);
   const boardRef = React.useRef(board);
@@ -366,6 +370,42 @@ function PathfinderGame({ onGameWin }) {
     }
   }, [playerPos, endPos, gameStatus, onGameWin, isBoardInitialized]);
 
+  // Touch handlers for the game grid itself
+  const handleTouchStart = (e) => {
+    if (gameStatusRef.current !== 'playing') return;
+    e.preventDefault(); // Prevent scrolling the page
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e) => {
+    // Prevent default page scrolling while touching the game board
+    if (gameStatusRef.current !== 'playing') return;
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e) => {
+    if (gameStatusRef.current !== 'playing') return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const dx = touchEndX - touchStartX.current;
+    const dy = touchEndY - touchStartY.current;
+
+    const sensitivity = 30; // Min pixels for a valid swipe
+
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > sensitivity) {
+      // Horizontal swipe
+      if (dx > 0) movePlayer('right');
+      else movePlayer('left');
+    } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > sensitivity) {
+      // Vertical swipe
+      if (dy > 0) movePlayer('down');
+      else movePlayer('up');
+    }
+  };
+
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
@@ -383,7 +423,11 @@ function PathfinderGame({ onGameWin }) {
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
       <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
 
-      <div className="game-grid mb-6">
+      <div className="game-grid mb-6"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {board.map((row, rIdx) => (
           <div key={rIdx} className="game-row">
             {row.map((cell, cIdx) => {
@@ -900,6 +944,7 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
  */
 function App() {
   const [activeTab, setActiveTabState] = React.useState('about');
+  const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   // New state for controlling animation direction
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
@@ -925,12 +970,12 @@ function App() {
    * @param {string} origin - The origin of the tab change ('click' or 'swipe').
    */
   const setActiveTab = (tabId, origin = 'click') => {
-    // Swipe navigation for main tabs (excluding privacy)
-    if (origin === 'swipe' && isMobile && tabId !== 'privacy') {
-      const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
-      const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
-      const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
+    const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy'); // 'privacy' not part of swipe navigation
+    const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+    const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
 
+    if (origin === 'swipe' && isMobile) {
+      // Determine swipe direction based on index change
       if (newIndex > oldIndex) {
         setTransitionDirection('slide-in-right'); // Swiped left, new content slides in from right
       } else if (newIndex < oldIndex) {
@@ -940,6 +985,38 @@ function App() {
       setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
     }
     setActiveTabState(tabId);
+  };
+
+  // Touch start handler for swipe navigation
+  const handleTouchStart = (e) => {
+    // Only enable swipe if not on privacy policy page and on mobile
+    if (isMobile && activeTab !== 'privacy') {
+      setTouchStartX(e.touches[0].clientX);
+    }
+  };
+
+  // Touch end handler for swipe navigation
+  const handleTouchEnd = (e) => {
+    if (isMobile && activeTab !== 'privacy') {
+      const touchEndX = e.changedTouches[0].clientX;
+      const swipeDistance = touchEndX - touchStartX;
+      const swipeThreshold = 75; // Minimum distance for a swipe
+
+      const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
+      const currentIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+
+      if (swipeDistance > swipeThreshold) {
+        // Swiped right (to previous tab)
+        if (currentIndex > 0) {
+          setActiveTab(navigableTabs[currentIndex - 1].id, 'swipe');
+        }
+      } else if (swipeDistance < -swipeThreshold) {
+        // Swiped left (to next tab)
+        if (currentIndex < navigableTabs.length - 1) {
+          setActiveTab(navigableTabs[currentIndex + 1].id, 'swipe');
+        }
+      }
+    }
   };
 
   // Map of components for easier rendering
@@ -956,6 +1033,8 @@ function App() {
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <main
         className="container mx-auto max-w-3xl px-4 py-8 overflow-hidden" /* Re-added overflow-hidden to main */
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Conditional rendering with animation class and key for re-render */}
         <div key={activeTab} className={transitionDirection}>
