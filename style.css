@@ -370,7 +370,7 @@ header {
     display: grid;
     grid-template-columns: repeat(var(--grid-size, 7), 1fr); /* Default 7 columns */
     grid-template-rows: repeat(var(--grid-size, 7), 1fr); /* Default 7 rows */
-    /* Remove fixed width/height and use responsive units */
+    /* Removed fixed width/height and using responsive units now */
     width: min(90vw, 500px); /* Max 500px, but responsive to viewport width */
     height: min(90vw, 500px); /* Keep aspect ratio with width */
     border: 3px solid #334155;
