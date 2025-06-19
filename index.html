@@ -187,6 +187,7 @@
         const [endPos, setEndPos] = React.useState({ row: 0, col: 0 });
         const [gameStatus, setGameStatus] = React.useState('loading'); // 'loading', 'playing', 'won', 'lost'
         const [isBoardInitialized, setIsBoardInitialized] = React.useState(false); // New state to confirm board is ready
+        const [playerOrientation, setPlayerOrientation] = React.useState('right'); // 'right' or 'left'
 
         // Touch state
         const touchStartX = React.useRef(0);
@@ -208,12 +209,13 @@
 
             let newRow = playerPosRef.current.row;
             let newCol = playerPosRef.current.col;
+            let currentOrientation = playerOrientation;
 
             switch (direction) {
                 case 'up': newRow--; break;
                 case 'down': newRow++; break;
-                case 'left': newCol--; break;
-                case 'right': newCol++; break;
+                case 'left': newCol--; currentOrientation = 'left'; break;
+                case 'right': newCol++; currentOrientation = 'right'; break;
                 default: return;
             }
 
@@ -224,12 +226,16 @@
                     setGameStatus('lost');
                 } else {
                     setPlayerPos({ row: newRow, col: newCol });
+                    setPlayerOrientation(currentOrientation); // Update player orientation
                 }
             }
-        }, []);
+        }, [playerOrientation]); // Added playerOrientation as a dependency
 
         // Function to generate a random board
         const generateBoard = React.useCallback(() => {
+            setGameStatus('loading'); // Reset status to loading on board generation
+            setIsBoardInitialized(false); // Mark board as not initialized yet
+
             let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
             let startR, startC, endR, endC;
 
@@ -254,7 +260,7 @@
                 do {
                     r = Math.floor(Math.random() * GRID_SIZE);
                     c = Math.floor(Math.random() * GRID_SIZE);
-                } while (newBoard[r][c] !== '' && newBoard[r][c] !== 'S' && newBoard[r][c] !== 'E'); // Ensure obstacle is placed on an empty cell
+                } while (newBoard[r][c] !== ''); // Ensure obstacle is placed on an empty cell
                 newBoard[r][c] = 'X';
             }
 
@@ -263,6 +269,7 @@
             setBoard(newBoard);
             setGameStatus('playing'); // Set game status to playing only after board is generated
             setIsBoardInitialized(true); // Mark board as initialized
+            setPlayerOrientation('right'); // Reset player orientation on new game
         }, []);
 
         // Effect to initialize board when component mounts
@@ -302,6 +309,7 @@
         // Touch handlers
         const handleTouchStart = (e) => {
             if (gameStatusRef.current !== 'playing') return;
+            e.preventDefault(); // Prevent scrolling the page
             touchStartX.current = e.touches[0].clientX;
             touchStartY.current = e.touches[0].clientY;
         };
@@ -334,7 +342,7 @@
             return (
                 <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
                     <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
-                    <p className="text-gray-700 mb-6">Loading game... Please wait or refresh if it takes too long.</p>
+                    <p className="text-gray-700 mb-6">Loading game... Please wait.</p>
                 </section>
             );
         }
@@ -362,9 +370,12 @@
                                 else if (isEnd) cellClass += ' end-cell';
                                 else if (isObstacle) cellClass += ' obstacle-cell';
 
+                                // Render player emoji based on orientation
+                                const playerEmoji = playerOrientation === 'left' ? '🚶‍♀️' : '🚶‍♂️';
+
                                 return (
                                     <div key={cIdx} className={cellClass}>
-                                        {isPlayer ? '🚶‍♂️' : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
+                                        {isPlayer ? playerEmoji : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
                                     </div>
                                 );
                             })}
@@ -392,15 +403,31 @@
         );
     }
 
+    // New Win Animation Overlay Component
+    function WinAnimationOverlay() {
+      return (
+        <div className="win-overlay-container">
+          <div className="win-message-box animate-win-reveal">
+            <span className="text-6xl animate-pulse-emoji">🎉</span>
+            <h3 className="text-4xl font-extrabold text-blue-900 mt-4">You Won!</h3>
+            <p className="text-xl text-gray-700 mt-2">The path to knowledge is now open.</p>
+            <span className="text-6xl animate-pulse-emoji">🎉</span>
+          </div>
+        </div>
+      );
+    }
+
     // Journey Component - now conditionally renders game or timeline
     function Journey() {
       const [showDetails, setShowDetails] = React.useState({});
       // New state to control whether the game or the journey timeline is shown
       const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
+      const [showWinAnimation, setShowWinAnimation] = React.useState(false); // State for win animation
 
-      // Reset gameWon state when Journey component mounts (i.e., when the tab is navigated to)
+      // Reset gameWon state and win animation state when Journey component mounts
       React.useEffect(() => {
         setGameWon(false);
+        setShowWinAnimation(false);
       }, []); // Empty dependency array means this runs once on mount
 
       const toggleDetails = (index) => {
@@ -411,7 +438,11 @@
       };
 
       const handleGameWin = () => {
-        setGameWon(true);
+        setShowWinAnimation(true); // Show the animation
+        setTimeout(() => {
+          setShowWinAnimation(false); // Hide animation after some time
+          setGameWon(true); // Then reveal the journey
+        }, 2000); // 2 seconds for the animation to play
       };
 
       const timelineItems = [
@@ -467,6 +498,8 @@ Both projects involved end-to-end development, from requirements gathering to de
         <section className="bg-gradient-to-br from-indigo-50/70 via-blue-50/70 to-white p-7 rounded-3xl shadow-2xl mb-10">
           <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">My Life Journey &amp; Experiences</h2>
           
+          {showWinAnimation && <WinAnimationOverlay />} {/* Render animation if active */}
+
           {!gameWon ? (
             // Render the game if not won yet
             <PathfinderGame onGameWin={handleGameWin} />
