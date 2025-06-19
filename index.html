@@ -185,39 +185,33 @@
         const [board, setBoard] = React.useState([]);
         const [playerPos, setPlayerPos] = React.useState({ row: 0, col: 0 });
         const [endPos, setEndPos] = React.useState({ row: 0, col: 0 });
-        const [gameStatus, setGameStatus] = React.useState('playing'); // playing, won, lost
+        const [gameStatus, setGameStatus] = React.useState('loading'); // 'loading', 'playing', 'won', 'lost'
+        const [isBoardInitialized, setIsBoardInitialized] = React.useState(false); // New state to confirm board is ready
 
-        // Refs to hold the *latest* state values for the event listener
+        // Refs to hold the *latest* state values for the event listener (to avoid stale closures)
         const playerPosRef = React.useRef(playerPos);
         const boardRef = React.useRef(board);
         const gameStatusRef = React.useRef(gameStatus);
 
         // Update refs whenever the state changes
-        React.useEffect(() => {
-            playerPosRef.current = playerPos;
-        }, [playerPos]);
-
-        React.useEffect(() => {
-            boardRef.current = board;
-        }, [board]);
-
-        React.useEffect(() => {
-            gameStatusRef.current = gameStatus;
-        }, [gameStatus]);
+        React.useEffect(() => { playerPosRef.current = playerPos; }, [playerPos]);
+        React.useEffect(() => { boardRef.current = board; }, [board]);
+        React.useEffect(() => { gameStatusRef.current = gameStatus; }, [gameStatus]);
 
         // Function to generate a random board
         const generateBoard = React.useCallback(() => {
             let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
             let startR, startC, endR, endC;
 
+            // Ensure start and end are distinct AND sufficiently far apart
             do {
                 startR = Math.floor(Math.random() * GRID_SIZE);
                 startC = Math.floor(Math.random() * GRID_SIZE);
                 endR = Math.floor(Math.random() * GRID_SIZE);
                 endC = Math.floor(Math.random() * GRID_SIZE);
             } while (
-                (startR === endR && startC === endC) || // Ensure start and end are different
-                (Math.abs(startR - endR) + Math.abs(startC - endC) < GRID_SIZE / 2) // Ensure sufficient distance
+                (startR === endR && startC === endC) || // Ensure start and end are different spots
+                (Math.abs(startR - endR) + Math.abs(startC - endC) < Math.floor(GRID_SIZE / 2)) // Ensure minimum distance
             );
 
             newBoard[startR][startC] = 'S';
@@ -230,22 +224,29 @@
                 do {
                     r = Math.floor(Math.random() * GRID_SIZE);
                     c = Math.floor(Math.random() * GRID_SIZE);
-                } while (newBoard[r][c] !== '' && newBoard[r][c] !== 'S' && newBoard[r][c] !== 'E'); // Avoid placing obstacles on S or E
+                } while (newBoard[r][c] !== ''); // Ensure obstacle is placed on an empty cell
                 newBoard[r][c] = 'X';
             }
 
             setPlayerPos({ row: startR, col: startC });
             setEndPos({ row: endR, col: endC });
             setBoard(newBoard);
-            setGameStatus('playing');
-        }, []); // Empty dependency array: this function itself doesn't need to change
+            setGameStatus('playing'); // Set game status to playing only after board is generated
+            setIsBoardInitialized(true); // Mark board as initialized
+        }, []); // generateBoard is stable, no dependencies
 
-        // Effect for initial board generation and keyboard listener setup
+        // Effect to initialize board when component mounts or generateBoard changes
         React.useEffect(() => {
-            generateBoard(); // Initial board generation when component mounts
+            generateBoard();
+        }, [generateBoard]); // Dependency ensures this runs when generateBoard is defined (once on mount)
 
+        // Effect for keyboard event listener
+        React.useEffect(() => {
             const handleKeyDown = (e) => {
-                if (gameStatusRef.current !== 'playing') return; // Use ref for latest game status
+                // Only process input if board is initialized and game is playing
+                if (!isBoardInitialized || gameStatusRef.current !== 'playing') {
+                    return;
+                }
 
                 let newRow = playerPosRef.current.row; // Use ref for latest player position
                 let newCol = playerPosRef.current.col;
@@ -258,29 +259,40 @@
                     default: return; // Ignore other keys
                 }
 
+                // Check boundaries
                 if (newRow >= 0 && newRow < GRID_SIZE && newCol >= 0 && newCol < GRID_SIZE) {
+                    // Check for obstacle
                     if (boardRef.current[newRow][newCol] === 'X') { // Use ref for latest board
-                        setGameStatus('lost');
+                        setGameStatus('lost'); // Player hit an obstacle
                     } else {
-                        setPlayerPos({ row: newRow, col: newCol }); // Set state directly for re-render
+                        setPlayerPos({ row: newRow, col: newCol }); // Update player position
                     }
                 }
             };
 
             window.addEventListener('keydown', handleKeyDown);
-
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
             };
-        }, [generateBoard]); // Dependency only on generateBoard, which is stable due to useCallback
+        }, [isBoardInitialized]); // Depend on isBoardInitialized so listener re-attaches once board is ready
 
-        // Effect to check win condition, depends on player position and game status
+        // Effect to check win condition. Runs whenever playerPos, endPos, gameStatus, or isBoardInitialized changes.
         React.useEffect(() => {
-            if (playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
-                setGameStatus('won');
-                onGameWin();
+            if (isBoardInitialized && playerPos.row === endPos.row && playerPos.col === endPos.col && gameStatus === 'playing') {
+                setGameStatus('won'); // Set status to won
+                onGameWin(); // Call parent callback
             }
-        }, [playerPos, endPos, onGameWin, gameStatus]);
+        }, [playerPos, endPos, gameStatus, onGameWin, isBoardInitialized]);
+
+        // Show loading message until the board is initialized
+        if (gameStatus === 'loading' || !isBoardInitialized) {
+            return (
+                <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
+                    <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
+                    <p className="text-gray-700 mb-6">Loading game... Please wait or refresh if it takes too long.</p>
+                </section>
+            );
+        }
 
         return (
             <section className="bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center">
