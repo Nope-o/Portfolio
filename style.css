@@ -454,12 +454,13 @@ header {
   color: var(--color-white);
   border: none;
   border-radius: var(--radius-full);
-  padding: 1rem; /* Adjust as needed */
+  padding: var(--space-sm); /* Keep your existing padding */
   cursor: pointer;
+  box-shadow: var(--shadow-md); /* Keep your existing box-shadow */
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-out; /* Ensure all needed transitions are here */
   opacity: 0; /* Hidden by default */
   visibility: hidden; /* Hidden by default */
-  transform: translateY(20px); /* Start slightly below */
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  transform: translateY(var(--space-md)); /* Start slightly below */
 }
 
 .back-to-top.show {
@@ -471,6 +472,12 @@ header {
 .back-to-top.fade-out {
   opacity: 0.3; /* Less visible when faded */
   pointer-events: none; /* Disable clicks when faded */
+}
+
+.back-to-top:hover {
+  background-color: var(--color-medium);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 @keyframes jiggle {
   0% { transform: rotate(0deg); }
