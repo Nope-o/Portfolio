@@ -232,24 +232,21 @@ header {
 
 /* Journey Section (Timeline) */
 .timeline-dot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  background: linear-gradient(135deg, var(--color-button-gradient-start), var(--color-button-gradient-end) 90%);
-  color: var(--color-white);
-  border-radius: var(--radius-full);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.54); /* Using rgba directly as specific blue */
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  max-width: 2.5rem;
-  max-height: 2.5rem;
-  z-index: 1;
-  border: 3px solid var(--color-white);
-  position: relative;
-  margin-bottom: var(--space-sm);
-  flex-shrink: 0;
+  background: none; /* Remove background */
+  border: none;     /* Remove border */
+  box-shadow: none; /* Remove shadow */
+  padding: 0;
+  margin: 0;
+  min-width: auto;
+  min-height: auto;
+  max-width: 40px;
+  max-height: 40px;
+}
+
+.timeline-dot img.timeline-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 @media (min-width: 641px) {
   .timeline-list { border-left: 2px solid #c0cbf5; margin-left: 1.75rem; padding-left: 2.25rem;}
