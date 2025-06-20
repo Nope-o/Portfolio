@@ -178,14 +178,19 @@ function About({ showSection }) {
  */
 function Journey() {
   const [showDetails, setShowDetails] = React.useState({});
+  // New state to track which icon is animating
+  const [animatingIcon, setAnimatingIcon] = React.useState(null); 
 
   const toggleDetails = (index) => {
+    // Trigger animation
+    setAnimatingIcon(index);
+    setTimeout(() => setAnimatingIcon(null), 300); // Reset animation after its duration
+
     setShowDetails(prev => ({
       ...prev,
-      [index]: !prev[index] // This toggles the state, so clicking an open tab will close it
+      [index]: !prev[index] 
     }));
   };
-
   // Timeline items data
   const timelineItems = [
     {
@@ -253,7 +258,11 @@ Both projects involved end-to-end development, from requirements gathering to de
           {timelineItems.map((item, i) => (
             <li key={i} className="timeline-item">
               <span className="timeline-dot">
-                <img src={item.iconUrl} alt="icon" className="timeline-icon" />
+                <img 
+                  src={item.iconUrl} 
+                  alt="icon" 
+                  className={`timeline-icon ${animatingIcon === i ? 'animate-jiggle' : ''}`} // Apply animation class conditionally
+                />
               </span>
               <div className="flex-1">
                 <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
@@ -265,16 +274,14 @@ Both projects involved end-to-end development, from requirements gathering to de
                   {item.logoUrl && (
                     <img src={item.logoUrl} alt={`${item.title} logo`} className="w-10 h-10 object-contain ml-4 mt-1 flex-shrink-0" onError="this.onerror=null;this.src='https://placehold.co/40x40/f1f5f9/1e293b?text=Logo';" />
                   )}
-                  {/* New indicator arrow at the bottom-right */}
                   {!showDetails[i] && (
-                    <div className="absolute bottom-2 right-2"> {/* Positioned at bottom-right */}
+                    <div className="absolute bottom-2 right-2">
                       <svg className="w-6 h-6 text-gray-400 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7"></path>
                       </svg>
                     </div>
                   )}
                 </div>
-                {/* Added onClick to timeline-details as well */}
                 <div className={`timeline-details mt-2${showDetails[i] ? ' open' : ''}`} onClick={() => toggleDetails(i)}>
                   {showDetails[i] && (
                     <p>{item.fullDesc}</p>
