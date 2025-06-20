@@ -565,10 +565,10 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
  * @param {boolean} props.isVisible - Whether the button should be visible.
  * @param {function} props.onClick - Function to call when the button is clicked.
  */
-function BackToTopButton({ isVisible, onClick }) {
+function BackToTopButton({ isVisible, isFaded, onClick }) {
   return (
     <button
-      className={`back-to-top ${isVisible ? 'show' : ''}`}
+      className={`back-to-top ${isVisible ? 'show' : ''} ${isFaded ? 'fade-out' : ''}`}
       onClick={onClick}
       aria-label="Scroll to top"
     >
@@ -591,6 +591,8 @@ function App() {
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
   // State for back to top button visibility
   const [showBackToTop, setShowBackToTop] = React.useState(false);
+  const [lastInteraction, setLastInteraction] = React.useState(Date.now());
+  const fadeTimeoutRef = React.useRef(null);
 
 
   // Effect to handle window resize for mobile view detection
@@ -618,7 +620,22 @@ function App() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
+  React.useEffect(() => {
+    const handleInteraction = () => {
+      setLastInteraction(Date.now());
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+      }
+    };
+    window.addEventListener('scroll', handleInteraction);
+    window.addEventListener('touchstart', handleInteraction);
+    window.addEventListener('click', handleInteraction);
+    return () => {
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+    };
+  }, []);
   // Effect to scroll to top when active tab changes
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
 
@@ -690,7 +707,7 @@ function App() {
     contact: <Contact />,
     privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
   };
-
+  const isFadedOut = isMobile && showBackToTop && (Date.now() - lastInteraction > 2000);
   return (
     <>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
