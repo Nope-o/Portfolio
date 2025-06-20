@@ -602,9 +602,7 @@ function App() {
   const [activeTab, setActiveTabState] = React.useState('about');
   const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
-  // New state for controlling animation direction
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
-  // State for back to top button visibility
   const [showBackToTop, setShowBackToTop] = React.useState(false);
   const [lastInteraction, setLastInteraction] = React.useState(Date.now());
   const fadeTimeoutRef = React.useRef(null);
@@ -635,6 +633,7 @@ function App() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
   React.useEffect(() => {
     const handleInteraction = () => {
       setLastInteraction(Date.now());
@@ -651,6 +650,7 @@ function App() {
       window.removeEventListener('click', handleInteraction);
     };
   }, []);
+
   // Effect to scroll to top when active tab changes
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
 
@@ -723,6 +723,7 @@ function App() {
     privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
   };
   const isFadedOut = isMobile && showBackToTop && (Date.now() - lastInteraction > 2000);
+
   return (
     <>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -741,7 +742,8 @@ function App() {
         <span className="mx-2">|</span>
         <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
       </footer>
-      <BackToTopButton isVisible={showBackToTop} onClick={scrollToTop} />
+      {/* Pass isFaded prop here */}
+      <BackToTopButton isVisible={showBackToTop} isFaded={isFadedOut} onClick={scrollToTop} />
     </>
   );
 }
