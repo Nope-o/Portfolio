@@ -318,11 +318,17 @@ function Resume() {
       <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
       {/* Download button moved to top right corner */}
       <div className="absolute top-4 right-4">
-        <button onClick={downloadResume} className="text-blue-700 font-semibold text-sm hover:underline flex items-center"> Download <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /> </svg> </button>
+        <button onClick={downloadResume} className="text-blue-700 font-semibold text-sm hover:underline flex items-center">
+          Download
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
       </div>
       <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
-        <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure. Having nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, 2+ years as a consultant for <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade Dashboards and Reports with <strong>Power BI</strong>.</p>
+        <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure.
+          Having nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, 2+ years as a consultant for <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade Dashboards and Reports with <strong>Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Demonstrated ability to analyze complex organizational data within the IT Infrastructure domain, with a consistent focus on identifying patterns, improving processes, and monitoring SLA and KPI performance.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
@@ -330,227 +336,70 @@ function Resume() {
             <ul className="list-disc ml-6 text-gray-700">
               <li>Experience in Developing RPA (Robotic Process Automation) using Microsoft Power Automate Platform</li>
               <li>Experience in Developing Custom Applications via Power Apps Platform to make the process efficient and reduce human errors</li>
-              <li>Experience in Developing industry level Power BI Dashboards & Reports for Data Analysis & Visualization</li>
-              <li>Proficiency in Python, SQL, C Programming, and Oracle Database Management</li>
-              <li>Deep understanding of IT Infrastructure concepts including Data Centers, Servers, Networking, and Cloud Services (AWS)</li>
+              <li>Experience in Developing industry level Power BI Reports and Dashboards</li>
+              <li>Experience in Analyzing and understanding Organizational Data specifically in IT Infra Domain and tracking trends affecting targets (SLAs, KPIs etc)</li>
             </ul>
-          </div>
-          <div>
-            <h3 className="font-bold text-lg text-blue-900 mb-2">Tools & Technologies</h3>
+            <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Certifications</h3>
             <ul className="list-disc ml-6 text-gray-700">
-              <li><strong>RPA/Low-Code:</strong> Microsoft Power Automate, Power Apps, Power BI</li>
-              <li><strong>Cloud Platforms:</strong> Amazon Web Services (AWS)</li>
-              <li><strong>Operating Systems:</strong> Windows Server, Linux (CLI)</li>
-              <li><strong>Databases:</strong> SQL, Oracle</li>
-              <li><strong>Networking:</strong> Cisco VLANs, DHCP, SSH</li>
-              <li><strong>Programming Languages:</strong> Python, C, SQL</li>
-              <li><strong>Others:</strong> Active Directory, RAID, ServiceNow, SharePoint</li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-6">
-          <h3 className="font-bold text-lg text-blue-900 mb-2">Professional Experience</h3>
-          <div className="mb-4">
-            <h4 className="font-semibold text-gray-800">Technical Support Engineer & Automation Specialist</h4>
-            <p className="text-gray-600 text-sm">HCL Technologies | Sept 2023 – Present</p>
-            <ul className="list-disc ml-6 text-gray-700 mt-1">
-              <li>Developed and deployed key automation solutions using <strong>Microsoft Power Platform (Power Apps, Power Automate, Power BI)</strong>, optimizing IT infrastructure processes for Ericsson Global.</li>
-              <li>Created an advanced <strong>Attendance Tracker application</strong> on Power Apps with real-time Power BI analytics, streamlining project resource management and automating data archiving.</li>
-              <li>Designed and implemented a <strong>KBA Review application</strong> to enhance knowledge article quality, featuring structured reviews, AI integration for optimization, and automated dynamic email notifications.</li>
-              <li>Contributed to data-driven decision-making by delivering comprehensive <strong>Power BI reports</strong> for Mondelez EUC and EUC Tech departments, providing valuable insights.</li>
-              <li>Implemented automated scripts for browser cache and cookies management, improving system performance and user experience across client environments.</li>
-            </ul>
-          </div>
-          <div className="mb-4">
-            <h4 className="font-semibold text-gray-800">Technical Support Engineer (Internship)</h4>
-            <p className="text-gray-600 text-sm">HCL Technologies (Consultant for Ericsson Global Organization) | Mar 2023 – Sept 2023</p>
-            <ul className="list-disc ml-6 text-gray-700 mt-1">
-              <li>Provided first and second-line technical support for complex IT issues, achieving a high resolve count and consistently positive user satisfaction.</li>
-              <li>Received official recognition from Ericsson's Global Quality and Process Head for exceptional contributions to support and efficiency.</li>
-              <li>Authored and updated detailed technical knowledge base articles, enhancing self-service capabilities and team efficiency.</li>
-              <li>Participated in the Skill India platform under managerial guidance, demonstrating technical abilities in competitive scenarios.</li>
+              <li>
+                <a href="https://www.credly.com/badges/513343d0-0d83-4761-9916-f6324436d81f/public_url" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Google Cloud Associate Certificate</a>
+              </li>
+              <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria-2316/FBC420B1E155F51?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure Fundamentals</a>
+              </li>
+              <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria/ADFE157B160ACCDB?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure Data Fundamentals</a>
+              </li>
+              <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria/4A3C78C162C56208?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure AI Fundamentals</a>
+              </li>
+              <li>IIT Workshops: AI, Cybersecurity, Machine Learning.</li>
+              <li>Various motivating certificates from HCL-Tech including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc.</li>
+              <li>CBSE Certificate: Full Marks in Information Technologies (2018).</li>
+              <li>Innovation: Certificate for innovation from the govt of india</li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-800">HCL TechBee Scholar (IT Infrastructure Management)</h4>
-            <p className="text-gray-600 text-sm">HCL Technologies | Sept 2022 – Mar 2023</p>
-            <ul className="list-disc ml-6 text-gray-700 mt-1">
-              <li>Completed intensive 6-month training in Data Centre Operations, Linux CLI, networking fundamentals (Cisco VLANs, DHCP), and Windows Server administration (Active Directory, RAID).</li>
-              <li>Gained foundational knowledge and practical skills in AWS cloud services (EC2, S3, VPC, Elastic Beanstalk).</li>
-              <li>Received introductory training in Python, C, SQL, and Oracle, building a versatile programming base.</li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-6">
-          <h3 className="font-bold text-lg text-blue-900 mb-2">Education</h3>
-          <div className="mb-4">
-            <h4 className="font-semibold text-gray-800">Bachelor of Science in Data Science and Artificial Intelligence</h4>
-            <p className="text-gray-600 text-sm">Indian Institute of Technology Guwahati | Expected Graduation: 2027</p>
-          </div>
-        </div>
-        <div className="mt-6">
-          <h3 className="font-bold text-lg text-blue-900 mb-2">Awards & Recognition</h3>
-          <ul className="list-disc ml-6 text-gray-700">
-            <li>Multiple HCL Certificates for Automation, Power Apps, Power BI, and User Satisfaction.</li>
-            <li>Client appreciation and recognition from Ericsson's Global Quality and Process Head.</li>
-            <li>Highest resolve count among peers in technical support.</li>
-            <li>Represented at State Level for Cloud Computing at Skill India, Bangalore.</li>
-            <li>Recognized Performing Artist on All India Radio (Nationally Broadcasted).</li>
-          </ul>
-        </div>
-      </div>
-      <div className="flex justify-center mt-8">
-        <button onClick={downloadResume}
-          className="bg-gradient-to-r from-blue-900 to-sky-950 hover:from-sky-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 pulse"
-        >
-          Download Full Resume
-        </button>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Contact Component: Provides contact information and a contact form.
- */
-function Contact() {
-  const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [status, setStatus] = React.useState(''); // 'sending', 'sent', 'error'
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus('sending');
-
-    try {
-      // Replace with your actual API endpoint for sending emails
-      const response = await fetch('YOUR_EMAIL_API_ENDPOINT', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setStatus('sent');
-        setFormData({ name: '', email: '', subject: '', message: '' }); // Clear form
-      } else {
-        setStatus('error');
-      }
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setStatus('error');
-    }
-  };
-
-  return (
-    <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-white p-7 rounded-3xl shadow-2xl mb-10">
-      <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">Get in Touch!</h2>
-      <p className="text-center text-gray-700 mb-6">Have a project in mind, a question, or just want to say hello? Fill out the form below or connect with me through my social channels!</p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        {/* Contact Form */}
-        <div className="bg-white p-6 rounded-xl shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-[1.005]">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Send a Message</h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="subject" className="block text-gray-700 text-sm font-semibold mb-2">Subject</label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-gray-700 text-sm font-semibold mb-2">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                rows="5"
-                value={formData.message}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105"
-              disabled={status === 'sending'}
-            >
-              {status === 'sending' ? 'Sending...' : 'Send Message'}
-            </button>
-            {status === 'sent' && <p className="text-green-600 mt-2">Message sent successfully!</p>}
-            {status === 'error' && <p className="text-red-600 mt-2">Failed to send message. Please try again later.</p>}
-          </form>
-        </div>
-
-        {/* Contact Info and Socials */}
-        <div className="bg-white p-6 rounded-xl shadow-lg transition-transform duration-300 hover:shadow-xl hover:scale-[1.005]">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">My Details & Socials</h3>
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-gray-800">Email:</h4>
-              <p className="text-blue-600 break-words">madhavkataria.work@gmail.com</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Phone:</h4>
-              <p className="text-gray-700">+91 9779958055</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Connect with me:</h4>
-              <div className="flex space-x-4">
-                <a href="https://linkedin.com/in/madhav-kataria" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-900 transition-colors text-3xl">
-                  <i className="fab fa-linkedin"></i>
-                </a>
-                <a href="https://github.com/madhav-kataria" target="_blank" rel="noopener noreferrer" className="text-gray-800 hover:text-gray-600 transition-colors text-3xl">
-                  <i className="fab fa-github"></i>
-                </a>
-                <a href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600 transition-colors text-3xl">
-                  <i className="fab fa-twitter"></i>
-                </a>
-                <a href="https://wa.me/9779958055" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-700 transition-colors text-3xl">
-                  <i className="fab fa-whatsapp"></i>
-                </a>
+            <h3 className="font-bold text-lg text-blue-900 mb-2">Technical Skills</h3>
+            <div className="mb-4">
+              <div className="font-semibold">Machine Learning &amp; AI</div>
+              <div className="text-gray-600 text-sm mb-1">Good knowledge of training ML models via Python libraries like "pandas", "Scikit-learn", and "NumPy". Building Custom AI bots using Different APIs.</div>
+              <div className="flex flex-wrap gap-2 mb-2">
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Python</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Pandas</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Scikit-learn</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">NumPy</span>
+              </div>
+              <div className="font-semibold">Cloud Computing</div>
+              <div className="text-gray-600 text-sm mb-1">Good knowledge Cloud Computing on platforms like AWS, Azure and GCP (EC2, VPC, AWS Elastic Beanstalk, CloudWatch, EC2 Auto Scaling, Elastic Load Balancing, AWS IAM, LAMBDA, S3 buckets).</div>
+              <div className="flex flex-wrap gap-2 mb-2">
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">AWS</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Azure</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">GCP</span>
+              </div>
+              <div className="font-semibold">Data Centre Operations</div>
+              <div className="text-gray-600 text-sm mb-1">Switching-VLAN, trunking, inter VLAN routing, MLS-SVI, port security, VTP, STP, RSTP. Routing- static, Dynamic, RIP V2, OSPF, DHCP server, SSH, Telnet, CHAP, PAP, Access List.</div>
+              <div className="flex flex-wrap gap-2 mb-2">
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Cisco Packet Tracer</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Switching</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Routing</span>
+              </div>
+              <div className="font-semibold">System Administration</div>
+              <div className="text-gray-600 text-sm mb-1">Good knowledge of troubleshooting Office 365, SharePoints, File systems, Citrix, MFA etc with OS including Linux, Windows and MAC.</div>
+              <div className="flex flex-wrap gap-2 mb-2">
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Office 365</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Linux</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">MacOS</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Windows</span>
               </div>
             </div>
+            <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
+            <ul className="list-disc ml-6 text-gray-700">
+              <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedbacks.</li>
+              <li>Work recognized by the Global Quality and Process Head of Ericsson.</li>
+              <li>Contributed to drafting useful Knowledge Based Articles (KBA).</li>
+              <li>Represented at State Level for cloud computing at Skill India (Bangalore).</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -559,196 +408,313 @@ function Contact() {
 }
 
 /**
- * Privacy Policy Component: Displays the privacy policy.
+ * Contact Component: Provides a contact form and direct contact links.
  */
-function PrivacyPolicy({ setActiveTab }) {
-  const lastActiveTab = React.useRef('about'); // Default to 'about'
+function Contact() {
+  const [sent, setSent] = React.useState(false);
+  const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  // Effect to capture the last active tab before navigating to privacy
-  React.useEffect(() => {
-    // This effect runs on mount and every update.
-    // We only want to capture the previous tab *before* privacy policy is active.
-    // The activeTab prop changes *after* the navigation happens.
-    // A better approach would be to pass the previous tab as a prop or use a more robust routing solution.
-    // For this simple case, we'll assume the back button is the only way to leave privacy,
-    // and it should go to 'about' unless explicitly set otherwise.
-    // We don't have a direct way to know the "previous" tab within this component's render cycle
-    // without more sophisticated state management in the parent App.
-    // So, we'll just set it to 'about' when navigating back.
-  }, []);
+  // Handle form submission
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
+    setSent(false);
+    const form = e.target;
+    const formData = new FormData(form);
 
-  const handleBackToPrevious = () => {
-    setActiveTab(lastActiveTab.current, 'click');
-  };
+    try {
+      const response = await fetch("https://formspree.io/f/myzjynok", {
+        method: "POST",
+        headers: {
+          Accept: "application/json"
+        },
+        body: formData
+      });
+      const data = await response.json();
+      if (data.ok) {
+        setSent(true);
+        form.reset();
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      setError(true);
+    }
+    setLoading(false);
+  }
 
   return (
-    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10">
-      <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Privacy Policy</h2>
-
-      <div className="prose max-w-none text-gray-700 space-y-4">
-        <p>This Privacy Policy describes how Madhav Kataria ("I", "me", "my") collects, uses, and discloses your information when you visit and interact with my personal website (the "Service").</p>
-
-        <h3>1. Information Collection and Use</h3>
-        <p>I do not directly collect any personally identifiable information from visitors to this website. This website is primarily a static portfolio and information hub. I do not use cookies for tracking or analytics.</p>
-
-        <h3>2. Contact Form</h3>
-        <p>If you choose to use the contact form on this website, the information you provide (your name, email address, subject, and message) will be sent directly to my email address (madhavkataria.work@gmail.com). This information is used solely to respond to your inquiry and will not be stored on the website's server or used for marketing purposes. I will not share this information with any third parties.</p>
-
-        <h3>3. Third-Party Services</h3>
-        <p>This website may include links to third-party websites or services (e.g., LinkedIn, GitHub, Twitter, WhatsApp). These third-party services have their own privacy policies, and I am not responsible for their practices. I encourage you to review the privacy policies of any third-party sites you visit.</p>
-        <p>Specifically, this site uses:</p>
-        <ul>
-          <li><strong>Cloudflare Insights:</strong> This service may collect anonymous usage data (e.g., page views, unique visitors) for performance and security monitoring. This data is aggregated and does not identify individual users. You can learn more about Cloudflare's privacy practices <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">here</a>.</li>
-          <li><strong>Font Awesome:</strong> Used for icons. It may make requests to their servers to load icon fonts, which may involve some data collection as per their privacy policy.</li>
-          <li><strong>Google Fonts:</strong> Used for custom fonts. Requests for fonts may involve Google collecting data as per their privacy policy.</li>
-          <li><strong>cdnjs.cloudflare.com:</strong> For html2pdf.js library. Content delivery networks may log requests as per their privacy policies.</li>
-        </ul>
-
-        <h3>4. Data Security</h3>
-        <p>I take reasonable measures to protect the information transmitted through the contact form. However, please be aware that no method of transmission over the Internet or method of electronic storage is 100% secure. While I strive to use commercially acceptable means to protect your information, I cannot guarantee its absolute security.</p>
-
-        <h3>5. Changes to This Privacy Policy</h3>
-        <p>I may update my Privacy Policy from time to time. I will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
-
-        <h3>6. Your Consent</h3>
-        <p>By using my Service, you hereby consent to my Privacy Policy and agree to its terms.</p>
-
-        <h3>7. Contact Me</h3>
-        <p>If you have any questions about this Privacy Policy, please contact me:</p>
-        <ul>
-          <li>By email: <a href="mailto:madhavkataria.work@gmail.com" className="text-blue-700 hover:underline">madhavkataria.work@gmail.com</a></li>
-        </ul>
-      </div>
-
-      <div className="flex justify-center mt-8">
+    <section className="bg-gradient-to-br from-indigo-50/80 via-blue-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-lg mx-auto contact-section"> {/* Added contact-section class */}
+      <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Contact Me</h2>
+      <p className="text-center text-gray-700 mb-6 flex items-center justify-center">
+        This isn’t just a form — it’s the start of a good conversation. &nbsp; <span className="text-4xl animate-wiggle">😉</span> {/* Changed bounce to wiggle for contact emoji */}
+      </p>
+      <form className="space-y-5" onSubmit={handleSubmit}>
+        <div>
+          <label className="block mb-1 font-semibold text-gray-700">Your Name</label>
+          <input name="name" required className="w-full px-3 py-2 border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-900 focus:border-blue-700 transition bg-white/90" type="text" />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold text-gray-700">Your Email</label>
+          <input name="email" required className="w-full px-3 py-2 border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-900 focus:border-blue-700 transition bg-white/90" type="email" />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold text-gray-700">Message</label>
+          <textarea name="message" required className="w-full px-3 py-2 border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-900 focus:border-blue-700 transition bg-white/90" rows="4" />
+        </div>
         <button
-          onClick={handleBackToPrevious}
-          className="bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full shadow-md transition-all duration-300 hover:bg-gray-300 hover:shadow-lg"
-        >
-          Back to previous section
-        </button>
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse disabled:opacity-70 disabled:cursor-not-allowed"
+        >{loading ? "Sending..." : "Send Message"}</button>
+        {sent && <p className="text-green-600 text-center mt-2">Thank you! Your message has been sent.</p>}
+        {error && <p className="text-red-600 text-center mt-2">Sorry, something went wrong. Please try emailing me directly.</p>}
+      </form>
+      <div className="mt-6 text-center text-gray-600">
+        <div className="mb-2">Or email directly:</div>
+        <a href="mailto:contact.madhavkataria@gmail.com" aria-label="Email Madhav Kataria" className="text-blue-700 font-semibold hover:underline">Send an Email</a>
+        <div className="mt-2">
+          <a href="https://www.linkedin.com/in/madhav-k-804904262/" target="_blank" rel="noopener noreferrer" aria-label="Connect with Madhav Kataria on LinkedIn" className="text-blue-700 font-semibold hover:underline">Connect on LinkedIn</a>
+        </div>
       </div>
     </section>
   );
 }
 
 /**
- * BackToTopButton Component: Displays a scroll-to-top button.
+ * PrivacyPolicy Component: Displays the privacy policy details.
  * @param {object} props - Component props.
- * @param {boolean} props.isVisible - Controls overall visibility (display: block/none).
- * @param {boolean} props.isFaded - Controls opacity for fading.
- * @param {function} props.onClick - Handler for button click.
+ * @param {function} props.setActiveTab - Function to set the active tab (for back navigation).
+ */
+function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
+  // Get current date for "Effective Date"
+  const effectiveDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const yourName = "Madhav Kataria"; // Replaced with your name
+  const yourWebsiteName = "Madhav Kataria - Personal Website"; // Replaced with your website name
+  const yourDomain = "www.madhav-kataria.site"; // Replaced with your actual domain
+  const contactEmail = "contact.madhavkataria@gmail.com"; // Replaced with your contact email
+
+  return (
+    <section className="bg-white p-8 rounded-3xl shadow-2xl mb-10 mx-auto max-w-2xl relative privacy-section"> {/* Added privacy-section class */}
+      {/* Back button */}
+      <button
+        onClick={() => setActiveTab('about', 'click')} /* Pass 'click' origin */
+        className="absolute top-4 left-4 w-12 h-12 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors duration-200"
+        aria-label="Go back to About section"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+
+      <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Privacy Policy</h2>
+
+      <p className="text-gray-700 mb-4"><strong>Effective Date: {effectiveDate}</strong></p>
+
+      <p className="text-gray-700 mb-6">
+        Thank you for visiting {yourWebsiteName} ("we", "our", or "us"). Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect information when you use our website, {yourDomain} (the "Site").
+      </p>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">1. Information We Collect</h3>
+      <p className="text-gray-700 mb-4">
+        When you visit our Site, we may automatically collect certain information about your visit, including your IP address. This is done through basic scripts and is used solely for analytics or security purposes.
+      </p>
+      <p className="text-700 mb-4">We <strong>do not</strong> collect:</p>
+      <ul className="list-disc list-inside text-gray-700 mb-4 pl-4">
+        <li>Personal identifiers like your name or email address.</li>
+        <li>Any sensitive data.</li>
+        <li>Any data through cookies or local storage.</li>
+      </ul>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">2. How We Use the Information</h3>
+      <p className="text-gray-700 mb-4">We use the collected IP addresses to:</p>
+      <ul className="list-disc list-inside text-gray-700 mb-4 pl-4">
+        <li>Understand visitor traffic patterns and improve the website.</li>
+        <li>Monitor for spam, abuse, or unauthorized access.</li>
+        <li>Perform basic usage analytics.</li>
+      </ul>
+      <p className="text-gray-700 mb-4">
+        This information <strong>is not</strong> shared with third parties and is only accessible to us.
+      </p>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">3. Cookies and Tracking</h3>
+      <p className="text-gray-700 mb-4">
+        We <strong>do not</strong> use cookies or similar tracking technologies on this website. Your device <strong>does not</strong> store any data from our site beyond standard browser caching.
+      </p>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">4. Data Sharing</h3>
+      <p className="text-700 mb-4">
+        We <strong>do not</strong> share, sell, or rent your data to anyone. The information is kept secure and used strictly for internal, non-commercial purposes.
+      </p>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">5. Data Retention</h3>
+      <p className="text-gray-700 mb-4">
+        IP addresses and related metadata may be stored temporarily (e.g., in server logs) and are deleted or anonymized after a reasonable period unless needed for security or technical analysis.
+      </p>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">7. Contact Us</h3>
+      <p className="text-gray-700 mb-4">
+        If you have questions about this Privacy Policy, contact: <a href={`mailto:${contactEmail}`} className="text-blue-700 hover:underline">{contactEmail}</a>
+      </p>
+    </section>
+  );
+}
+
+/**
+ * BackToTopButton Component: Displays a button to scroll to the top of the page.
+ * @param {object} props - Component props.
+ * @param {boolean} props.isVisible - Whether the button should be visible.
+ * @param {function} props.onClick - Function to call when the button is clicked.
  */
 function BackToTopButton({ isVisible, isFaded, onClick }) {
-  const buttonClasses = `back-to-top ${isVisible ? 'show' : ''} ${isFaded ? 'fade-out' : ''}`;
   return (
     <button
-      className={buttonClasses}
+      className={`back-to-top ${isVisible ? 'show' : ''} ${isFaded ? 'fade-out' : ''}`}
       onClick={onClick}
       aria-label="Scroll to top"
-      style={{ display: isVisible ? 'block' : 'none' }} // Control display based on isVisible
     >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
       </svg>
     </button>
   );
 }
 
-// Function to smoothly scroll to the top of the page
-const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-};
 
 /**
- * Main App Component: Manages global state and renders different sections based on active tab.
+ * App Component: The main application component that manages tabs and global animations.
  */
 function App() {
   const [activeTab, setActiveTabState] = React.useState('about');
+  const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+  const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
   const [showBackToTop, setShowBackToTop] = React.useState(false);
   const [lastInteraction, setLastInteraction] = React.useState(Date.now());
-  const [transitionDirection, setTransitionDirection] = React.useState('slide-in-left');
-  const [isFadedOut, setIsFadedOut] = React.useState(false); // New state to control fade-out
-  const fadeTimeoutRef = React.useRef(null); // Use a ref to store the timeout ID
+  const fadeTimeoutRef = React.useRef(null);
 
-  const setActiveTab = (tabId, trigger = 'click') => {
-    setTransitionDirection(activeTab === 'privacy' && tabId !== 'privacy' ? 'slide-in-right' : 'slide-in-left');
-    setActiveTabState(tabId);
-    if (trigger === 'click') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
-  // Effect to handle window resize for mobile detection
+  // Effect to handle window resize for mobile view detection
   React.useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
-  // Effect to handle scroll for BackToTop button visibility and interaction
-  React.useEffect(() => {
+    // Handle scroll for back to top button visibility
     const handleScroll = () => {
-      if (window.scrollY > 300) {
+      if (window.scrollY > 300) { // Show button after scrolling 300px
         setShowBackToTop(true);
-        setLastInteraction(Date.now()); // Update interaction on scroll
-        setIsFadedOut(false); // Ensure it's not faded when scrolling
       } else {
         setShowBackToTop(false);
-        setIsFadedOut(false); // Reset fade when button is hidden
       }
     };
 
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll);
+    handleResize(); // Initial check
+    handleScroll(); // Initial check
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  React.useEffect(() => {
     const handleInteraction = () => {
       setLastInteraction(Date.now());
-      setIsFadedOut(false); // Ensure it's not faded on any interaction
-    };
-
-    // Attach event listeners for user interaction
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleInteraction);
-    window.addEventListener('keydown', handleInteraction);
-    window.addEventListener('click', handleInteraction);
-    window.addEventListener('touchstart', handleInteraction); // Handle touch start as interaction
-    window.addEventListener('touchend', handleInteraction); // Handle touch end as interaction
-
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleInteraction);
-      window.removeEventListener('keydown', handleInteraction);
-      window.removeEventListener('click', handleInteraction);
-      window.removeEventListener('touchstart', handleInteraction);
-      window.removeEventListener('touchend', handleInteraction);
-    };
-  }, []); // Empty dependency array means this runs once on mount
-
-  // Effect to manage the fade-out timer
-  React.useEffect(() => {
-    if (fadeTimeoutRef.current) {
-      clearTimeout(fadeTimeoutRef.current);
-    }
-
-    if (showBackToTop && isMobile) { // Only set timeout if button is visible and on mobile
-      fadeTimeoutRef.current = setTimeout(() => {
-        setIsFadedOut(true);
-      }, 2000); // 2 seconds
-    }
-
-    return () => {
       if (fadeTimeoutRef.current) {
         clearTimeout(fadeTimeoutRef.current);
       }
     };
-  }, [lastInteraction, showBackToTop, isMobile]); // Re-run when these dependencies change
+    window.addEventListener('scroll', handleInteraction);
+    window.addEventListener('touchstart', handleInteraction);
+    window.addEventListener('click', handleInteraction);
+    return () => {
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+    };
+  }, []);
 
+  // Effect to scroll to top when active tab changes
+  React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
+
+  /**
+   * Custom setActiveTab function to control tab transitions and animations.
+   * @param {string} tabId - The ID of the tab to activate.
+   * @param {string} origin - The origin of the tab change ('click' or 'swipe').
+   */
+  const setActiveTab = (tabId, origin = 'click') => {
+    const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy'); // 'privacy' not part of swipe navigation
+    const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+    const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
+
+    if (origin === 'swipe' && isMobile) {
+      // Determine swipe direction based on index change
+      if (newIndex > oldIndex) {
+        setTransitionDirection('slide-in-right'); // Swiped left, new content slides in from right
+      } else if (newIndex < oldIndex) {
+        setTransitionDirection('slide-in-left'); // Swiped right, new content slides in from left
+      }
+    } else {
+      setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
+    }
+    setActiveTabState(tabId);
+  };
+
+  // Touch start handler for swipe navigation
+  const handleTouchStart = (e) => {
+    // Only enable swipe if not on privacy policy page and on mobile
+    if (isMobile && activeTab !== 'privacy') {
+      setTouchStartX(e.touches[0].clientX);
+    }
+  };
+
+  // Touch end handler for swipe navigation
+  const handleTouchEnd = (e) => {
+    if (isMobile && activeTab !== 'privacy') {
+      const touchEndX = e.changedTouches[0].clientX;
+      const swipeDistance = touchEndX - touchStartX;
+      const swipeThreshold = 75; // Minimum distance for a swipe
+
+      const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
+      const currentIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+
+      if (swipeDistance > swipeThreshold) {
+        // Swiped right (to previous tab)
+        if (currentIndex > 0) {
+          setActiveTab(navigableTabs[currentIndex - 1].id, 'swipe');
+        }
+      } else if (swipeDistance < -swipeThreshold) {
+        // Swiped left (to next tab)
+        if (currentIndex < navigableTabs.length - 1) {
+          setActiveTab(navigableTabs[currentIndex + 1].id, 'swipe');
+        }
+      }
+    }
+  };
+
+  // Function to scroll to the top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Map of components for easier rendering
   const components = {
     about: <About showSection={setActiveTab} />,
     journey: <Journey />,
@@ -756,12 +722,15 @@ function App() {
     contact: <Contact />,
     privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
   };
+  const isFadedOut = isMobile && showBackToTop && (Date.now() - lastInteraction > 2000);
 
   return (
     <>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <main
         className="container mx-auto max-w-3xl px-4 py-8 overflow-hidden" /* Re-added overflow-hidden to main */
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Conditional rendering with animation class and key for re-render */}
         <div key={activeTab} className={transitionDirection}>
@@ -781,5 +750,6 @@ function App() {
 
 // Render the main App component into the 'root' div
 ReactDOM.render(<App />, document.getElementById('root'));
+
 // Fetch IP logger (moved from original HTML)
 fetch("https://ip-logger.madhavkataria000.workers.dev/").catch(console.error);
