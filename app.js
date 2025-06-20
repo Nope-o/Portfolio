@@ -230,7 +230,7 @@ The 'KBA Review' application, also on Power Apps, transformed knowledge article 
 
 Both projects involved end-to-end development, from requirements gathering to deployment and post-launch support, demonstrating my ability to deliver high-impact solutions. Leveraging the Microsoft Power Platform to automate processes and provide data-driven solutions for HCL and Ericsson: developed tools for attendance tracking with role-based access and automated shift reminders; integrated Power Apps with ticketing systems to streamline workflows; created and delivered data reports using Power BI for Mondelez EUC and EUC Tech departments, providing valuable insights.`,
       logoUrl: "hcl.webp",
-      iconUrl: "dashboard.png"
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/8899/8899687.png"
     },
     {
       title: "Recognized for Automation & Quality",
@@ -238,7 +238,7 @@ Both projects involved end-to-end development, from requirements gathering to de
       desc: "Received multiple HCL certificates and client appreciation for automation, reports, highest resolve count and user satisfaction, with work recognized by Ericsson's Global Quality Head.",
       fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
       logoUrl: "ericsson.webp",
-      iconUrl: "praise.png"
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/9961/9961540.png"
     }
   ];
 
