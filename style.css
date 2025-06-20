@@ -454,13 +454,12 @@ header {
   color: var(--color-white);
   border: none;
   border-radius: var(--radius-full);
-  padding: var(--space-sm);
+  padding: 1rem; /* Adjust as needed */
   cursor: pointer;
-  box-shadow: var(--shadow-md);
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-out;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(var(--space-md));
+  opacity: 0; /* Hidden by default */
+  visibility: hidden; /* Hidden by default */
+  transform: translateY(20px); /* Start slightly below */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
 .back-to-top.show {
@@ -469,10 +468,9 @@ header {
   transform: translateY(0);
 }
 
-.back-to-top:hover {
-  background-color: var(--color-medium);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+.back-to-top.fade-out {
+  opacity: 0.3; /* Less visible when faded */
+  pointer-events: none; /* Disable clicks when faded */
 }
 @keyframes jiggle {
   0% { transform: rotate(0deg); }
