@@ -30,120 +30,144 @@ function Navbar({ activeTab, setActiveTab }) {
         const currentScrollY = window.scrollY;
 
         // Define scroll thresholds for hysteresis to prevent flickering
-        const scrollUpThreshold = 10; // Pixels to scroll up before header reappears
-        const scrollDownThreshold = 10; // Pixels to scroll down before header hides
+        const scrollDownThreshold = 80; // User scrolls down past this to become compact
+        const scrollUpThreshold = 60; // User scrolls up past this to revert to expanded
 
-        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-          // Scrolling down
-          if (!isScrolledDown && currentScrollY - lastScrollY.current > scrollDownThreshold) {
-            setIsScrolledDown(true);
-          }
-        } else if (currentScrollY < lastScrollY.current) {
-          // Scrolling up
-          if (isScrolledDown && lastScrollY.current - currentScrollY > scrollUpThreshold) {
-            setIsScrolledDown(false);
-          }
+        // Only change state if scrolling past a threshold AND the state is different
+        if (currentScrollY > lastScrollY.current && currentScrollY > scrollDownThreshold && !isScrolledDown) {
+          setIsScrolledDown(true);
+        } else if (currentScrollY < lastScrollY.current && currentScrollY < scrollUpThreshold && isScrolledDown) {
+          setIsScrolledDown(false);
         }
         lastScrollY.current = currentScrollY;
       } else {
-        // On desktop, always show header
+        // Ensure it's never compact on desktop
         setIsScrolledDown(false);
       }
     };
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
-
-    // Initial check
+    // Initial check on mount
     handleResize();
-    handleScroll();
+    handleScroll(); // Call once on mount to set initial state
 
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [isMobile, isScrolledDown]);
+  }, [isMobile, isScrolledDown]); // Added isScrolledDown to dependency array for reliable updates
 
+  // Handle logo click to trigger animation and navigate to About section
   const handleLogoClick = () => {
-    setAnimateLogo(true);
-    setTimeout(() => setAnimateLogo(false), 1000); // Reset animation after 1s
-    setActiveTab('about', 'click');
+    setAnimateLogo(true); // Trigger animation
+    setTimeout(() => setAnimateLogo(false), 1000); // Reset after 1 second
+    setActiveTab('about', 'click'); // Navigate to About section
   };
 
-  const navClass = `fixed w-full z-30 transition-all duration-300 ease-in-out
-    ${isScrolledDown && isMobile ? '-translate-y-full' : 'translate-y-0'}
-    ${isMobile ? 'bg-white/75 backdrop-blur shadow-md' : 'bg-white/75 backdrop-blur'}
-    py-2 px-4 border-b border-gray-200`;
+  // Determine header classes based on scroll state for mobile
+  const headerClasses = `bg-white/75 backdrop-blur shadow sticky top-0 z-50 transition-all duration-300 ease-in-out
+                         ${isMobile && isScrolledDown ? 'header-compact' : 'header-expanded'}`;
 
-  const logoClass = `font-orbitron text-xl font-bold transition-transform duration-300 inline-block
-    ${animateLogo ? 'animate-bounce-slow' : ''}`;
+  // Conditional classes for the main content wrapper (logo and nav)
+  const mainContentWrapperClasses = `container mx-auto px-4 md:px-8
+                                     flex ${isMobile && isScrolledDown ? 'flex-row items-center justify-between py-2' : 'flex-col items-center justify-center py-3 md:flex-row md:justify-between md:items-center'}`;
+
+  // Conditional classes for logo frame
+  const logoFrameClasses = `logo-frame group cursor-pointer select-none
+                            ${isMobile && isScrolledDown ? 'flex-shrink-0' : 'w-full text-center mb-4 md:w-auto md:text-left md:mb-0'}
+                            ${animateLogo ? "logo-burst" : ""}`;
+
+  // Conditional classes for logo text
+  const logoTextClasses = `logo-text group-hover:tracking-widest transition-all
+                           ${isMobile && isScrolledDown ? 'hidden' : ''}`; // Hidden when compact
+
+  // Conditional classes for navigation container
+  const navContainerClasses = `w-full ${isMobile && isScrolledDown ? 'block' : 'block md:block'} md:w-auto`;
+
+  // Conditional classes for navigation list
+  const navListClasses = `flex flex-row items-center gap-1 w-full
+                          ${isMobile && isScrolledDown ? 'justify-end' : 'justify-center'}`; // Tabs to right on compact, centered otherwise
 
   return (
-    <nav className={navClass}>
-      <div className="container mx-auto flex justify-between items-center">
-        <button onClick={handleLogoClick} className="focus:outline-none">
-          <span className={logoClass}>MK</span>
-        </button>
-        <div className="flex space-x-4">
-          {NAV_TABS.map(tab => (
-            (isMobile && tab.id === 'privacy') ? null : ( // Hide privacy on mobile nav for compactness
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id, 'click')}
-                className={`px-3 py-2 rounded-md text-sm font-medium
-                  ${activeTab === tab.id
-                    ? 'bg-gradient-to-r from-color-button-gradient-start to-color-button-gradient-end text-white shadow-lg transform scale-105'
-                    : 'text-color-text-primary hover:bg-gray-100'
-                  } transition-all duration-300 ease-in-out
-                `}
-              >
-                {isMobile && tab.mobileLabel ? tab.mobileLabel : tab.label}
-              </button>
-            )
-          ))}
-        </div>
+    <header className={headerClasses}>
+      <div className={mainContentWrapperClasses}>
+        <span
+          className={logoFrameClasses}
+          onClick={handleLogoClick}
+        >
+          <img
+            src="logoo.webp"
+            alt="Madhav Kataria"
+            className="h-6 sm:h-8 w-auto inline-block mr-2 -mt-[0.1rem]"
+          />
+          <span className={logoTextClasses}>Madhav Kataria</span>
+          <span className="absolute -top-3 -right-6 hidden md:inline-block animate-bounce text-2xl text-blue-900">★</span>
+        </span>
+        <nav className={navContainerClasses}>
+          <ul className={navListClasses}>
+            {NAV_TABS.map(tab => (
+              (isMobile && tab.id === 'privacy') ? null : (
+                <li key={tab.id} className="relative">
+                  <button
+                    className={"nav-link" + (activeTab === tab.id ? " active" : "") + " px-3 py-2 rounded-md transition-all duration-300"}
+                    onClick={() => setActiveTab(tab.id, 'click')}
+                  >
+                    {isMobile && tab.mobileLabel ? tab.mobileLabel : tab.label}
+                    <span className="nav-underline"></span>
+                  </button>
+                </li>
+              )
+            ))}
+          </ul>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }
 
-/**
- * BackToTopButton Component: Displays a button to scroll to the top of the page.
- * @param {object} props - Component props.
- * @param {boolean} props.isVisible - Controls the visibility of the button.
- * @param {function} props.onClick - Function to call when the button is clicked.
- */
-function BackToTopButton({ isVisible, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`back-to-top transition-opacity duration-300 ease-in-out
-        ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-      aria-label="Back to top"
-    >
-      ↑
-    </button>
-  );
-}
-
-// Placeholder components for sections
 /**
  * About Component: Displays introductory information about Madhav Kataria.
  * @param {object} props - Component props.
  * @param {function} props.showSection - Function to navigate to a specific section.
  */
 function About({ showSection }) {
-  React.useEffect(() => {
-    // This could be used for animations or data fetching when the section becomes active
-    console.log('About section active');
-  }, []);
   return (
-    <section id="about" className="py-12 min-h-screen flex flex-col justify-center items-center text-center px-4">
-      <h1 className="text-4xl font-extrabold text-color-darkest mb-4 animate-slide-in-left">Madhav Kataria</h1>
-      <p className="text-xl text-color-text-secondary mb-8 animate-slide-in-right">Building bridges between technology and human experience.</p>
-      <div className="space-x-4 animate-fade-in">
-        <a href="#journey" onClick={() => showSection('journey', 'click')} className="btn-primary">My Journey</a>
-        <a href="#contact" onClick={() => showSection('contact', 'click')} className="btn-secondary">Get in Touch</a>
+    <section className="about-bg p-8 rounded-3xl shadow-2xl mb-10 relative overflow-hidden" style={{ minHeight: '60vh' }}>
+      <div className="relative z-10 flex about-flex-mobile md:flex-row flex-col items-center md:items-start space-y-6 md:space-y-0 md:space-x-10">
+        <div className="flex-shrink-0 flex flex-col items-center md:items-start about-photo-mobile">
+          <div className="about-photo-bg mb-3 mt-2 shadow-lg hover:scale-105 transition-transform duration-500">
+            <img src="Madhav-kataria.webp" alt="Madhav Kataria" className="rounded-full w-40 h-40 object-cover shadow-xl border-4 border-white" />
+          </div>
+        </div>
+        <div className="flex-grow about-text-mobile">
+          <h2 className="text-4xl font-extrabold about-main-title mb-3 tracking-tight drop-shadow-sm">
+            Hello, I'm <span>Madhav Kataria!</span>
+          </h2>
+          <p className="text-lg text-gray-100 leading-relaxed mb-2 card-float-in">
+            Currently pursuing Bachelor's in Data Science and AI from IIT Guwahati.
+          </p>
+          <p className="text-lg text-gray-200 leading-relaxed mb-3 card-float-in">
+            I am a passionate and results-oriented professional with expertise in <strong className="about-strong">Robotic Process Automation (RPA), Power Platform development (Power Apps, Power BI), and IT Infrastructure management</strong>. My journey began with a desire to <strong className="about-strong">build innovative solutions that boost efficiency, minimize human errors, and foster continuous learning and growth.</strong>, and continuously learn and grow. I thrive on challenges and am always seeking new opportunities to make a meaningful impact.
+          </p>
+          <p className="text-md text-gray-300 mb-3 card-float-in">
+            My unique value proposition lies in my ability to <strong className="about-strong">leverage AI, Data insights and automation to optimize organizational processes, specifically in the IT Infra Domain</strong>. I am motivated by <strong className="about-strong">solving complex problems, fostering collaborative environments, and pushing creative boundaries to deliver tangible improvements.</strong>
+          </p>
+          <div className="space-y-2 mb-6 card-float-in">
+            <h3 className="text-xl font-semibold about-value">My Values:</h3>
+            <ul className="list-disc list-inside text-gray-200">
+              <li>Innovation &amp; Continuous Learning</li>
+              <li>Collaboration &amp; Teamwork</li>
+              <li>Integrity &amp; Transparency</li>
+              <li>User-Centric Approach</li>
+            </ul>
+          </div>
+          <button onClick={() => showSection('contact', 'click')}
+            className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 pulse"
+          >
+            Get in Touch!
+          </button>
+        </div>
       </div>
     </section>
   );
@@ -536,104 +560,124 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
 }
 
 /**
- * App Component: Main application component handling routing and layout.
+ * BackToTopButton Component: Displays a button to scroll to the top of the page.
+ * @param {object} props - Component props.
+ * @param {boolean} props.isVisible - Whether the button should be visible.
+ * @param {function} props.onClick - Function to call when the button is clicked.
+ */
+function BackToTopButton({ isVisible, onClick }) {
+  return (
+    <button
+      className={`back-to-top ${isVisible ? 'show' : ''}`}
+      onClick={onClick}
+      aria-label="Scroll to top"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+  );
+}
+
+
+/**
+ * App Component: The main application component that manages tabs and global animations.
  */
 function App() {
   const [activeTab, setActiveTabState] = React.useState('about');
-  const [transitionDirection, setTransitionDirection] = React.useState('slide-in-right'); // Default animation
-  const [showBackToTop, setShowBackToTop] = React.useState(false); // State for BackToTopButton visibility
-  const backToTopTimeoutRef = React.useRef(null); // Ref for the timeout
+  const [touchStartX, setTouchStartX] = React.useState(0);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+  // New state for controlling animation direction
+  const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
+  // State for back to top button visibility
+  const [showBackToTop, setShowBackToTop] = React.useState(false);
 
-  // Function to set active tab with animation direction
-  const setActiveTab = (tabId, trigger = 'click') => {
-    if (activeTab !== tabId) {
-      // Determine direction for slide animation
-      const currentIdx = NAV_TABS.findIndex(tab => tab.id === activeTab);
-      const newIdx = NAV_TABS.findIndex(tab => tab.id === tabId);
-      if (trigger === 'click') {
-        setTransitionDirection(newIdx > currentIdx ? 'slide-in-right' : 'slide-in-left');
-      } else {
-        // For programmatic changes, no slide animation
-        setTransitionDirection('');
-      }
-      setActiveTabState(tabId);
-    }
-  };
 
-  // Detect mobile device
-  const isMobileDevice = () => window.matchMedia("(max-width: 768px)").matches;
-
-  // Handle user interaction for showing/hiding the Back to Top button
-  const handleUserInteraction = React.useCallback(() => {
-    if (isMobileDevice()) {
-      setShowBackToTop(true);
-      if (backToTopTimeoutRef.current) {
-        clearTimeout(backToTopTimeoutRef.current);
-      }
-      backToTopTimeoutRef.current = setTimeout(() => {
-        setShowBackToTop(false);
-      }, 2000); // Hide after 2 seconds of inactivity
-    }
-  }, []);
-
+  // Effect to handle window resize for mobile view detection
   React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Handle scroll for back to top button visibility
     const handleScroll = () => {
-      if (window.scrollY > 200) { // Show button if scrolled down
+      if (window.scrollY > 300) { // Show button after scrolling 300px
         setShowBackToTop(true);
-        handleUserInteraction(); // Reset timer on scroll
       } else {
-        setShowBackToTop(false); // Hide button if at top
-        if (backToTopTimeoutRef.current) {
-            clearTimeout(backToTopTimeoutRef.current);
-        }
+        setShowBackToTop(false);
       }
     };
 
+    window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleUserInteraction);
-    window.addEventListener('touchstart', handleUserInteraction);
-    window.addEventListener('keydown', handleUserInteraction);
-
-    // Initial check
-    handleScroll();
+    handleResize(); // Initial check
+    handleScroll(); // Initial check
 
     return () => {
+      window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleUserInteraction);
-      window.removeEventListener('touchstart', handleUserInteraction);
-      window.removeEventListener('keydown', handleUserInteraction);
-      if (backToTopTimeoutRef.current) {
-        clearTimeout(backToTopTimeoutRef.current);
-      }
     };
-  }, [handleUserInteraction]);
+  }, []);
 
-  // Touch event handlers for mobile swipe navigation
-  const touchStartX = React.useRef(0);
-  const touchEndX = React.useRef(0);
+  // Effect to scroll to top when active tab changes
+  React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
 
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
+  /**
+   * Custom setActiveTab function to control tab transitions and animations.
+   * @param {string} tabId - The ID of the tab to activate.
+   * @param {string} origin - The origin of the tab change ('click' or 'swipe').
+   */
+  const setActiveTab = (tabId, origin = 'click') => {
+    const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy'); // 'privacy' not part of swipe navigation
+    const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+    const newIndex = navigableTabs.findIndex(tab => tab.id === tabId);
+
+    if (origin === 'swipe' && isMobile) {
+      // Determine swipe direction based on index change
+      if (newIndex > oldIndex) {
+        setTransitionDirection('slide-in-right'); // Swiped left, new content slides in from right
+      } else if (newIndex < oldIndex) {
+        setTransitionDirection('slide-in-left'); // Swiped right, new content slides in from left
+      }
+    } else {
+      setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
+    }
+    setActiveTabState(tabId);
   };
 
-  const handleTouchEnd = () => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    const swipeDistance = touchStartX.current - touchEndX.current;
+  // Touch start handler for swipe navigation
+  const handleTouchStart = (e) => {
+    // Only enable swipe if not on privacy policy page and on mobile
+    if (isMobile && activeTab !== 'privacy') {
+      setTouchStartX(e.touches[0].clientX);
+    }
+  };
 
-    const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy'); // Exclude privacy from swipe navigation
-    const currentIdx = navigableTabs.findIndex(tab => tab.id === activeTab);
-    if (swipeDistance > 50) { // Swiped left
-      if (currentIdx < navigableTabs.length - 1) {
-        setActiveTab(navigableTabs[currentIdx + 1].id, 'swipe');
-      }
-    } else if (swipeDistance < -50) { // Swiped right
-      if (currentIdx > 0) {
-        setActiveTab(navigableTabs[currentIdx - 1].id, 'swipe');
+  // Touch end handler for swipe navigation
+  const handleTouchEnd = (e) => {
+    if (isMobile && activeTab !== 'privacy') {
+      const touchEndX = e.changedTouches[0].clientX;
+      const swipeDistance = touchEndX - touchStartX;
+      const swipeThreshold = 75; // Minimum distance for a swipe
+
+      const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
+      const currentIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
+
+      if (swipeDistance > swipeThreshold) {
+        // Swiped right (to previous tab)
+        if (currentIndex > 0) {
+          setActiveTab(navigableTabs[currentIndex - 1].id, 'swipe');
+        }
+      } else if (swipeDistance < -swipeThreshold) {
+        // Swiped left (to next tab)
+        if (currentIndex < navigableTabs.length - 1) {
+          setActiveTab(navigableTabs[currentIndex + 1].id, 'swipe');
+        }
       }
     }
   };
 
-  // Scroll to top function
+  // Function to scroll to the top
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -673,8 +717,5 @@ function App() {
 // Render the main App component into the 'root' div
 ReactDOM.render(<App />, document.getElementById('root'));
 
-// Fetch IP for analytics - ensure this is non-blocking and handles errors
-// fetch('https://api.ipify.org?format=json')
-//   .then(response => response.json())
-//   .then(data => console.log('IP Address:', data.ip))
-//   .catch(error => console.error('Error fetching IP:', error));
+// Fetch IP logger (moved from original HTML)
+fetch("https://ip-logger.madhavkataria000.workers.dev/").catch(console.error);
