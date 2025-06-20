@@ -229,11 +229,10 @@ header {
     width: 100%;
   }
 }
-
 /* Journey Section (Timeline) */
 .timeline-dot {
   background: none; /* Remove background */
-  border: none;     /* Remove border */
+  border: none;      /* Remove border */
   box-shadow: none; /* Remove shadow */
   padding: 0;
   margin: 0;
@@ -249,7 +248,7 @@ header {
   object-fit: contain;
 }
 @media (min-width: 641px) {
-  .timeline-list { border-left: 2px solid #c0cbf5; margin-left: 1.75rem; padding-left: 2.25rem;}
+  .timeline-list { /* border-left removed */ margin-left: 1.75rem; padding-left: 2.25rem;}
   .timeline-item {
     display: flex;
     align-items: flex-start;
