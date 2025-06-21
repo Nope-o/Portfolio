@@ -284,6 +284,7 @@ header {
     padding: var(--space-sm) var(--space-md);
     margin-top: var(--space-sm);
     margin-left: var(--space-lg); /* Using a token for consistency */
+    margin-right: -1rem;
     flex: 1;
     font-size: 0.95rem;
     color: var(--color-text-primary);
