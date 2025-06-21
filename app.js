@@ -140,6 +140,7 @@ function About({ showSection }) {
             <img src="Madhav-kataria.webp" alt="Madhav Kataria" className="rounded-full w-40 h-40 object-cover shadow-xl border-4 border-white" />
           </div>
         </div>
+
         <div className="flex-grow about-text-mobile">
           <h2 className="text-4xl font-extrabold about-main-title mb-3 tracking-tight drop-shadow-sm">
             Hello, I'm <span>Madhav Kataria!</span>
@@ -162,16 +163,29 @@ function About({ showSection }) {
               <li>User-Centric Approach</li>
             </ul>
           </div>
-          <button onClick={() => showSection('contact', 'click')}
-            className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 pulse"
-          >
-            Get in Touch!
-          </button>
         </div>
+      </div>
+
+      {/* BUTTONS — moved outside of flex row */}
+      <div className="flex flex-wrap justify-center gap-4 mt-6">
+        <button
+          onClick={() => showSection('contact', 'click')}
+          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+        >
+          Get in Touch!
+        </button>
+        
+        <button
+          onClick={() => showSection('journey', 'click')}
+          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+        >
+          🚀 Explore My Journey
+        </button>
       </div>
     </section>
   );
 }
+
 
 // Initialize Tone.js instruments for sound effects
 const winSynth = new Tone.PolySynth(Tone.Synth, {
