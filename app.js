@@ -395,6 +395,7 @@ function PathfinderGame({ onGameWin }) {
 
     const sensitivity = 30; // Min pixels for a valid swipe
   };
+  const playerEmoji = '👻'; // Ghost emoji as the character
 
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
@@ -406,7 +407,7 @@ function PathfinderGame({ onGameWin }) {
     );
   }
 
-  const playerEmoji = '👻'; // Ghost emoji as the character
+
 
   return (
     <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '640px' }}> {/* Increased minHeight */}
@@ -447,20 +448,24 @@ function PathfinderGame({ onGameWin }) {
       </div>
 
       {gameStatus === 'won' && (
-        <div className="game-message won-message">
-          Congratulations! You've found your path!
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-400/10 backdrop-blur-sm transition-all duration-700">
+          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.7)] text-center text-xl font-bold">
+            🎉 Congratulations! You've found your path!
+          </div>
         </div>
       )}
+
       {gameStatus === 'lost' && (
         <div className="game-message lost-message">
           Oops! You hit an obstacle. Try again!
         </div>
       )}
 
+
       {/* Mobile-only Reset button - Absolutely positioned */}
       <button
         onClick={generateBoard}
-        className="absolute bottom-2 left-4 control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse md:hidden"
+        className="absolute bottom-14 left-4 bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden"
       >
         {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
       </button>
@@ -483,7 +488,7 @@ function PathfinderGame({ onGameWin }) {
       {/* Desktop Reset button - visible only on desktop */}
       <button
         onClick={generateBoard}
-        className="mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-6 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse hidden md:block"
+        className="mt-6 bg-gray-700 hover:bg-gray-800 text-white py-2 px-6 rounded-lg font-semibold transition-all duration-300 hidden md:block"
       >
         {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
       </button>
