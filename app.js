@@ -522,6 +522,7 @@ function Journey({ setAppWinAnimation }) { // Receive setAppWinAnimation prop
   const [showDetails, setShowDetails] = React.useState({});
   // New state to control whether the game or the journey timeline is shown
   const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
+  const [animatingIcon, setAnimatingIcon] = React.useState(null); //
 
   // Reset gameWon state and win animation state when Journey component mounts
   React.useEffect(() => {
@@ -622,11 +623,15 @@ Both projects involved end-to-end development, from requirements gathering to de
                   <img
                     src={item.iconUrl} 
                     alt="icon"
-                    className="timeline-icon"
+                    className={`timeline-icon ${animatingIcon === i ? 'animate-jiggle' : ''}`}
                   />
                 </span>
                   <div className="flex-1">
-                    <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
+                    <div className="timeline-content cursor-pointer flex justify-between items-start" 
+                    onClick={() => {
+                      toggleDetails(i);
+                      setAnimatingIcon(i);
+                      setTimeout(() => setAnimatingIcon(null), 500);}}>
                       <div className="flex-grow">
                         <h4 className="font-bold text-slate-800">{item.title}</h4>
                         <span className="block text-gray-500 text-xs mb-1">{item.time}</span>
