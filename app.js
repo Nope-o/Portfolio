@@ -146,7 +146,7 @@ function About({ showSection }) {
             Hello, I'm <span>Madhav Kataria!</span>
           </h2>
           <p className="text-lg text-gray-100 leading-relaxed mb-2 card-float-in">
-            Currently pursuing Bachelor's in Data Science and AI from IIT Guwahati.
+            Currently pursuing Bachelor's in Data Science and AI from IIT Guwahati.🎓
           </p>
           <p className="text-lg text-gray-200 leading-relaxed mb-3 card-float-in">
             I am a passionate and results-driven professional with expertise in <strong className="about-strong">Robotic Process Automation (RPA), Power Platform development (Power Apps, Power BI), and IT Infrastructure management</strong>. My journey is driven by a desire to <strong className="about-strong">build innovative solutions that enhance efficiency and reduce human errors</strong>, and continuously learn and grow. I thrive on challenges and am always seeking new opportunities to make a meaningful impact.
@@ -182,6 +182,9 @@ function About({ showSection }) {
           🚀 Explore My Journey
         </button>
       </div>
+      <p className="text-center text-gray-300 mt-4 text-sm italic">
+        "Driven by curiosity. Inspired by innovation. Always learning." ✨
+      </p>
     </section>
   );
 }
@@ -308,13 +311,59 @@ function PathfinderGame({ onGameWin }) {
     }
   }, [playerOrientation]); // Added playerOrientation as a dependency
 
-  // Function to generate a random board with start, end, and obstacles
-  const generateBoard = React.useCallback(() => {
-    setGameStatus('loading'); // Reset status to loading on board generation
-    setIsBoardInitialized(false); // Mark board as not initialized yet
+// Add this BEFORE generateBoard:
 
-    let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
-    let startR, startC, endR, endC;
+function isPathAvailable(board, start, end) {
+  const numRows = board.length;
+  const numCols = board[0].length;
+  const visited = Array.from({ length: numRows }, () => Array(numCols).fill(false));
+
+  const queue = [];
+  queue.push(start);
+
+  const directions = [
+    { row: -1, col: 0 }, // up
+    { row: 1, col: 0 },  // down
+    { row: 0, col: -1 }, // left
+    { row: 0, col: 1 }   // right
+  ];
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const { row, col } = current;
+
+    if (row === end.row && col === end.col) {
+      return true; // Path found!
+    }
+
+    if (
+      row < 0 || row >= numRows ||
+      col < 0 || col >= numCols ||
+      visited[row][col] ||
+      board[row][col] === 'X'
+    ) {
+      continue;
+    }
+
+    visited[row][col] = true;
+
+    directions.forEach(dir => {
+      queue.push({ row: row + dir.row, col: col + dir.col });
+    });
+  }
+
+  return false; // No path found
+}
+const generateBoard = React.useCallback(() => {
+  setGameStatus('loading'); // Reset status to loading on board generation
+  setIsBoardInitialized(false); // Mark board as not initialized yet
+
+  let newBoard;
+  let startR, startC, endR, endC;
+  let validBoard = false;
+
+  while (!validBoard) {
+    newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
 
     // Ensure start and end are distinct AND sufficiently far apart
     do {
@@ -331,7 +380,7 @@ function PathfinderGame({ onGameWin }) {
     newBoard[endR][endC] = 'E';
 
     // Add obstacles (around 20-30% of the cells, avoiding S and E)
-    const numObstacles = Math.floor(GRID_SIZE * GRID_SIZE * 0.25);
+    const numObstacles = Math.floor(GRID_SIZE * GRID_SIZE * 0.40);
     for (let i = 0; i < numObstacles; i++) {
       let r, c;
       do {
@@ -341,13 +390,23 @@ function PathfinderGame({ onGameWin }) {
       newBoard[r][c] = 'X';
     }
 
-    setPlayerPos({ row: startR, col: startC });
-    setEndPos({ row: endR, col: endC });
-    setBoard(newBoard);
-    setGameStatus('playing'); // Set game status to playing only after board is generated
-    setIsBoardInitialized(true); // Mark board as initialized
-    setPlayerOrientation('right'); // Reset player orientation on new game
-  }, []);
+    // Path check!
+    validBoard = isPathAvailable(
+      newBoard,
+      { row: startR, col: startC },
+      { row: endR, col: endC }
+    );
+  }
+
+  // Set final board
+  setPlayerPos({ row: startR, col: startC });
+  setEndPos({ row: endR, col: endC });
+  setBoard(newBoard);
+  setGameStatus('playing');
+  setIsBoardInitialized(true);
+  setPlayerOrientation('right'); // Reset player orientation on new game
+}, []);
+
 
   // Effect to initialize board when component mounts
   React.useEffect(() => {
@@ -410,7 +469,16 @@ function PathfinderGame({ onGameWin }) {
     const sensitivity = 30; // Min pixels for a valid swipe
   };
   const playerEmoji = '👻'; // Ghost emoji as the character
-
+  React.useEffect(() => {
+    if (gameStatus === 'lost') {
+      const timer = setTimeout(() => {
+        generateBoard();  // use correct function
+      }, 2000);
+  
+      return () => clearTimeout(timer);
+    }
+  }, [gameStatus, generateBoard]);  // add generateBoard as dependency
+  
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
@@ -468,12 +536,14 @@ function PathfinderGame({ onGameWin }) {
           </div>
         </div>
       )}
-
       {gameStatus === 'lost' && (
-        <div className="game-message lost-message">
-          Oops! You hit an obstacle. Try again!
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-red-400/10 backdrop-blur-sm transition-all duration-700">
+          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold">
+            ❌ Oops! You hit an obstacle. Resetting...
+          </div>
         </div>
       )}
+
 
 
       {/* Mobile-only Reset button - Absolutely positioned */}
@@ -630,7 +700,7 @@ Both projects involved end-to-end development, from requirements gathering to de
         // Render the journey content if game is won
         <>
           <p className="text-center text-gray-800 text-lg mb-6 font-semibold animate-section-in">
-            Congratulations on navigating the puzzle! It seems you've mastered the art of finding a path. Now, allow me to share the journey I've walked.
+          "🎉 You've unlocked my life journey! Here's how I’ve navigated challenges and milestones — I hope it inspires you too."
           </p>
           <p className="text-center text-gray-700 mb-6">Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
           <div className="mt-10">
