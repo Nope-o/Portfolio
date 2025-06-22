@@ -373,7 +373,7 @@ const generateBoard = React.useCallback(() => {
       endC = Math.floor(Math.random() * GRID_SIZE);
     } while (
       (startR === endR && startC === endC) || // Ensure start and end are different spots
-      (Math.abs(startR - endR) + Math.abs(startC - endC) < Math.floor(GRID_SIZE / 2)) // Ensure minimum distance
+      (Math.abs(startR - endR) + Math.abs(startC - endC) < Math.floor(GRID_SIZE / 0.7)) // Ensure minimum distance
     );
 
     newBoard[startR][startC] = 'S';
