@@ -319,13 +319,6 @@ header {
     transform: translateY(0);
   }
 }
-
-.pulse { animation: buttonPulse 2s infinite;}
-@keyframes buttonPulse { 0%{box-shadow:0 0 0 0 #33415599;}70%{box-shadow:0 0 0 10px #0f172a00;}100%{box-shadow:0 0 0 0 #33415599;} }
-/* Animation for section in (default for initial load and desktop clicks) */
-.animate-section-in {
-  animation: sectionIn 0.45s cubic-bezier(.53,.06,.49,.96);
-}
 @keyframes sectionIn {
   0% { opacity: 0; transform: translateY(40px) scale(.98);}
   80% { opacity: 1; transform: translateY(-7px) scale(1.005);}
@@ -439,19 +432,6 @@ header {
     color: white;
 }
 
-.game-message {
-  position: absolute; /* or fixed */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 999; /* higher than nav */
-  background: white;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-
 .won-message {
     background-color: #d1fae5;
     color: #065f46;
@@ -490,8 +470,4 @@ header {
 
 .animate-jiggle {
   animation: jiggle 0.5s ease-in-out; /* Adjust duration as needed */
-}
-body.blurred {
-  backdrop-filter: blur(8px);
-  transition: backdrop-filter 0.5s ease;
 }
