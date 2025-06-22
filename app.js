@@ -970,10 +970,22 @@ function App() {
   const [activeTab, setActiveTabState] = React.useState('about');
   const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
-  // New state for controlling animation direction
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
-  // New state for controlling full-page win animation
   const [showFullPageWinAnimation, setShowFullPageWinAnimation] = React.useState(false);
+
+  // New state + effect for "Back to Top" button 👇👇
+  const [showBackToTop, setShowBackToTop] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
 
 
   // Effect to handle window resize for mobile view detection
@@ -1051,7 +1063,7 @@ function App() {
     contact: <Contact />,
     privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
   };
-
+  const currentYear = new Date().getFullYear();
   return (
     <>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -1066,11 +1078,30 @@ function App() {
         </div>
       </main>
       <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
-        © 2025 - Crafted with ❤️ and lots of ☕
-        <span className="mx-2">|</span>
-        <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
+        <div>
+          © {currentYear} - Crafted with ❤️ and lots of ☕
+        </div>
+        <div className="mt-1 md:inline md:ml-2 block">
+          <span className="hidden md:inline">|</span>
+          <button 
+            onClick={() => setActiveTab('privacy', 'click')} 
+            className="text-blue-700 font-semibold hover:underline ml-0 md:ml-2"
+          >
+            Privacy Policy
+          </button>
+        </div>
       </footer>
+
       {showFullPageWinAnimation && <WinAnimationOverlay />} {/* Render full-page animation here */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-4 right-4 z-50 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-full p-3 shadow-lg transition-opacity duration-500"          aria-label="Back to top"
+        >
+          ↑
+        </button>
+      )}
+
     </>
   );
 }
