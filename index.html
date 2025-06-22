@@ -18,6 +18,35 @@
 </head>
 <body class="min-h-screen flex flex-col">
   <div id="root" class="flex-grow"></div>
+  <script>
+    // Disable right-click
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+
+    // Disable inspect shortcuts
+    document.addEventListener('keydown', function(e) {
+      // F12
+      if (e.keyCode === 123) {
+        e.preventDefault();
+      }
+
+      // Ctrl+Shift+I / Ctrl+Shift+C / Ctrl+Shift+J
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) {
+        e.preventDefault();
+      }
+
+      // Ctrl+U
+      if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+      }
+
+      // Ctrl+S
+      if (e.ctrlKey && e.keyCode === 83) {
+        e.preventDefault();
+      }
+    });
+  </script>
   <!-- Link to the external JavaScript file -->
   <script type="text/babel" src="app.js"></script>
 </body>
