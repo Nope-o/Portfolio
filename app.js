@@ -467,6 +467,13 @@ const generateBoard = React.useCallback(() => {
     const dy = touchEndY - touchStartY.current;
 
     const sensitivity = 30; // Min pixels for a valid swipe
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > sensitivity) {
+      if (dx > 0) movePlayer('right');
+      else movePlayer('left');
+    } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > sensitivity) {
+      if (dy > 0) movePlayer('down');
+      else movePlayer('up');
+    }
   };
   const playerEmoji = '👻'; // Ghost emoji as the character
   React.useEffect(() => {
@@ -684,7 +691,7 @@ Both projects involved end-to-end development, from requirements gathering to de
       time: "Ongoing",
       desc: "Received multiple HCL certificates and client appreciation for automation, reports, highest resolve count and user satisfaction, with work recognized by Ericsson's Global Quality Head.",
       fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
-      logoUrl: "ericsson.webp",
+      logoUrl: "hcl.webp",
       iconUrl: "https://cdn-icons-png.flaticon.com/128/9961/9961540.png"
     }
   ];
@@ -1037,7 +1044,14 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
  * App Component: The main application component that manages tabs and global animations.
  */
 function App() {
-  const [activeTab, setActiveTabState] = React.useState('about');
+  // Initialize activeTab from URL hash or default to 'about'
+  const getInitialTab = () => {
+    const hash = window.location.hash.replace('#', '');
+    const validTabIds = NAV_TABS.map(tab => tab.id);
+    return validTabIds.includes(hash) ? hash : 'about';
+  };
+
+  const [activeTab, setActiveTabState] = React.useState(getInitialTab);
   const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
@@ -1056,8 +1070,6 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
   // Effect to handle window resize for mobile view detection
   React.useEffect(() => {
     const handleResize = () => {
@@ -1070,8 +1082,18 @@ function App() {
   // Effect to scroll to top when active tab changes
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
 
+  // Effect to listen for URL hash changes (e.g., browser back/forward buttons)
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      setActiveTabState(getInitialTab());
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   /**
-   * Custom setActiveTab function to control tab transitions and animations.
+   * Custom setActiveTab function to control tab transitions, animations, and URL hash.
    * @param {string} tabId - The ID of the tab to activate.
    * @param {string} origin - The origin of the tab change ('click' or 'swipe').
    */
@@ -1091,6 +1113,7 @@ function App() {
       setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
     }
     setActiveTabState(tabId);
+    window.location.hash = tabId; // Update URL hash
   };
 
   // Touch start handler for swipe navigation
@@ -1181,3 +1204,4 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 // Fetch IP logger (moved from original HTML)
 fetch("https://ip-logger.madhavkataria000.workers.dev/").catch(console.error);
+
