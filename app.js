@@ -811,6 +811,12 @@ function Resume() {
                 <a href="https://www.credly.com/badges/513343d0-0d83-4761-9916-f6324436d81f/public_url" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Google Cloud Associate Certificate</a>
               </li>
               <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/D68B6A617A2B34D0?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Power Automate RPA Developer Associate</a>
+              </li>
+              <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/94FFC17678CF74E8?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Power BI Data Analyst Associate</a>
+              </li>
+              <li>
                 <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria-2316/FBC420B1E155F51?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure Fundamentals</a>
               </li>
               <li>
