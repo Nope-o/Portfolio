@@ -1176,20 +1176,23 @@ function App() {
           {components[activeTab]}
         </div>
       </main>
-      <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
-        <div>
-          © {currentYear} - Crafted with ❤️ and lots of ☕
-        </div>
-        <div className="mt-1 md:inline md:ml-2 block">
-          <span className="hidden md:inline">|</span>
-          <button 
-            onClick={() => setActiveTab('privacy', 'click')} 
-            className="text-blue-700 font-semibold hover:underline ml-0 md:ml-2"
-          >
-            Privacy Policy
-          </button>
-        </div>
-      </footer>
+        <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
+          {/* Flex container for the footer content */}
+          <div className={`flex flex-col items-center ${!isMobile ? 'md:flex-row md:justify-center' : ''}`}>
+            {/* Copyright and Crafted text */}
+            <span>© {currentYear} - Crafted with ❤️ and lots of ☕</span>
+
+            {/* Separator only on desktop, with margin */}
+            <span className="hidden md:inline-block md:mx-2">|</span>
+            {/* Privacy Policy button, with conditional margin for mobile */}
+            <button
+              onClick={() => setActiveTab('privacy', 'click')}
+              className="text-blue-700 font-semibold hover:underline mt-1 md:mt-0" 
+            >
+              Privacy Policy
+            </button>
+          </div>
+        </footer>
 
       {showFullPageWinAnimation && <WinAnimationOverlay />} {/* Render full-page animation here */}
       {showBackToTop && (
