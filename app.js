@@ -102,7 +102,6 @@ function Navbar({ activeTab, setActiveTab }) {
             className="h-6 sm:h-8 w-auto inline-block mr-2 -mt-[0.1rem]"
           />
           <span className={logoTextClasses}>Madhav Kataria</span>
-          <span className="absolute -top-3 -right-6 hidden md:inline-block animate-bounce text-2xl text-blue-900">★</span>
         </span>
         <nav className={navContainerClasses}>
           <ul className={navListClasses}>
