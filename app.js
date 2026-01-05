@@ -867,9 +867,9 @@ function Resume() {
             <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
             <ul className="list-disc ml-6 text-gray-700">
               <li>Developed automation scripts in python to check the vulnerabilites of switches and collecting the details and error logs by pinging each switch and check all its ports and define trunk ports and vlans dadicatedly</li>
-              <li>Recognied by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
+              <li>Recognized by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
               <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
-              <li>Developed Attendnace Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows make the internal process efficient.</li>
+              <li>Developed Attendance Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows to make the internal process efficient.</li>
               <li>Recognized by the Global Quality and Process head of Ericsson for good user experience and quality.</li>
               <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
             </ul>
