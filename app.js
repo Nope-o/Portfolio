@@ -793,7 +793,7 @@ function Resume() {
       <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
         <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure.
-          Have nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
+          Have nearly <strong>3+ years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Demonstrated ability to analyze complex organizational data within the IT Infrastructure domain, with a consistent focus on identifying patterns, improving processes, and monitoring SLA and KPI performance.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
@@ -824,10 +824,10 @@ function Resume() {
               <li>
                 <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria/4A3C78C162C56208?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure AI Fundamentals</a>
               </li>
-              <li>IIT Workshops: AI, Cybersecurity, Machine Learning.</li>
-              <li>Various motivating certificates from HCL-Tech including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc.</li>
+              <li>Participated in IIT Delhi Workshops and received certificates in AI, Cybersecurity, Machine Learning.</li>
+              <li>Various motivating certificates from HCL-Tech for Automation and creating Power BI Reports, developing Power Apps.</li>
               <li>CBSE Certificate: Full Marks in Information Technologies (2018).</li>
-              <li>Innovation: Certificate for innovation from the govt of india</li>
+              <li>Inspire Manak Award from Government of India for innovation</li>
             </ul>
           </div>
           <div>
@@ -836,8 +836,8 @@ function Resume() {
               <div className="font-semibold">Machine Learning &amp; AI</div>
               <div className="text-gray-600 text-sm mb-1">Good knowledge of training ML models via Python libraries like "pandas", "Scikit-learn", and "NumPy". Building Custom AI bots using Different APIs.</div>
               <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Python</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Pandas</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Netmiko</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Scikit-learn</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">NumPy</span>
               </div>
@@ -866,10 +866,12 @@ function Resume() {
             </div>
             <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
             <ul className="list-disc ml-6 text-gray-700">
+              <li>Developed automation scripts in python to check the vulnerabilites of switches and collecting the details and error logs by pinging each switch and check all its ports and define trunk ports and vlans dadicatedly</li>
+              <li>Recognied by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
+              <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
+              <li>Developed Attendnace Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows make the internal process efficient.</li>
+              <li>Recognized by the Global Quality and Process head of Ericsson for good user experience and quality.</li>
               <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
-              <li>Work recognized by the Global Quality and Process head of Ericsson</li>
-              <li>Contributed to drafting useful Knowledge Based Articles (KBA)</li>
-              <li>Represented at State Level for Cloud Computing at Skill India (Bangalore)</li>
             </ul>
           </div>
         </div>
