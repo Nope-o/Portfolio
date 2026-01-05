@@ -870,6 +870,7 @@ function Resume() {
               <li>Recognized by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
               <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
               <li>Developed Attendance Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows to make the internal process efficient.</li>
+              <li>Developed Power BI Dashboard for Mondaleze EUC and EUC-Tech Departments</li>
               <li>Recognized by the Global Quality and Process head of Ericsson for good user experience and quality.</li>
               <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
             </ul>
