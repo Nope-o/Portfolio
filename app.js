@@ -824,6 +824,7 @@ function Resume() {
               <li>
                 <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria/4A3C78C162C56208?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure AI Fundamentals</a>
               </li>
+              <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
               <li>Participated in IIT Delhi Workshops and received certificates in AI, Cybersecurity, Machine Learning.</li>
               <li>Various motivating certificates from HCL-Tech for Automation and creating Power BI Reports, developing Power Apps.</li>
               <li>CBSE Certificate: Full Marks in Information Technologies (2018).</li>
@@ -868,8 +869,7 @@ function Resume() {
             <ul className="list-disc ml-6 text-gray-700">
               <li>Developed automation scripts in python to check the vulnerabilites of switches and collecting the details and error logs by pinging each switch and check all its ports and define trunk ports and vlans dadicatedly</li>
               <li>Recognized by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
-              <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
-              <li>Developed Attendance Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows to make the internal process efficient.</li>
+              <li>Developed Attendance Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows and Dashboards to make the internal process efficient.</li>
               <li>Developed Power BI Dashboard for Mondaleze EUC and EUC-Tech Departments</li>
               <li>Recognized by the Global Quality and Process head of Ericsson for good user experience and quality.</li>
               <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
