@@ -766,18 +766,32 @@ Both projects involved end-to-end development, from requirements gathering to de
  * Resume Component: Displays resume content and provides a download option.
  */
 function Resume() {
-  function downloadResume() {
-    const element = document.getElementById('resume-content');
-    if (!element) return;
-    const opt = {
-      margin: 0.3,
-      filename: 'Madhav_Kataria_Resume.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, backgroundColor: "#fff" },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
-  }
+  return (
+    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative">
+      <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
+
+      {/* Download button */}
+      <div className="absolute top-4 right-4">
+        <a
+          href="/Madhav_Kataria_Resume.pdf"   // PDF in public folder
+          download="Madhav_Kataria_Resume.pdf" // Suggested filename
+          className="text-blue-700 font-semibold text-sm hover:underline flex items-center"
+        >
+          Download
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </a>
+      </div>
+
+      {/* Resume content preview */}
+      <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
+        {/* Your existing HTML resume content goes here */}
+      </div>
+    </section>
+  );
+}
+
   return (
     <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative"> {/* Added relative positioning here */}
       <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
