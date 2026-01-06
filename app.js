@@ -767,7 +767,7 @@ Both projects involved end-to-end development, from requirements gathering to de
  */
 function Resume() {
   return (
-    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative"> {/* Added relative positioning here */}
+    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative">
       <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
       
       {/* DIRECT DOWNLOAD BUTTON */}
@@ -775,6 +775,8 @@ function Resume() {
         <a 
           href="Madhav_Kataria_Resume.pdf" 
           download="Madhav_Kataria_Resume.pdf"
+          target="_blank" 
+          rel="noopener noreferrer"
           className="text-blue-700 font-semibold text-sm hover:underline flex items-center"
         >
           Download
