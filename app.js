@@ -102,7 +102,6 @@ function Navbar({ activeTab, setActiveTab }) {
             className="h-6 sm:h-8 w-auto inline-block mr-2 -mt-[0.1rem]"
           />
           <span className={logoTextClasses}>Madhav Kataria</span>
-          <span className="absolute -top-3 -right-6 hidden md:inline-block animate-bounce text-2xl text-blue-900">★</span>
         </span>
         <nav className={navContainerClasses}>
           <ul className={navListClasses}>
@@ -140,12 +139,13 @@ function About({ showSection }) {
             <img src="Madhav-kataria.webp" alt="Madhav Kataria" className="rounded-full w-40 h-40 object-cover shadow-xl border-4 border-white" />
           </div>
         </div>
+
         <div className="flex-grow about-text-mobile">
           <h2 className="text-4xl font-extrabold about-main-title mb-3 tracking-tight drop-shadow-sm">
             Hello, I'm <span>Madhav Kataria!</span>
           </h2>
           <p className="text-lg text-gray-100 leading-relaxed mb-2 card-float-in">
-            Currently pursuing Bachelor's in Data Science and AI from IIT Guwahati.
+            Currently pursuing Bachelor's in Data Science and AI from IIT Guwahati.🎓
           </p>
           <p className="text-lg text-gray-200 leading-relaxed mb-3 card-float-in">
             I am a passionate and results-driven professional with expertise in <strong className="about-strong">Robotic Process Automation (RPA), Power Platform development (Power Apps, Power BI), and IT Infrastructure management</strong>. My journey is driven by a desire to <strong className="about-strong">build innovative solutions that enhance efficiency and reduce human errors</strong>, and continuously learn and grow. I thrive on challenges and am always seeking new opportunities to make a meaningful impact.
@@ -162,16 +162,32 @@ function About({ showSection }) {
               <li>User-Centric Approach</li>
             </ul>
           </div>
-          <button onClick={() => showSection('contact', 'click')}
-            className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 pulse"
-          >
-            Get in Touch!
-          </button>
         </div>
       </div>
+
+      {/* BUTTONS — moved outside of flex row */}
+      <div className="flex flex-wrap justify-center gap-4 mt-6">
+        <button
+          onClick={() => showSection('contact', 'click')}
+          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+        >
+          Get in Touch!
+        </button>
+        
+        <button
+          onClick={() => showSection('journey', 'click')}
+          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+        >
+          🚀 Explore My Journey
+        </button>
+      </div>
+      <p className="text-center text-gray-300 mt-4 text-sm italic">
+        "Driven by curiosity. Inspired by innovation. Always learning." ✨
+      </p>
     </section>
   );
 }
+
 
 // Initialize Tone.js instruments for sound effects
 const winSynth = new Tone.PolySynth(Tone.Synth, {
@@ -294,13 +310,59 @@ function PathfinderGame({ onGameWin }) {
     }
   }, [playerOrientation]); // Added playerOrientation as a dependency
 
-  // Function to generate a random board with start, end, and obstacles
-  const generateBoard = React.useCallback(() => {
-    setGameStatus('loading'); // Reset status to loading on board generation
-    setIsBoardInitialized(false); // Mark board as not initialized yet
+// Add this BEFORE generateBoard:
 
-    let newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
-    let startR, startC, endR, endC;
+function isPathAvailable(board, start, end) {
+  const numRows = board.length;
+  const numCols = board[0].length;
+  const visited = Array.from({ length: numRows }, () => Array(numCols).fill(false));
+
+  const queue = [];
+  queue.push(start);
+
+  const directions = [
+    { row: -1, col: 0 }, // up
+    { row: 1, col: 0 },  // down
+    { row: 0, col: -1 }, // left
+    { row: 0, col: 1 }   // right
+  ];
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const { row, col } = current;
+
+    if (row === end.row && col === end.col) {
+      return true; // Path found!
+    }
+
+    if (
+      row < 0 || row >= numRows ||
+      col < 0 || col >= numCols ||
+      visited[row][col] ||
+      board[row][col] === 'X'
+    ) {
+      continue;
+    }
+
+    visited[row][col] = true;
+
+    directions.forEach(dir => {
+      queue.push({ row: row + dir.row, col: col + dir.col });
+    });
+  }
+
+  return false; // No path found
+}
+const generateBoard = React.useCallback(() => {
+  setGameStatus('loading'); // Reset status to loading on board generation
+  setIsBoardInitialized(false); // Mark board as not initialized yet
+
+  let newBoard;
+  let startR, startC, endR, endC;
+  let validBoard = false;
+
+  while (!validBoard) {
+    newBoard = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(''));
 
     // Ensure start and end are distinct AND sufficiently far apart
     do {
@@ -310,14 +372,14 @@ function PathfinderGame({ onGameWin }) {
       endC = Math.floor(Math.random() * GRID_SIZE);
     } while (
       (startR === endR && startC === endC) || // Ensure start and end are different spots
-      (Math.abs(startR - endR) + Math.abs(startC - endC) < Math.floor(GRID_SIZE / 2)) // Ensure minimum distance
+      (Math.abs(startR - endR) + Math.abs(startC - endC) < Math.floor(GRID_SIZE / 0.7)) // Ensure minimum distance
     );
 
     newBoard[startR][startC] = 'S';
     newBoard[endR][endC] = 'E';
 
     // Add obstacles (around 20-30% of the cells, avoiding S and E)
-    const numObstacles = Math.floor(GRID_SIZE * GRID_SIZE * 0.25);
+    const numObstacles = Math.floor(GRID_SIZE * GRID_SIZE * 0.40);
     for (let i = 0; i < numObstacles; i++) {
       let r, c;
       do {
@@ -327,13 +389,23 @@ function PathfinderGame({ onGameWin }) {
       newBoard[r][c] = 'X';
     }
 
-    setPlayerPos({ row: startR, col: startC });
-    setEndPos({ row: endR, col: endC });
-    setBoard(newBoard);
-    setGameStatus('playing'); // Set game status to playing only after board is generated
-    setIsBoardInitialized(true); // Mark board as initialized
-    setPlayerOrientation('right'); // Reset player orientation on new game
-  }, []);
+    // Path check!
+    validBoard = isPathAvailable(
+      newBoard,
+      { row: startR, col: startC },
+      { row: endR, col: endC }
+    );
+  }
+
+  // Set final board
+  setPlayerPos({ row: startR, col: startC });
+  setEndPos({ row: endR, col: endC });
+  setBoard(newBoard);
+  setGameStatus('playing');
+  setIsBoardInitialized(true);
+  setPlayerOrientation('right'); // Reset player orientation on new game
+}, []);
+
 
   // Effect to initialize board when component mounts
   React.useEffect(() => {
@@ -394,18 +466,25 @@ function PathfinderGame({ onGameWin }) {
     const dy = touchEndY - touchStartY.current;
 
     const sensitivity = 30; // Min pixels for a valid swipe
-
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > sensitivity) {
-      // Horizontal swipe
       if (dx > 0) movePlayer('right');
       else movePlayer('left');
     } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > sensitivity) {
-      // Vertical swipe
       if (dy > 0) movePlayer('down');
       else movePlayer('up');
     }
   };
-
+  const playerEmoji = '👻'; // Ghost emoji as the character
+  React.useEffect(() => {
+    if (gameStatus === 'lost') {
+      const timer = setTimeout(() => {
+        generateBoard();  // use correct function
+      }, 2000);
+  
+      return () => clearTimeout(timer);
+    }
+  }, [gameStatus, generateBoard]);  // add generateBoard as dependency
+  
   // Show loading message until the board is initialized
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
@@ -416,10 +495,10 @@ function PathfinderGame({ onGameWin }) {
     );
   }
 
-  const playerEmoji = '👻'; // Ghost emoji as the character
+
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '600px' }}> {/* Increased minHeight */}
+    <section className="relative bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-white p-8 rounded-3xl shadow-2xl mb-10 max-w-xl mx-auto text-center flex flex-col items-center" style={{ minHeight: '640px' }}> {/* Increased minHeight */}
       <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight drop-shadow-sm">Pathfinder's Puzzle</h2>
       <p className="text-gray-700 mb-6">Navigate the board to reach the destination. Use **Arrow Keys** or **Swipe** to move!</p>
 
@@ -457,26 +536,32 @@ function PathfinderGame({ onGameWin }) {
       </div>
 
       {gameStatus === 'won' && (
-        <div className="game-message won-message">
-          Congratulations! You've found your path!
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-400/10 backdrop-blur-sm transition-all duration-700">
+          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.7)] text-center text-xl font-bold">
+            🎉 Congratulations! You've found your path!
+          </div>
         </div>
       )}
       {gameStatus === 'lost' && (
-        <div className="game-message lost-message">
-          Oops! You hit an obstacle. Try again!
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-red-400/10 backdrop-blur-sm transition-all duration-700">
+          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold">
+            ❌ Oops! You hit an obstacle. Resetting...
+          </div>
         </div>
       )}
+
+
 
       {/* Mobile-only Reset button - Absolutely positioned */}
       <button
         onClick={generateBoard}
-        className="absolute bottom-4 left-4 control-button-mobile bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse md:hidden"
+        className="absolute bottom-14 left-4 bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden"
       >
         {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
       </button>
 
       {/* Mobile-only directional buttons - Absolutely positioned */}
-      <div className="absolute bottom-4 right-4 md:hidden">
+      <div className="absolute bottom-2 right-4 md:hidden">
         <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40"> {/* Changed to grid-rows-2 */}
           {/* Row 1 */}
           <div></div> {/* Empty block 1 */}
@@ -493,7 +578,7 @@ function PathfinderGame({ onGameWin }) {
       {/* Desktop Reset button - visible only on desktop */}
       <button
         onClick={generateBoard}
-        className="mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-6 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse hidden md:block"
+        className="mt-6 bg-gray-700 hover:bg-gray-800 text-white py-2 px-6 rounded-lg font-semibold transition-all duration-300 hidden md:block"
       >
         {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
       </button>
@@ -532,6 +617,7 @@ function Journey({ setAppWinAnimation }) { // Receive setAppWinAnimation prop
   const [showDetails, setShowDetails] = React.useState({});
   // New state to control whether the game or the journey timeline is shown
   const [gameWon, setGameWon] = React.useState(false); // Initial state: game not yet won
+  const [animatingIcon, setAnimatingIcon] = React.useState(null); //
 
   // Reset gameWon state and win animation state when Journey component mounts
   React.useEffect(() => {
@@ -560,28 +646,32 @@ function Journey({ setAppWinAnimation }) { // Receive setAppWinAnimation prop
       time: "Year of Enrollment - Present",
       desc: "Began my Bachelor's in Data Science and AI from IIT Guwahati, diving deep into cutting-edge technologies and foundational concepts.",
       fullDesc: `Commenced a rigorous Bachelor's program in Data Science and AI at IIT Guwahati, one of India's premier technical institutions. This program has provided a strong foundation in algorithms, machine learning, artificial intelligence, and data analytics. Actively involved in various academic projects and research initiatives, exploring advanced topics and developing practical skills in data manipulation, model building, and system optimization. My coursework includes subjects like advanced statistics, deep learning, natural language processing, and big data technologies, preparing me for a career at the forefront of data innovation.`,
-      logoUrl: "IITG_logo.webp"
+      logoUrl: "IITG_logo.webp",
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/4341/4341160.png"
     },
     {
       title: "Training at HCL TechBee Program",
       time: "Sept 2022 - Mar 2023",
       desc: "Completed intensive 6-month training focusing on Data Centre Operations, Linux CLI, networking, AWS, and basic programming.",
       fullDesc: `Underwent comprehensive 6-month training through the HCL TechBee Program, designed to equip me with essential IT skills. The curriculum covered Data Centre Operations, providing insights into managing and maintaining critical IT infrastructure. Gained practical experience with Linux CLI, network configuration, and DHCP/IP setup. Acquired fundamental knowledge in networking concepts using Cisco VLANs, routing protocols, and SSH. Understood Windows Server administration, including Active Directory and RAID setup. Received hands-on training in Amazon Web Services (AWS), focusing on cloud services like EC2, S3, and VPC, and Elastic Beanstalk. Additionally, I was introduced to basic programming concepts in Python, C, SQL, and Oracle, laying a strong foundation for future development roles. This program fostered a practical, problem-solving approach to IT challenges.`,
-      logoUrl: "hcl.webp"
+      logoUrl: "hcl.webp",
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/1376/1376421.png"
     },
     {
       title: "Internship at HCL - Technical Support Engineer",
       time: "Mar 2023 - Sept 2023",
       desc: "Served as Technical Support Engineer for Ericsson Global Organization, achieving high resolve counts and contributing to knowledge base articles.",
       fullDesc: `Worked as a Technical Support Engineer intern for Ericsson Global Organization, providing first-line and second-line support for complex technical issues. My responsibilities included diagnosing and resolving hardware and software problems, troubleshooting network connectivity, and assisting users with various IT-related queries. Consistently achieved high resolve count and received user satisfaction certificates, demonstrating effective problem-solving skills. Received recognition from the Global Quality and Process Head at Ericsson for contributions. Actively contributed to the internal knowledge base by drafting detailed technical articles for new technologies and solutions, improving efficiency for the support team and self-service options for users. Participated in the Skill India platform under managerial guidance, showcasing technical abilities in a competitive environment.`,
-      logoUrl: "ericsson.webp"
+      logoUrl: "ericsson.webp",
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/10822/10822222.png"
     },
     {
-      title: "Full-Time Role & Automation Specialist",
+      title: "Full-Time Role & Automation Engineer",
       time: "Sept 2023 - Present",
       desc: "Transitioned to a full-time role, focusing on automation with Power Apps and Power Automate, and developing Power BI reports.",
       fullDesc: `Transitioned into a full-time role as a Technical Support Engineer and Automation Specialist. A significant portion of my role involves developing and implementing automation solutions using Microsoft Power Platform. This includes creating robust applications with Power Apps to streamline business processes, automating repetitive tasks with Power Automate flows, and designing interactive Power BI reports to provide data-driven insights. I am responsible for identifying automation opportunities, gathering requirements from stakeholders, and delivering solutions that enhance operational efficiency, reduce manual effort, and improve accuracy across various IT infrastructure domains. I collaborate closely with cross-functional teams to ensure seamless integration and deployment of automation initiatives. Developed an attendance tracker application on the Power Apps platform to streamline project resource management. Implemented automated data archiving processes, including duplication removal, improving data integrity. Created a KBA-review application and Power BI reports to enhance knowledge management and data-driven insights. Developed scripts for browser cache and cookies management to improve system performance and user experience.`,
-      logoUrl: "hcl.webp"
+      logoUrl: "hcl.webp",
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/4300/4300059.png"
     },
     {
       title: "Developed Key Power Platform Applications",
@@ -592,14 +682,16 @@ function Journey({ setAppWinAnimation }) { // Receive setAppWinAnimation prop
 The 'KBA Review' application, also on Power Apps, transformed knowledge article quality management. It enabled structured reviews, integrated Gen-AI Bot optimization formatting, automated dynamic email notifications to L2 teams, and facilitated a ticketing tool-like workflow for knowledge base article updates. This includes a knowledge article quality review system, Gen-AI Bot optimization formatting, dashboards to track ongoing activities, automated dynamic email system to different L2 teams after KBA review, automated assignment to L2 groups, automated feedback to SD when changes are completed, and ticketing tool-like workflow management. Technologies used: Power Apps, Power BI, Power Automate, AI Integration.
 
 Both projects involved end-to-end development, from requirements gathering to deployment and post-launch support, demonstrating my ability to deliver high-impact solutions. Leveraging the Microsoft Power Platform to automate processes and provide data-driven solutions for HCL and Ericsson: developed tools for attendance tracking with role-based access and automated shift reminders; integrated Power Apps with ticketing systems to streamline workflows; created and delivered data reports using Power BI for Mondelez EUC and EUC Tech departments, providing valuable insights.`,
-      logoUrl: "hcl.webp"
+      logoUrl: "hcl.webp",
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/8899/8899687.png"
     },
     {
       title: "Recognized for Automation & Quality",
       time: "Ongoing",
       desc: "Received multiple HCL certificates and client appreciation for automation, reports, highest resolve count and user satisfaction, with work recognized by Ericsson's Global Quality Head.",
       fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
-      logoUrl: "ericsson.webp"
+      logoUrl: "hcl.webp",
+      iconUrl: "https://cdn-icons-png.flaticon.com/128/9961/9961540.png"
     }
   ];
 
@@ -614,7 +706,7 @@ Both projects involved end-to-end development, from requirements gathering to de
         // Render the journey content if game is won
         <>
           <p className="text-center text-gray-800 text-lg mb-6 font-semibold animate-section-in">
-            Congratulations on navigating the puzzle! It seems you've mastered the art of finding a path. Now, allow me to share the journey I've walked.
+          "🎉 You've unlocked my life journey! Here's how I’ve navigated challenges and milestones — I hope it inspires you too."
           </p>
           <p className="text-center text-gray-700 mb-6">Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
           <div className="mt-10">
@@ -622,9 +714,19 @@ Both projects involved end-to-end development, from requirements gathering to de
             <ol className="timeline-list">
               {timelineItems.map((item, i) => (
                 <li className="timeline-item" key={i}>
-                  <span className="timeline-dot">{i + 1}</span>
+                  <span className="timeline-dot">
+                  <img
+                    src={item.iconUrl} 
+                    alt="icon"
+                    className={`timeline-icon ${animatingIcon === i ? 'animate-jiggle' : ''}`}
+                  />
+                </span>
                   <div className="flex-1">
-                    <div className="timeline-content cursor-pointer flex justify-between items-start" onClick={() => toggleDetails(i)}>
+                    <div className="timeline-content cursor-pointer flex justify-between items-start" 
+                    onClick={() => {
+                      toggleDetails(i);
+                      setAnimatingIcon(i);
+                      setTimeout(() => setAnimatingIcon(null), 500);}}>
                       <div className="flex-grow">
                         <h4 className="font-bold text-slate-800">{item.title}</h4>
                         <span className="block text-gray-500 text-xs mb-1">{item.time}</span>
@@ -664,34 +766,28 @@ Both projects involved end-to-end development, from requirements gathering to de
  * Resume Component: Displays resume content and provides a download option.
  */
 function Resume() {
-  function downloadResume() {
-    const element = document.getElementById('resume-content');
-    if (!element) return;
-    const opt = {
-      margin: 0.3,
-      filename: 'Madhav_Kataria_Resume.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, backgroundColor: "#fff" },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
-  }
   return (
     <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative"> {/* Added relative positioning here */}
       <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
-      {/* Download button moved to top right corner */}
+      
+      {/* DIRECT DOWNLOAD BUTTON */}
       <div className="absolute top-4 right-4">
-        <button onClick={downloadResume} className="text-blue-700 font-semibold text-sm hover:underline flex items-center">
+        <a 
+          href="Madhav_Kataria_Resume.pdf" 
+          download="Madhav_Kataria_Resume.pdf"
+          className="text-blue-700 font-semibold text-sm hover:underline flex items-center"
+        >
           Download
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
-        </button>
+        </a>
       </div>
+
       <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
         <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure.
-          Have nearly <strong>3 years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
+          Have nearly <strong>3+ years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Demonstrated ability to analyze complex organizational data within the IT Infrastructure domain, with a consistent focus on identifying patterns, improving processes, and monitoring SLA and KPI performance.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
@@ -708,6 +804,12 @@ function Resume() {
                 <a href="https://www.credly.com/badges/513343d0-0d83-4761-9916-f6324436d81f/public_url" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Google Cloud Associate Certificate</a>
               </li>
               <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/D68B6A617A2B34D0?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Power Automate RPA Developer Associate</a>
+              </li>
+              <li>
+                <a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/94FFC17678CF74E8?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Power BI Data Analyst Associate</a>
+              </li>
+              <li>
                 <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria-2316/FBC420B1E155F51?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure Fundamentals</a>
               </li>
               <li>
@@ -716,10 +818,11 @@ function Resume() {
               <li>
                 <a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria/4A3C78C162C56208?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Microsoft Certified: Azure AI Fundamentals</a>
               </li>
-              <li>IIT Workshops: AI, Cybersecurity, Machine Learning.</li>
-              <li>Various motivating certificates from HCL-Tech including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc.</li>
+              <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
+              <li>Participated in IIT Delhi Workshops and received certificates in AI, Cybersecurity, Machine Learning.</li>
+              <li>Various motivating certificates from HCL-Tech for Automation and creating Power BI Reports, developing Power Apps.</li>
               <li>CBSE Certificate: Full Marks in Information Technologies (2018).</li>
-              <li>Innovation: Certificate for innovation from the govt of india</li>
+              <li>Inspire Manak Award from Government of India for innovation</li>
             </ul>
           </div>
           <div>
@@ -728,8 +831,8 @@ function Resume() {
               <div className="font-semibold">Machine Learning &amp; AI</div>
               <div className="text-gray-600 text-sm mb-1">Good knowledge of training ML models via Python libraries like "pandas", "Scikit-learn", and "NumPy". Building Custom AI bots using Different APIs.</div>
               <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Python</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Pandas</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Netmiko</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Scikit-learn</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">NumPy</span>
               </div>
@@ -758,10 +861,12 @@ function Resume() {
             </div>
             <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
             <ul className="list-disc ml-6 text-gray-700">
+              <li>Developed automation scripts in python to check the vulnerabilites of switches and collecting the details and error logs by pinging each switch and check all its ports and define trunk ports and vlans dadicatedly</li>
+              <li>Recognized by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
+              <li>Developed Attendance Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows and Dashboards to make the internal process efficient.</li>
+              <li>Developed Power BI Dashboard for Mondaleze EUC and EUC-Tech Departments</li>
+              <li>Recognized by the Global Quality and Process head of Ericsson for good user experience and quality.</li>
               <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
-              <li>Work recognized by the Global Quality and Process head of Ericsson</li>
-              <li>Contributed to drafting useful Knowledge Based Articles (KBA)</li>
-              <li>Represented at State Level for Cloud Computing at Skill India (Bangalore)</li>
             </ul>
           </div>
         </div>
@@ -941,14 +1046,31 @@ function PrivacyPolicy({ setActiveTab }) { // Added setActiveTab prop
  * App Component: The main application component that manages tabs and global animations.
  */
 function App() {
-  const [activeTab, setActiveTabState] = React.useState('about');
+  // Initialize activeTab from URL hash or default to 'about'
+  const getInitialTab = () => {
+    const hash = window.location.hash.replace('#', '');
+    const validTabIds = NAV_TABS.map(tab => tab.id);
+    return validTabIds.includes(hash) ? hash : 'about';
+  };
+
+  const [activeTab, setActiveTabState] = React.useState(getInitialTab);
   const [touchStartX, setTouchStartX] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
-  // New state for controlling animation direction
   const [transitionDirection, setTransitionDirection] = React.useState('animate-section-in');
-  // New state for controlling full-page win animation
   const [showFullPageWinAnimation, setShowFullPageWinAnimation] = React.useState(false);
 
+  // New state + effect for "Back to Top" button 👇👇
+  const [showBackToTop, setShowBackToTop] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Effect to handle window resize for mobile view detection
   React.useEffect(() => {
@@ -962,8 +1084,18 @@ function App() {
   // Effect to scroll to top when active tab changes
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
 
+  // Effect to listen for URL hash changes (e.g., browser back/forward buttons)
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      setActiveTabState(getInitialTab());
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   /**
-   * Custom setActiveTab function to control tab transitions and animations.
+   * Custom setActiveTab function to control tab transitions, animations, and URL hash.
    * @param {string} tabId - The ID of the tab to activate.
    * @param {string} origin - The origin of the tab change ('click' or 'swipe').
    */
@@ -983,6 +1115,7 @@ function App() {
       setTransitionDirection('animate-section-in'); // Default slide-up animation for clicks
     }
     setActiveTabState(tabId);
+    window.location.hash = tabId; // Update URL hash
   };
 
   // Touch start handler for swipe navigation
@@ -1025,7 +1158,7 @@ function App() {
     contact: <Contact />,
     privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
   };
-
+  const currentYear = new Date().getFullYear();
   return (
     <>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -1039,12 +1172,34 @@ function App() {
           {components[activeTab]}
         </div>
       </main>
-      <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
-        © 2025 - Crafted with ❤️ and lots of ☕
-        <span className="mx-2">|</span>
-        <button onClick={() => setActiveTab('privacy', 'click')} className="text-blue-700 font-semibold hover:underline">Privacy Policy</button>
-      </footer>
+        <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
+          {/* Flex container for the footer content */}
+          <div className={`flex flex-col items-center ${!isMobile ? 'md:flex-row md:justify-center' : ''}`}>
+            {/* Copyright and Crafted text */}
+            <span>© {currentYear} - Crafted with ❤️ and lots of ☕</span>
+
+            {/* Separator only on desktop, with margin */}
+            <span className="hidden md:inline-block md:mx-2">|</span>
+            {/* Privacy Policy button, with conditional margin for mobile */}
+            <button
+              onClick={() => setActiveTab('privacy', 'click')}
+              className="text-blue-700 font-semibold hover:underline mt-1 md:mt-0" 
+            >
+              Privacy Policy
+            </button>
+          </div>
+        </footer>
+
       {showFullPageWinAnimation && <WinAnimationOverlay />} {/* Render full-page animation here */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-4 right-4 z-50 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-full p-3 shadow-lg transition-opacity duration-500"          aria-label="Back to top"
+        >
+          ↑
+        </button>
+      )}
+
     </>
   );
 }
