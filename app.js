@@ -788,9 +788,8 @@ function Resume() {
 
       <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
-        <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, offering a solid academic grounding in analytics and machine learning alongside practical industry exposure.
-          Have nearly <strong>3+ years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
-        <p className="text-gray-700 mb-2">Demonstrated ability to analyze complex organizational data within the IT Infrastructure domain, with a consistent focus on identifying patterns, improving processes, and monitoring SLA and KPI performance.</p>
+        <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, , with a solid foundation in analytics, machine learning, and practical industry exposure. Possess <strong>3+ years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
+        <p className="text-gray-700 mb-2">Skilled in analyzing complex organizational data within IT Infrastructure, identifying patterns, optimizing processes, and monitoring SLA and KPI performance to drive operational excellence.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
             <h3 className="font-bold text-lg text-blue-900 mb-2">Core Expertise</h3>
@@ -824,14 +823,14 @@ function Resume() {
               <li>Participated in IIT Delhi Workshops and received certificates in AI, Cybersecurity, Machine Learning.</li>
               <li>Various motivating certificates from HCL-Tech for Automation and creating Power BI Reports, developing Power Apps.</li>
               <li>CBSE Certificate: Full Marks in Information Technologies (2018).</li>
-              <li>Inspire Manak Award from Government of India for innovation</li>
+              <li>Inspire Manak Award from Government of India for innovation.</li>
             </ul>
           </div>
           <div>
             <h3 className="font-bold text-lg text-blue-900 mb-2">Technical Skills</h3>
             <div className="mb-4">
               <div className="font-semibold">Machine Learning &amp; AI</div>
-              <div className="text-gray-600 text-sm mb-1">Good knowledge of training ML models via Python libraries like "pandas", "Scikit-learn", and "NumPy". Building Custom AI bots using Different APIs.</div>
+              <div className="text-gray-600 text-sm mb-1">Training ML models via Python libraries like "pandas", "Scikit-learn", and "NumPy". Building Custom AI bots using Different APIs.</div>
               <div className="flex flex-wrap gap-2 mb-2">
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Pandas</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Netmiko</span>
@@ -839,7 +838,7 @@ function Resume() {
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">NumPy</span>
               </div>
               <div className="font-semibold">Cloud Computing</div>
-              <div className="text-gray-600 text-sm mb-1">Good knowledge Cloud Computing on platforms like AWS, Azure and GCP (EC2, VPC, AWS Elastic Beanstalk, CloudWatch, EC2 Auto Scaling, Elastic Load Balancing, AWS IAM, LAMBDA, S3 buckets).</div>
+              <div className="text-gray-600 text-sm mb-1">Skilled on Cloud Platforms like AWS, Azure and GCP (EC2, VPC, AWS Elastic Beanstalk, CloudWatch, EC2 Auto Scaling, Elastic Load Balancing, AWS IAM, LAMBDA, S3 buckets).</div>
               <div className="flex flex-wrap gap-2 mb-2">
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">AWS</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Azure</span>
@@ -852,8 +851,15 @@ function Resume() {
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Switching</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Routing</span>
               </div>
+              <div className="font-semibold">Microsoft Power Platform</div>
+              <div className="text-gray-600 text-sm mb-1">Developing PowerApps, RPA automation flows via Power Automate and developing Reports and Dashboards via Power BI.</div>
+              <div className="flex flex-wrap gap-2 mb-2">
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Power BI</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">PowerApps</span>
+                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Power Automate</span>
+              </div>            
               <div className="font-semibold">System Administration</div>
-              <div className="text-gray-600 text-sm mb-1">Good knowledge of troubleshooting Office 365, SharePoints, File systems, Citrix, MFA etc with OS including Linux, Windows and MAC.</div>
+              <div className="text-gray-600 text-sm mb-1">Skilled in Office 365, SharePoints, File systems, Citrix, MFA etc with OS including Linux, Windows and MAC OS.</div>
               <div className="flex flex-wrap gap-2 mb-2">
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Office 365</span>
                 <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Linux</span>
@@ -863,12 +869,12 @@ function Resume() {
             </div>
             <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
             <ul className="list-disc ml-6 text-gray-700">
-              <li>Developed automation scripts in python to check the vulnerabilites of switches and collecting the details and error logs by pinging each switch and check all its ports and define trunk ports and vlans dadicatedly</li>
-              <li>Recognized by the Head of IT Support (Ericsson) for developing the technical processes of KBA enhancement activity which drastically improved Ericsson IT-Support Chatbot</li>
-              <li>Developed Attendance Tracker, Employee Details, MyApps&Dashboards and other PowerApps along with Power Automate flows and Dashboards to make the internal process efficient.</li>
-              <li>Developed Power BI Dashboard for Mondaleze EUC and EUC-Tech Departments</li>
-              <li>Recognized by the Global Quality and Process head of Ericsson for good user experience and quality.</li>
-              <li>Self-volunteered appreciation from clients. Proud to have 50+ such positive feedback</li>
+              <li>Developed Python automation scripts to identify switch vulnerabilities, collect configuration details and error logs via SSH, validate all ports, and accurately define trunk ports and VLAN assignments.</li>
+              <li>Recognized by Ericsson’s Head of IT Support for designing technical processes that enhanced KBA activity, significantly improving the IT-Support Chatbot’s efficiency and user experience.</li>
+              <li>Developed multiple PowerApps solutions (Attendance Tracker, Employee Details, MyApps & Dashboards) integrated with Power Automate flows and dashboards, streamlining internal processes and improving operational efficiency.</li>
+              <li>Designed and deployed Power BI dashboards for Mondelēz International’s EUC and EUC-Tech departments, enabling data-driven insights and improved decision-making.</li>
+              <li>Acknowledged by Ericsson’s Global Quality and Process Head for delivering exceptional user experience and maintaining high-quality standards in technical solutions.</li>
+              <li>Received over 50 unsolicited client appreciations for delivering high-quality solutions and exceptional support.</li>
             </ul>
           </div>
         </div>
