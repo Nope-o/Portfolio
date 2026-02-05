@@ -214,12 +214,7 @@ function About({ showSection }) {
       <div className="relative z-10 flex about-flex-mobile md:flex-row flex-col items-center md:items-start space-y-6 md:space-y-0 md:space-x-10">
         <div className="flex-shrink-0 flex flex-col items-center md:items-start about-photo-mobile">
           <div className="about-photo-bg mb-3 mt-2 shadow-lg hover:scale-105 transition-transform duration-500">
-            <img 
-              src="Madhav-kataria.webp" 
-              alt="Madhav Kataria" 
-              className="rounded-full w-40 h-40 object-cover shadow-xl border-4 border-white"
-              loading="lazy"
-            />
+            <img src="Madhav-kataria.webp" alt="Madhav Kataria" className="rounded-full w-40 h-40 object-cover shadow-xl border-4 border-white" />
           </div>
         </div>
 
@@ -231,17 +226,17 @@ function About({ showSection }) {
             Currently pursuing Bachelor's in Data Science and AI from IIT Guwahati.🎓
           </p>
           <p className="text-lg text-gray-200 leading-relaxed mb-3 card-float-in">
-            I am a passionate and results-driven professional with expertise in <strong className="about-strong">Robotic Process Automation (RPA), Power Platform development (Power Apps, Power BI), and IT Infrastructure management</strong>. My journey is driven by a desire to <strong className="about-strong">build innovative solutions that enhance efficiency and reduce human errors</strong>, and continuously learn and grow.
+            I am a passionate and results-driven professional with expertise in <strong className="about-strong">Robotic Process Automation (RPA), Power Platform development (Power Apps, Power BI), and IT Infrastructure management</strong>. My journey is driven by a desire to <strong className="about-strong">build innovative solutions that enhance efficiency and reduce human errors</strong>, and continuously learn and grow. I thrive on challenges and am always seeking new opportunities to make a meaningful impact.
           </p>
           <p className="text-md text-gray-300 mb-3 card-float-in">
-            My unique value proposition lies in my ability to <strong className="about-strong">leverage AI, Data insights and automation to optimize organizational processes, specifically in the IT Infra Domain</strong>.
+            My unique value proposition lies in my ability to <strong className="about-strong">leverage AI, Data insights and automation to optimize organizational processes, specifically in the IT Infra Domain</strong>. I am motivated by <strong className="about-strong">solving complex problems, fostering collaborative environments, and pushing creative boundaries to deliver tangible improvements.</strong>
           </p>
           <div className="space-y-2 mb-6 card-float-in">
             <h3 className="text-xl font-semibold about-value">My Values:</h3>
             <ul className="list-disc list-inside text-gray-200">
-              <li>Innovation & Continuous Learning</li>
-              <li>Collaboration & Teamwork</li>
-              <li>Integrity & Transparency</li>
+              <li>Innovation &amp; Continuous Learning</li>
+              <li>Collaboration &amp; Teamwork</li>
+              <li>Integrity &amp; Transparency</li>
               <li>User-Centric Approach</li>
             </ul>
           </div>
