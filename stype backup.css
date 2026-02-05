@@ -65,6 +65,9 @@ body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e
 .nav-link.active .nav-underline, .nav-link:hover .nav-underline {
   opacity: 1; transform: scaleX(1);
 }
+
+
+
 .nav-link.active { font-weight: 700; }
 
 /* Base header styles (default, detailed view) */
@@ -181,28 +184,21 @@ header {
     width: 100%;
   }
 }
-.timeline-dot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  background: linear-gradient(135deg, #2628a3, #0a2449 90%);
-  color: white;
-  border-radius: 9999px;
-  box-shadow: 0 2px 8px #6366f18a;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  max-width: 2.5rem;
-  max-height: 2.5rem;
-  z-index: 1;
-  border: 3px solid #fff;
-  position: relative;
-  margin-bottom: 0.5rem;
-  flex-shrink: 0;
+/* Journey Section (Timeline) */
+/* Base for icons */
+.timeline-dot img.timeline-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
+
+/* Desktop (641px and up) */
 @media (min-width: 641px) {
-  .timeline-list { border-left: 2px solid #c0cbf5; margin-left: 1.75rem; padding-left: 2.25rem;}
+  .timeline-list {
+    border-left: none;
+    margin-left: 0rem;
+    padding-left: 0rem;
+  }
   .timeline-item {
     display: flex;
     align-items: flex-start;
@@ -210,11 +206,21 @@ header {
     position: relative;
   }
   .timeline-dot {
-    position: absolute;
-    left: -2.6rem;
-    top: 0;
-    margin-bottom: 0;
-    margin-top: 0.16rem;
+    .timeline-dot {
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      min-width: auto;
+      min-height: auto;
+      max-width: 40px;
+      max-height: 40px;
+      position: absolute;
+      left: -2.6rem;
+      top: 0;
+      margin-top: 0.16rem;
+    }
   }
   .timeline-content {
     background: white;
@@ -222,11 +228,10 @@ header {
     box-shadow: 0 2px 8px #6366f113;
     padding: 1rem 1.5rem;
     margin-left: 0;
-    min-width: 0;
     flex: 1;
     cursor: pointer;
+    position: relative;
     transition: background 0.4s, box-shadow 0.3s;
-    position: relative; /* Added for absolute positioning of new arrow */
   }
   .timeline-content:hover {
     background: #eef2ff;
@@ -237,29 +242,47 @@ header {
     border-radius: 0.75rem;
     padding: 0.75rem 1.25rem;
     margin-top: 0.75rem;
-    margin-left: 0;
-    flex: 1;
     font-size: 0.95rem;
     color: #334155;
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s, transform 0.4s; /* Adjusted duration */
     max-height: 0;
     opacity: 0;
     transform: translateY(-20px);
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s, transform 0.4s;
     will-change: max-height, opacity, transform;
   }
   .timeline-details.open {
-    max-height: 1000px; /* Changed from max-content to a fixed height for smoother transition */
+    max-height: 1000px;
     margin-left: 20px;
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+/* Mobile (640px and below) */
 @media (max-width: 640px) {
-  .timeline-list { border-left: 0; margin-left: 0; padding-left: 0;}
-  .timeline-item { display: block; margin-bottom: 2.5rem;}
-  .timeline-dot { margin: 0 auto 0.6rem auto; position: static;}
+  .timeline-list {
+    border-left: 0;
+    margin-left: 0;
+    padding-left: 0;
+  }
+  .timeline-item {
+    display: block;
+    margin-bottom: 2.5rem;
+  }
+  .timeline-dot {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0 auto 0.6rem auto;
+    min-width: auto;
+    min-height: auto;
+    max-width: 40px;
+    max-height: 40px;
+    position: static;
+  }
   .timeline-content {
     background: white;
     border-radius: 1rem;
@@ -268,8 +291,8 @@ header {
     margin-left: 0;
     margin-top: 0;
     cursor: pointer;
+    position: relative;
     transition: background 0.4s, box-shadow 0.3s;
-    position: relative; /* Added for absolute positioning of new arrow */
   }
   .timeline-content:hover {
     background: #eef2ff;
@@ -284,23 +307,17 @@ header {
     color: #334155;
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s, transform 0.4s; /* Adjusted duration */
     max-height: 0;
     opacity: 0;
     transform: translateY(-20px);
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s, transform 0.4s;
     will-change: max-height, opacity, transform;
   }
   .timeline-details.open {
-    max-height: 1000px; /* Changed from max-content to a fixed height for smoother transition */
+    max-height: 1000px;
     opacity: 1;
     transform: translateY(0);
   }
-}
-.pulse { animation: buttonPulse 2s infinite;}
-@keyframes buttonPulse { 0%{box-shadow:0 0 0 0 #33415599;}70%{box-shadow:0 0 0 10px #0f172a00;}100%{box-shadow:0 0 0 0 #33415599;} }
-/* Animation for section in (default for initial load and desktop clicks) */
-.animate-section-in {
-  animation: sectionIn 0.45s cubic-bezier(.53,.06,.49,.96);
 }
 @keyframes sectionIn {
   0% { opacity: 0; transform: translateY(40px) scale(.98);}
@@ -415,15 +432,6 @@ header {
     color: white;
 }
 
-.game-message {
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    animation: fadeInScale 0.5s ease-out;
-}
-
 .won-message {
     background-color: #d1fae5;
     color: #065f46;
@@ -451,4 +459,15 @@ header {
         height: 300px;
         font-size: 1.2rem; /* Adjust icon size */
     }
+}
+@keyframes jiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-jiggle {
+  animation: jiggle 0.5s ease-in-out; /* Adjust duration as needed */
 }
