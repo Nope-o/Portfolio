@@ -408,14 +408,24 @@ function PathfinderGame({ onGameWin }) {
 
   const handleTouchStart = (e) => {
     if (gameStatusRef.current !== 'playing') return;
-    e.preventDefault();
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
   };
 
   const handleTouchMove = (e) => {
     if (gameStatusRef.current !== 'playing') return;
-    e.preventDefault();
+    
+    // Calculate the movement direction
+    const touchCurrentX = e.touches[0].clientX;
+    const touchCurrentY = e.touches[0].clientY;
+    const dx = touchCurrentX - touchStartX.current;
+    const dy = touchCurrentY - touchStartY.current;
+    
+    // Only prevent default if the movement is primarily horizontal
+    // This allows vertical scrolling while preventing horizontal swipes
+    if (Math.abs(dx) > Math.abs(dy)) {
+      e.preventDefault();
+    }
   };
 
   const handleTouchEnd = (e) => {
@@ -850,7 +860,7 @@ function Contact() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 pulse disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-full font-semibold shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {loading ? "Sending..." : "Send Message"}
         </button>
