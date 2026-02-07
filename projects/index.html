@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Advanced Mic Pitch & Sargam Visualizer</title>
+  <style>
+    :root {
+      --bg: #0b1020; --card: #121936; --acc: #6ee7ff; --acc2: #a78bfa; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --text:#e5e7eb; --muted:#94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial; color: var(--text); background: radial-gradient(1200px 800px at 70% -10%, #1e293b 0%, transparent 60%),
+                          radial-gradient(1000px 600px at -10% 20%, #0ea5e9 0%, transparent 50%),
+                          var(--bg); min-height: 100vh; overflow-x: hidden;
+    }
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    .header { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 20px; }
+    h1 { margin: 0; font-size: clamp(22px, 3vw, 30px); background: linear-gradient(135deg, var(--acc), var(--acc2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .pill { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #0b122b; border: 1px solid #223067; font-size: 13px; }
+    .range {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #2b386b;
+      height: 4px;
+      border-radius: 8px;
+      width: 80px;
+      cursor: pointer;
+    }
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 14px;
+      width: 14px;
+      background-color: var(--acc2);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #0b1020;
+    }
+    .range::-moz-range-thumb {
+      height: 14px;
+      width: 14px;
+      background-color: var(--acc2);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #0b1020;
+    }
+    select {
+      background: #2b386b;
+      color: var(--text);
+      border: 1px solid #223067;
+      border-radius: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--acc), var(--acc2));
+      color: #07101b;
+      font-size: 14px;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(110, 231, 255, 0.3); }
+    .btn:active { transform: translateY(0); }
+    .btn.stop { background: linear-gradient(135deg, #fda4af, #fb7185); }
+    .btn.secondary { background: #2b386b; color: var(--text); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: color-mix(in oklab, var(--card), #000 15%); border: 1px solid color-mix(in oklab, #5b6ea8 40%, transparent); border-radius: 20px; padding: 16px; position: relative; overflow: hidden; }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--acc); }
+    canvas { width: 100%; display: block; border-radius: 12px; background: #070b1a; }
+    #pitch { height: min(42vh, 360px); }
+    #spectrum, #harmonics { height: 200px; }
+    #waveform { height: 150px; }
+    .readout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .big { font-size: clamp(34px, 6vw, 68px); font-weight: 800; line-height: 1; }
+    .hz { font-size: 14px; color: var(--muted); }
+    .note { font-size: clamp(26px, 6vw, 50px); font-weight: 800; line-height: 1; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .meter-wrap { margin-bottom: 12px; background: #0b122b; border: 1px solid #223067; border-radius: 12px; height: 20px; position: relative; overflow: hidden; }
+    .meter-center { position: absolute; inset: 0 auto 0 50%; width: 2px; background: #6ee7ff; z-index: 2; box-shadow: 0 0 8px rgba(110, 231, 255, 0.5); }
+    .meter-pointer { position: absolute; top: 0; bottom: 0; width: 3px; background: #22c55e; box-shadow: 0 0 12px rgba(34, 197, 94, .7); transition: left 0.05s ease-out; }
+    .kbd { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin-bottom: 8px; }
+    .key { padding: 8px 4px; text-align: center; border-radius: 10px; background: #0b122b; border: 1px solid #2b386b; font-weight: 700; font-size: 12px; transition: all 0.15s; }
+    .key.active { outline: 2px solid #6ee7ff; background: linear-gradient(135deg, #101a3f, #1a2548); transform: scale(1.05); box-shadow: 0 0 16px rgba(110, 231, 255, 0.4); }
+    .key small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .badge { padding: 4px 10px; border-radius: 999px; background: #0b122b; border: 1px solid #223067; font-size: 11px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat-card { background: #0b122b; border: 1px solid #223067; border-radius: 12px; padding: 12px; }
+    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 24px; font-weight: 800; color: var(--acc); margin-top: 4px; }
+    .recording-indicator { display: none; align-items: center; gap: 8px; padding: 8px 14px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 999px; font-weight: 700; font-size: 13px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    .recording-indicator.active { display: flex; }
+    .recording-dot { width: 8px; height: 8px; border-radius: 50%; background: white; animation: blink 1s infinite; }
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.3; } }
+    .tabs { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #223067; }
+    .tab { padding: 8px 16px; cursor: pointer; border-radius: 8px 8px 0 0; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+    .tab:hover { background: #0b122b; }
+    .tab.active { background: linear-gradient(135deg, var(--acc), var(--acc2)); color: #07101b; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .sessions { max-height: 300px; overflow-y: auto; }
+    .session-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0b122b; border: 1px solid #223067; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+    .session-item:hover { background: #101a3f; border-color: var(--acc); }
+    .session-info { flex: 1; }
+    .session-name { font-weight: 600; font-size: 14px; }
+    .session-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .session-actions { display: flex; gap: 6px; }
+    .icon-btn { background: transparent; border: 1px solid #223067; color: var(--text); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+    .icon-btn:hover { background: var(--acc2); color: #07101b; border-color: var(--acc2); }
+    .tooltip { position: relative; }
+    .tooltip:hover::after { content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1a2548; color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 11px; white-space: nowrap; z-index: 10; margin-bottom: 4px; }
+    .comparison-view { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 768px) { .comparison-view { grid-template-columns: 1fr; } }
+    .metronome-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .visual-feedback { height: 80px; background: #070b1a; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin-top: 12px; }
+    .pitch-shift-indicator { text-align: center; padding: 12px; background: #0b122b; border-radius: 12px; margin-top: 12px; }
+    .pitch-shift-value { font-size: 28px; font-weight: 800; }
+    .pitch-shift-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>🎤 Advanced Pitch & Sargam Visualizer</h1>
+      <div class="controls">
+        <label class="pill">Tonic (Sa)
+          <select id="saSelect"></select>
+        </label>
+        <label class="pill tooltip" data-tooltip="High-pass filter cutoff">
+          Low cut
+          <input id="lowCut" class="range" type="range" min="50" max="200" value="70" step="1">
+          <span id="lowCutVal" class="sub">70Hz</span>
+        </label>
+        <label class="pill tooltip" data-tooltip="Minimum RMS to detect sound">
+          Silence
+          <input id="rmsGate" class="range" type="range" min="1" max="50" value="5" step="1">
+          <span id="rmsGateVal" class="sub">0.005</span>
+        </label>
+        <label class="pill tooltip" data-tooltip="Minimum clarity score">
+          Clarity
+          <input id="clarityGate" class="range" type="range" min="20" max="80" value="35" step="1">
+          <span id="clarityGateVal" class="sub">0.35</span>
+        </label>
+        <button id="startBtn" class="btn">🎙️ Start Mic</button>
+        <button id="stopBtn" class="btn stop" style="display:none;">⏹️ Stop</button>
+        <button id="recordBtn" class="btn secondary" style="display:none;" disabled>⏺️ Record</button>
+        <div id="recordingIndicator" class="recording-indicator"><div class="recording-dot"></div>Recording</div>
+      </div>
+    </div>
+    
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">📊 Pitch Timeline (5 seconds)</div>
+        <canvas id="pitch"></canvas>
+      </div>
+      
+      <div class="card">
+        <div class="readout">
+          <div>
+            <div class="big" id="freq">--<span class="hz"> Hz</span></div>
+            <div class="sub" id="quality">Waiting to start...</div>
+          </div>
+          <div style="text-align:right">
+            <div class="note" id="note">--</div>
+            <div class="sub" id="sargam">Sa —</div>
+          </div>
+        </div>
+        
+        <div class="meter-wrap" aria-label="tuner cents meter">
+          <div class="meter-center"></div>
+          <div id="meterPointer" class="meter-pointer" style="left:50%"></div>
+        </div>
+        
+        <div class="kbd" id="kbd"></div>
+        <div class="kbd" id="kbdHindi"></div>
+        
+        <div class="footer">
+          <span class="badge">A4 = 440 Hz</span>
+          <span class="badge">SR: <span id="sr">—</span></span>
+          <span class="badge">RMS: <span id="rms">—</span></span>
+          <span class="badge">Clarity: <span id="clarity">—</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Average Pitch</div>
+        <div class="stat-value" id="avgPitch">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pitch Range</div>
+        <div class="stat-value" id="pitchRange">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Vibrato Rate</div>
+        <div class="stat-value" id="vibratoRate">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Stability</div>
+        <div class="stat-value" id="stability">--</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+      <div class="card">
+        <div class="card-title">🌊 Waveform</div>
+        <canvas id="waveform"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">🎵 Harmonics Analysis</div>
+        <canvas id="harmonics"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="card-title">📈 Frequency Spectrum</div>
+      <canvas id="spectrum"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <div class="tab active" data-tab="sessions">📝 Sessions</div>
+        <div class="tab" data-tab="metronome">🎼 Metronome</div>
+        <div class="tab" data-tab="exercises">🎯 Exercises</div>
+        <div class="tab" data-tab="settings">⚙️ Settings</div>
+      </div>
+
+      <div id="sessionsTab" class="tab-content active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="margin: 0; font-size: 16px;">Your Practice Sessions</h3>
+          <button id="clearSessions" class="btn secondary" style="padding: 6px 12px; font-size: 12px;">Clear All</button>
+        </div>
+        <div id="sessionsList" class="sessions">
+          <div style="text-align: center; padding: 40px; color: var(--muted);">
+            No recordings yet. Click "Record" while mic is active to start!
+          </div>
+        </div>
+      </div>
+
+      <div id="metronomeTab" class="tab-content">
+        <div class="metronome-controls">
+          <label class="pill">
+            BPM
+            <input id="metronomeBpm" class="range" type="range" min="40" max="208" value="120" step="1" style="width: 120px;">
+            <span id="metronomeBpmVal" class="sub">120</span>
+          </label>
+          <label class="pill">
+            Beats
+            <select id="metronomeBeats">
+              <option value="2">2/4</option>
+              <option value="3">3/4</option>
+              <option value="4" selected>4/4</option>
+              <option value="6">6/8</option>
+            </select>
+          </label>
+          <button id="metronomeToggle" class="btn secondary">▶️ Start Metronome</button>
+        </div>
+        <div class="visual-feedback" id="metronomeVisual">--</div>
+      </div>
+
+      <div id="exercisesTab" class="tab-content">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px;">Vocal Exercises</h3>
+        <div style="display: grid; gap: 10px;">
+          <div class="session-item" onclick="startExercise('chromatic')">
+            <div class="session-info">
+              <div class="session-name">🎵 Chromatic Scale</div>
+              <div class="session-meta">Practice all 12 semitones in sequence</div>
+            </div>
+          </div>
+          <div class="session-item" onclick="startExercise('sargam')">
+            <div class="session-info">
+              <div class="session-name">🎶 Sargam Practice</div>
+              <div class="session-meta">Sa Re Ga Ma Pa Dha Ni Sa</div>
+            </div>
+          </div>
+          <div class="session-item" onclick="startExercise('interval')">
+            <div class="session-info">
+              <div class="session-name">🎼 Interval Training</div>
+              <div class="session-meta">Practice perfect 4th, 5th, and octave jumps</div>
+            </div>
+          </div>
+          <div class="session-item" onclick="startExercise('sustained')">
+            <div class="session-info">
+              <div class="session-name">⏱️ Sustained Pitch</div>
+              <div class="session-meta">Hold a single note steady for 10 seconds</div>
+            </div>
+          </div>
+        </div>
+        <div id="exerciseProgress" style="display: none; margin-top: 16px; padding: 16px; background: #0b122b; border-radius: 12px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span id="exerciseName">Exercise</span>
+            <span id="exerciseScore">Score: 0%</span>
+          </div>
+          <div style="background: #070b1a; height: 8px; border-radius: 999px; overflow: hidden;">
+            <div id="exerciseBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--acc), var(--acc2)); transition: width 0.3s;"></div>
+          </div>
+          <div id="exerciseInstruction" style="margin-top: 8px; font-size: 13px; color: var(--muted);"></div>
+        </div>
+      </div>
+
+      <div id="settingsTab" class="tab-content">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px;">Advanced Settings</h3>
+        <div style="display: grid; gap: 12px;">
+          <label class="pill" style="width: fit-content;">
+            <input type="checkbox" id="showHarmonics" checked> Show Harmonics Analysis
+          </label>
+          <label class="pill" style="width: fit-content;">
+            <input type="checkbox" id="autoTuneVisualization" checked> Auto-Tune Visualization
+          </label>
+          <label class="pill" style="width: fit-content;">
+            <input type="checkbox" id="pitchCorrection"> Pitch Correction Preview
+          </label>
+          <label class="pill" style="width: fit-content;">
+            <input type="checkbox" id="showFormants"> Show Formant Analysis
+          </label>
+          <label class="pill">
+            History Duration
+            <input id="historyDuration" class="range" type="range" min="3" max="10" value="5" step="1" style="width: 120px;">
+            <span id="historyDurationVal" class="sub">5s</span>
+          </label>
+          <label class="pill">
+            Smoothing
+            <input id="smoothingFactor" class="range" type="range" min="0" max="90" value="30" step="10" style="width: 120px;">
+            <span id="smoothingFactorVal" class="sub">0.3</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+// ===== Music Math =====
+const A4 = 440;
+const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const SARGAM_BASE = [
+  { name: "Sa", hindi: "सा", semis: 0 },
+  { name: "Komal Re", hindi: "रे॒", semis: 1 },
+  { name: "Re", hindi: "रे", semis: 2 },
+  { name: "Komal Ga", hindi: "गा॒", semis: 3 },
+  { name: "Ga", hindi: "गा", semis: 4 },
+  { name: "Ma", hindi: "मा", semis: 5 },
+  { name: "Teevra Ma", hindi: "म॒", semis: 6 },
+  { name: "Pa", hindi: "पा", semis: 7 },
+  { name: "Komal Dha", hindi: "धा॒", semis: 8 },
+  { name: "Dha", hindi: "धा", semis: 9 },
+  { name: "Komal Ni", hindi: "नी॒", semis: 10 },
+  { name: "Ni", hindi: "नी", semis: 11 }
+];
+
+function freqToMidi(f){ return 69 + 12*Math.log2(f/A4); }
+function midiToFreq(m){ return A4 * Math.pow(2,(m-69)/12); }
+function nearestNote(f){ 
+  const m=freqToMidi(f); 
+  const round=Math.round(m); 
+  const cents=Math.min(50,Math.max(-50,(m-round)*100)); 
+  const name=NOTE_NAMES[(round%12+12)%12]; 
+  const octave=Math.floor(round/12)-1; 
+  return {midi:round,name,octave,cents,targetHz:midiToFreq(round)}; 
+}
+function makeSargamMapper(tonicSemi){ 
+  return (midi)=>{ 
+    const d=((midi-tonicSemi)%12+12)%12; 
+    const hit=SARGAM_BASE.find(x=>x.semis===d); 
+    return hit||{name:"--",hindi:"--"}; 
+  } 
+}
+
+// ===== UI Setup =====
+const saSelect = document.getElementById('saSelect');
+NOTE_NAMES.forEach((n,i)=>{ 
+  const o=document.createElement('option'); 
+  o.value=i; 
+  o.textContent=n; 
+  saSelect.appendChild(o); 
+}); 
+saSelect.value=0;
+
+const kbd=document.getElementById('kbd'), kbdHindi=document.getElementById('kbdHindi'); 
+const keyEls=[], hindiEls=[];
+for(let i=0;i<12;i++){ 
+  const e=document.createElement('div'); 
+  e.className='key'; 
+  e.innerHTML=`<div>${NOTE_NAMES[i]}</div><small></small>`; 
+  kbd.appendChild(e); 
+  keyEls.push(e);
+  const e2=document.createElement('div'); 
+  e2.className='key'; 
+  e2.innerHTML=`<div>${SARGAM_BASE.find(s=>s.semis===i)?.hindi||'--'}</div><small></small>`; 
+  kbdHindi.appendChild(e2); 
+  hindiEls.push(e2); 
+}
+
+function refreshKeyLabels(){ 
+  const saSemi=parseInt(saSelect.value,10); 
+  const map=makeSargamMapper(saSemi); 
+  for(let i=0;i<12;i++){ 
+    const s=map(60+i); 
+    keyEls[i].querySelector('small').textContent=s.name; 
+  }
+}
+refreshKeyLabels(); 
+saSelect.addEventListener('change',refreshKeyLabels);
+
+// ===== Canvas Setup =====
+const pitchCanvas=document.getElementById('pitch'); 
+const specCanvas=document.getElementById('spectrum');
+const waveCanvas=document.getElementById('waveform');
+const harmCanvas=document.getElementById('harmonics');
+
+function fitCanvas(canvas) {
+  const dpr=Math.max(1,window.devicePixelRatio||1);
+  canvas.width=canvas.clientWidth*dpr; 
+  canvas.height=canvas.clientHeight*dpr; 
+  const ctx=canvas.getContext('2d'); 
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function fitAll() {
+  [pitchCanvas, specCanvas, waveCanvas, harmCanvas].forEach(fitCanvas);
+}
+
+window.addEventListener('resize',fitAll); 
+fitAll();
+
+// ===== State =====
+let pitchHistory = [];
+let currentMidiCenter = 60;
+let historyDuration = 5000;
+let smoothingFactor = 0.3;
+let lastSmoothedFreq = 0;
+let pitchStats = { freqs: [], lastCalc: 0 };
+let isRecording = false;
+let recordedData = [];
+let recordStartTime = 0;
+let sessions = JSON.parse(localStorage.getItem('pitchSessions') || '[]');
+
+// ===== Audio System =====
+let audioCtx, source, analyser, biqHP, biqLP, rafId, running=false;
+let mediaRecorder, recordedChunks = [];
+
+// ===== Pitch Detection =====
+function detectPitch(buffer, sampleRate, minFreq, rmsGate, clarityGate){
+  const N=buffer.length;
+  let mean=0; 
+  for(let i=0;i<N;i++) mean+=buffer[i]; 
+  mean/=N;
+  const win=Math.PI*2/(N-1); 
+  let rms=0; 
+  const x=new Float32Array(N);
+  for(let i=0;i<N;i++){ 
+    const w=0.5*(1-Math.cos(win*i)); 
+    const v=(buffer[i]-mean)*w; 
+    x[i]=v; 
+    rms+=v*v; 
+  }
+  rms=Math.sqrt(rms/N); 
+  if(rms<rmsGate) return {freq:0, clarity:0, rms};
+  
+  const minLag=Math.floor(sampleRate/1200); 
+  const maxLag=Math.min(N-3, Math.floor(sampleRate/Math.max(50,minFreq)));
+  let bestLag=-1, best=0;
+  
+  for(let lag=minLag; lag<=maxLag; lag++){
+    let s=0, s0=0, s1=0; 
+    for(let i=0;i<N-lag;i++){ 
+      const a=x[i], b=x[i+lag]; 
+      s+=a*b; 
+      s0+=a*a; 
+      s1+=b*b; 
+    }
+    const acf = s/Math.sqrt(s0*s1+1e-12);
+    if(acf>best){ best=acf; bestLag=lag; }
+  }
+  
+  if(bestLag<0 || best<clarityGate) return {freq:0, clarity:best, rms};
+  
+  const c1=correlAt(bestLag-1, x), c2=correlAt(bestLag, x), c3=correlAt(bestLag+1, x);
+  const denom = (c1 - 2*c2 + c3);
+  const offset = Math.abs(denom) > 1e-7 ? 0.5*(c1 - c3)/denom : 0;
+  const lagRefined = bestLag + offset;
+  const freq = sampleRate/lagRefined;
+  return {freq:isFinite(freq)&&freq>=minFreq&&freq<=1200?freq:0, clarity:best, rms};
+  
+  function correlAt(lag, arr){ 
+    lag=Math.max(1,Math.min(arr.length-2,lag|0)); 
+    let s=0,s0=0,s1=0; 
+    for(let i=0;i<arr.length-lag;i++){ 
+      const a=arr[i], b=arr[i+lag]; 
+      s+=a*b; 
+      s0+=a*a; 
+      s1+=b*b; 
+    } 
+    return s/Math.sqrt(s0*s1+1e-12); 
+  }
+}
+
+// ===== Drawing Functions =====
+function drawPitchHistory() {
+  const canvas = pitchCanvas;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const now = performance.now();
+  
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#070b1a';
+  ctx.fillRect(0, 0, w, h);
+
+  const lastPitch = pitchHistory.length > 0 ? pitchHistory[pitchHistory.length - 1].freq : 0;
+  if (lastPitch > 0) {
+    currentMidiCenter = nearestNote(lastPitch).midi;
+  } else {
+    currentMidiCenter = 60;
+  }
+
+  const minMidi = currentMidiCenter - 12;
+  const maxMidi = currentMidiCenter + 12;
+  const pitchRangeMin = midiToFreq(minMidi);
+  const pitchRangeMax = midiToFreq(maxMidi);
+  const pitchRange = pitchRangeMax - pitchRangeMin;
+
+  const saRootSemi = parseInt(saSelect.value, 10);
+  const sargamMapper = makeSargamMapper(saRootSemi);
+  
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+
+  for (let m = minMidi; m <= maxMidi; m++) {
+    const freq = midiToFreq(m);
+    const y = h - ((freq - pitchRangeMin) / pitchRange) * h;
+    
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+
+    const { name, octave } = nearestNote(freq);
+    const sargamData = sargamMapper(m);
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fillText(`${sargamData.hindi} ${name}${octave}`, 5, y - 2);
+  }
+
+  // Pitch line with gradient
+  const gradient = ctx.createLinearGradient(0, 0, w, 0);
+  gradient.addColorStop(0, 'rgba(110, 231, 255, 0.3)');
+  gradient.addColorStop(0.5, 'rgba(110, 231, 255, 1)');
+  gradient.addColorStop(1, 'rgba(167, 139, 250, 1)');
+
+  ctx.beginPath();
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  let started = false;
+  for (let i = 0; i < pitchHistory.length; i++) {
+    const p = pitchHistory[i];
+    if (p.freq === 0) continue;
+    const x = w - ((now - p.time) / historyDuration) * w;
+    const y = h - ((p.freq - pitchRangeMin) / pitchRange) * h;
+    
+    if (!started) {
+      ctx.moveTo(x, y);
+      started = true;
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.stroke();
+
+  // Target line for auto-tune visualization
+  if (document.getElementById('autoTuneVisualization').checked && lastPitch > 0) {
+    const targetFreq = nearestNote(lastPitch).targetHz;
+    const targetY = h - ((targetFreq - pitchRangeMin) / pitchRange) * h;
+    ctx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, targetY);
+    ctx.lineTo(w, targetY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+function drawSpectrum(){
+  if(!analyser) return;
+  const canvas = specCanvas;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const bins = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(bins);
+  
+  ctx.clearRect(0, 0, w, h);
+  const barW = w / bins.length;
+  
+  const gradient = ctx.createLinearGradient(0, h, 0, 0);
+  gradient.addColorStop(0, '#a78bfa');
+  gradient.addColorStop(0.5, '#6ee7ff');
+  gradient.addColorStop(1, '#22c55e');
+  
+  ctx.fillStyle = gradient;
+  for(let i = 0; i < bins.length; i++){
+    const v = bins[i] / 255;
+    const barH = v * h;
+    ctx.fillRect(i * barW, h - barH, barW, barH);
+  }
+}
+
+function drawWaveform() {
+  if(!analyser) return;
+  const canvas = waveCanvas;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const buf = new Float32Array(analyser.fftSize);
+  analyser.getFloatTimeDomainData(buf);
+  
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = '#6ee7ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  
+  const sliceW = w / buf.length;
+  for(let i = 0; i < buf.length; i++) {
+    const v = buf[i];
+    const y = (v * 0.5 + 0.5) * h;
+    if(i === 0) {
+      ctx.moveTo(0, y);
+    } else {
+      ctx.lineTo(i * sliceW, y);
+    }
+  }
+  ctx.stroke();
+}
+
+function drawHarmonics() {
+  if(!analyser || !document.getElementById('showHarmonics').checked) return;
+  const canvas = harmCanvas;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const bins = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(bins);
+  
+  ctx.clearRect(0, 0, w, h);
+  
+  // Find peaks (harmonics)
+  const peaks = [];
+  const threshold = 100;
+  for(let i = 2; i < bins.length - 2; i++) {
+    if(bins[i] > threshold && bins[i] > bins[i-1] && bins[i] > bins[i+1]) {
+      peaks.push({index: i, value: bins[i]});
+    }
+  }
+  
+  peaks.sort((a, b) => b.value - a.value);
+  const topPeaks = peaks.slice(0, 8);
+  
+  const barW = w / 8;
+  topPeaks.forEach((peak, i) => {
+    const normalizedH = (peak.value / 255) * h;
+    const hue = (i / 8) * 270;
+    ctx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+    ctx.fillRect(i * barW, h - normalizedH, barW - 4, normalizedH);
+    
+    ctx.fillStyle = '#fff';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    const freq = (peak.index / analyser.frequencyBinCount) * (audioCtx.sampleRate / 2);
+    ctx.fillText(`${Math.round(freq)}Hz`, i * barW + barW/2, h - normalizedH - 5);
+  });
+}
+
+// ===== Stats Calculation =====
+function updateStats() {
+  const now = Date.now();
+  if (now - pitchStats.lastCalc < 500) return;
+  pitchStats.lastCalc = now;
+  
+  const recentFreqs = pitchHistory
+    .filter(p => p.freq > 0)
+    .map(p => p.freq);
+  
+  if (recentFreqs.length === 0) {
+    document.getElementById('avgPitch').textContent = '--';
+    document.getElementById('pitchRange').textContent = '--';
+    document.getElementById('vibratoRate').textContent = '--';
+    document.getElementById('stability').textContent = '--';
+    return;
+  }
+  
+  const avg = recentFreqs.reduce((a, b) => a + b, 0) / recentFreqs.length;
+  const min = Math.min(...recentFreqs);
+  const max = Math.max(...recentFreqs);
+  const range = max - min;
+  
+  const avgNote = nearestNote(avg);
+  document.getElementById('avgPitch').textContent = `${avgNote.name}${avgNote.octave}`;
+  document.getElementById('pitchRange').textContent = `${range.toFixed(1)}Hz`;
+  
+  // Vibrato detection (simplified)
+  let crossings = 0;
+  for(let i = 1; i < recentFreqs.length; i++) {
+    if ((recentFreqs[i] - avg) * (recentFreqs[i-1] - avg) < 0) {
+      crossings++;
+    }
+  }
+  const vibratoHz = crossings / (historyDuration / 1000) / 2;
+  document.getElementById('vibratoRate').textContent = vibratoHz > 0.5 ? `${vibratoHz.toFixed(1)}Hz` : '--';
+  
+  // Stability (inverse of std dev)
+  const variance = recentFreqs.reduce((sum, f) => sum + Math.pow(f - avg, 2), 0) / recentFreqs.length;
+  const stdDev = Math.sqrt(variance);
+  const stability = Math.max(0, Math.min(100, 100 - stdDev * 5));
+  document.getElementById('stability').textContent = `${stability.toFixed(0)}%`;
+}
+
+// ===== Readout Update =====
+function updateReadout(freq, clarity, rms){
+  const sr = audioCtx ? audioCtx.sampleRate : 0;
+  document.getElementById('sr').textContent = sr ? `${sr}Hz` : '--';
+  document.getElementById('rms').textContent = rms.toFixed(4);
+  document.getElementById('clarity').textContent = clarity.toFixed(2);
+  
+  if(!freq){
+    document.getElementById('freq').innerHTML = '--<span class="hz"> Hz</span>';
+    document.getElementById('note').textContent = '--';
+    document.getElementById('sargam').textContent = 'Sa —';
+    document.getElementById('quality').textContent = 'Listening...';
+    document.getElementById('meterPointer').style.left = '50%';
+    keyEls.forEach(e => e.classList.remove('active'));
+    hindiEls.forEach(e => e.classList.remove('active'));
+    return;
+  }
+  
+  const {midi, name, octave, cents} = nearestNote(freq);
+  const saSemi = parseInt(saSelect.value, 10);
+  const sg = makeSargamMapper(saSemi)(midi);
+  
+  document.getElementById('freq').innerHTML = `${freq.toFixed(2)}<span class="hz"> Hz</span>`;
+  document.getElementById('note').textContent = `${name}${octave}`;
+  document.getElementById('sargam').textContent = sg.name;
+  document.getElementById('quality').textContent = `${cents > 0 ? '+' : ''}${cents.toFixed(1)}¢`;
+  
+  const x = Math.max(-50, Math.min(50, cents));
+  document.getElementById('meterPointer').style.left = `${x + 50}%`;
+  
+  keyEls.forEach((el, i) => el.classList.toggle('active', i === ((midi % 12) + 12) % 12));
+  hindiEls.forEach((el, i) => el.classList.toggle('active', i === ((midi % 12) + 12) % 12));
+}
+
+// ===== Main Loop =====
+function loop(){
+  if(!running) return;
+  
+  const buf = new Float32Array(analyser.fftSize);
+  analyser.getFloatTimeDomainData(buf);
+  
+  const minF = parseInt(document.getElementById('lowCut').value, 10);
+  const rmsGateVal = document.getElementById('rmsGate').value / 1000;
+  const clarityGateVal = document.getElementById('clarityGate').value / 100;
+  const out = detectPitch(buf, audioCtx.sampleRate, minF, rmsGateVal, clarityGateVal);
+
+  const now = performance.now();
+  let displayFreq = 0;
+  
+  if (out.freq > 0) {
+    // Exponential smoothing
+    if (lastSmoothedFreq === 0) {
+      lastSmoothedFreq = out.freq;
+    } else {
+      lastSmoothedFreq = smoothingFactor * out.freq + (1 - smoothingFactor) * lastSmoothedFreq;
+    }
+    displayFreq = lastSmoothedFreq;
+  } else {
+    lastSmoothedFreq = 0;
+  }
+  
+  pitchHistory.push({ time: now, freq: displayFreq });
+  pitchHistory = pitchHistory.filter(p => now - p.time < historyDuration);
+
+  if (isRecording && displayFreq > 0) {
+    recordedData.push({
+      time: now - recordStartTime,
+      freq: displayFreq,
+      clarity: out.clarity,
+      rms: out.rms
+    });
+  }
+
+  updateReadout(displayFreq, out.clarity, out.rms);
+  updateStats();
+  drawPitchHistory();
+  drawSpectrum();
+  drawWaveform();
+  drawHarmonics();
+  
+  rafId = requestAnimationFrame(loop);
+}
+
+// ===== Recording Functions =====
+function startRecording() {
+  if (!running) return;
+  isRecording = true;
+  recordedData = [];
+  recordStartTime = performance.now();
+  document.getElementById('recordingIndicator').classList.add('active');
+  document.getElementById('recordBtn').textContent = '⏹️ Stop Recording';
+  document.getElementById('recordBtn').classList.add('stop');
+}
+
+function stopRecording() {
+  if (!isRecording) return;
+  isRecording = false;
+  document.getElementById('recordingIndicator').classList.remove('active');
+  document.getElementById('recordBtn').textContent = '⏺️ Record';
+  document.getElementById('recordBtn').classList.remove('stop');
+  
+  if (recordedData.length > 0) {
+    saveSession();
+  }
+}
+
+function saveSession() {
+  const duration = recordedData[recordedData.length - 1].time / 1000;
+  const avgFreq = recordedData.reduce((sum, d) => sum + d.freq, 0) / recordedData.length;
+  const avgNote = nearestNote(avgFreq);
+  
+  const session = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    duration: duration.toFixed(1),
+    avgNote: `${avgNote.name}${avgNote.octave}`,
+    avgFreq: avgFreq.toFixed(2),
+    dataPoints: recordedData.length,
+    data: recordedData
+  };
+  
+  sessions.unshift(session);
+  if (sessions.length > 50) sessions.length = 50; // Keep last 50 sessions
+  localStorage.setItem('pitchSessions', JSON.stringify(sessions));
+  renderSessions();
+}
+
+function renderSessions() {
+  const container = document.getElementById('sessionsList');
+  if (sessions.length === 0) {
+    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">No recordings yet. Click "Record" while mic is active to start!</div>';
+    return;
+  }
+  
+  container.innerHTML = sessions.map(s => `
+    <div class="session-item">
+      <div class="session-info">
+        <div class="session-name">Session ${new Date(s.date).toLocaleString()}</div>
+        <div class="session-meta">${s.duration}s • Avg: ${s.avgNote} (${s.avgFreq}Hz) • ${s.dataPoints} points</div>
+      </div>
+      <div class="session-actions">
+        <button class="icon-btn" onclick="playbackSession(${s.id})">▶️</button>
+        <button class="icon-btn" onclick="downloadSession(${s.id})">💾</button>
+        <button class="icon-btn" onclick="deleteSession(${s.id})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playbackSession(id) {
+  const session = sessions.find(s => s.id === id);
+  if (!session) return;
+  
+  pitchHistory = [];
+  const startTime = performance.now();
+  
+  session.data.forEach(d => {
+    setTimeout(() => {
+      pitchHistory.push({ time: performance.now(), freq: d.freq });
+      pitchHistory = pitchHistory.filter(p => performance.now() - p.time < historyDuration);
+      drawPitchHistory();
+    }, d.time);
+  });
+}
+
+function downloadSession(id) {
+  const session = sessions.find(s => s.id === id);
+  if (!session) return;
+  
+  const csv = 'Time(ms),Frequency(Hz),Clarity,RMS\n' + 
+    session.data.map(d => `${d.time.toFixed(2)},${d.freq.toFixed(2)},${d.clarity.toFixed(3)},${d.rms.toFixed(4)}`).join('\n');
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pitch-session-${session.id}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function deleteSession(id) {
+  if (!confirm('Delete this session?')) return;
+  sessions = sessions.filter(s => s.id !== id);
+  localStorage.setItem('pitchSessions', JSON.stringify(sessions));
+  renderSessions();
+}
+
+// ===== Audio Start/Stop =====
+async function start(){
+  if(running) return;
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false, 
+        noiseSuppression: false, 
+        autoGainControl: false,
+        sampleRate: 48000
+      }
+    });
+    
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    source = audioCtx.createMediaStreamSource(stream);
+    
+    biqHP = audioCtx.createBiquadFilter(); 
+    biqHP.type = 'highpass'; 
+    biqHP.frequency.value = parseInt(document.getElementById('lowCut').value, 10);
+    
+    biqLP = audioCtx.createBiquadFilter(); 
+    biqLP.type = 'lowpass'; 
+    biqLP.frequency.value = 2000;
+    
+    analyser = audioCtx.createAnalyser(); 
+    analyser.fftSize = 4096; 
+    analyser.smoothingTimeConstant = 0.0;
+    
+    source.connect(biqHP); 
+    biqHP.connect(biqLP); 
+    biqLP.connect(analyser);
+    
+    running = true;
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = 'inline-block';
+    document.getElementById('recordBtn').style.display = 'inline-block';
+    document.getElementById('recordBtn').disabled = false;
+    document.getElementById('quality').textContent = 'Listening...';
+    
+    loop();
+  } catch(e){
+    alert('Microphone error: ' + e.message);
+  }
+}
+
+function stop(){
+  running = false;
+  if (isRecording) stopRecording();
+  cancelAnimationFrame(rafId);
+  if(audioCtx) audioCtx.close();
+  
+  document.getElementById('startBtn').style.display = 'inline-block';
+  document.getElementById('stopBtn').style.display = 'none';
+  document.getElementById('recordBtn').style.display = 'none';
+  document.getElementById('recordBtn').disabled = true;
+  
+  updateReadout(0, 0, 0);
+  pitchHistory = [];
+  lastSmoothedFreq = 0;
+  drawPitchHistory();
+}
+
+// ===== Metronome =====
+let metronomeInterval = null;
+let metronomeBeat = 0;
+
+function startMetronome() {
+  const bpm = parseInt(document.getElementById('metronomeBpm').value);
+  const beats = parseInt(document.getElementById('metronomeBeats').value);
+  const interval = 60000 / bpm;
+  
+  metronomeBeat = 0;
+  document.getElementById('metronomeToggle').textContent = '⏸️ Stop Metronome';
+  
+  const tick = () => {
+    metronomeBeat = (metronomeBeat % beats) + 1;
+    document.getElementById('metronomeVisual').textContent = metronomeBeat;
+    
+    // Audio feedback
+    if (audioCtx) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = metronomeBeat === 1 ? 1000 : 800;
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.1);
+    }
+  };
+  
+  tick();
+  metronomeInterval = setInterval(tick, interval);
+}
+
+function stopMetronome() {
+  clearInterval(metronomeInterval);
+  metronomeInterval = null;
+  document.getElementById('metronomeToggle').textContent = '▶️ Start Metronome';
+  document.getElementById('metronomeVisual').textContent = '--';
+}
+
+// ===== Exercises =====
+let currentExercise = null;
+let exerciseProgress = 0;
+
+function startExercise(type) {
+  currentExercise = type;
+  exerciseProgress = 0;
+  document.getElementById('exerciseProgress').style.display = 'block';
+  
+  const exercises = {
+    chromatic: {
+      name: 'Chromatic Scale',
+      instruction: 'Sing each semitone from C to C (12 notes)',
+      total: 12
+    },
+    sargam: {
+      name: 'Sargam Practice',
+      instruction: 'Sing: Sa Re Ga Ma Pa Dha Ni Sa',
+      total: 8
+    },
+    interval: {
+      name: 'Interval Training',
+      instruction: 'Practice jumping between notes',
+      total: 10
+    },
+    sustained: {
+      name: 'Sustained Pitch',
+      instruction: 'Hold a single note for 10 seconds',
+      total: 100
+    }
+  };
+  
+  const ex = exercises[type];
+  document.getElementById('exerciseName').textContent = ex.name;
+  document.getElementById('exerciseInstruction').textContent = ex.instruction;
+  document.getElementById('exerciseBar').style.width = '0%';
+  document.getElementById('exerciseScore').textContent = 'Score: 0%';
+}
+
+// ===== Tabs =====
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+  });
+});
+
+// ===== Event Listeners =====
+document.getElementById('startBtn').addEventListener('click', start);
+document.getElementById('stopBtn').addEventListener('click', stop);
+
+document.getElementById('recordBtn').addEventListener('click', () => {
+  if (isRecording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+});
+
+document.getElementById('lowCut').addEventListener('input', (e) => {
+  document.getElementById('lowCutVal').textContent = e.target.value + 'Hz';
+  if (biqHP) biqHP.frequency.value = parseInt(e.target.value, 10);
+});
+
+document.getElementById('rmsGate').addEventListener('input', (e) => {
+  document.getElementById('rmsGateVal').textContent = (e.target.value / 1000).toFixed(3);
+});
+
+document.getElementById('clarityGate').addEventListener('input', (e) => {
+  document.getElementById('clarityGateVal').textContent = (e.target.value / 100).toFixed(2);
+});
+
+document.getElementById('historyDuration').addEventListener('input', (e) => {
+  historyDuration = parseInt(e.target.value) * 1000;
+  document.getElementById('historyDurationVal').textContent = e.target.value + 's';
+});
+
+document.getElementById('smoothingFactor').addEventListener('input', (e) => {
+  smoothingFactor = parseInt(e.target.value) / 100;
+  document.getElementById('smoothingFactorVal').textContent = (smoothingFactor).toFixed(1);
+});
+
+document.getElementById('metronomeBpm').addEventListener('input', (e) => {
+  document.getElementById('metronomeBpmVal').textContent = e.target.value;
+});
+
+document.getElementById('metronomeToggle').addEventListener('click', () => {
+  if (metronomeInterval) {
+    stopMetronome();
+  } else {
+    startMetronome();
+  }
+});
+
+document.getElementById('clearSessions').addEventListener('click', () => {
+  if (!confirm('Clear all sessions? This cannot be undone.')) return;
+  sessions = [];
+  localStorage.setItem('pitchSessions', JSON.stringify(sessions));
+  renderSessions();
+});
+
+// ===== Initialize =====
+renderSessions();
+</script>
+</body>
+</html>
