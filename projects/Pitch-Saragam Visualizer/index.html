@@ -83,6 +83,7 @@
     .readout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; margin-bottom: 16px; }
     .big { font-size: clamp(34px, 6vw, 68px); font-weight: 800; line-height: 1; }
     .hz { font-size: 14px; color: var(--muted); }
+    .hz-decimal { font-size: 0.55em; opacity: 0.8; }
     .note { font-size: clamp(26px, 6vw, 50px); font-weight: 800; line-height: 1; }
     .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
     .meter-wrap { margin-bottom: 12px; background: #0b122b; border: 1px solid #223067; border-radius: 12px; height: 20px; position: relative; overflow: hidden; }
@@ -93,6 +94,8 @@
     .key.active { outline: 2px solid #6ee7ff; background: linear-gradient(135deg, #101a3f, #1a2548); transform: scale(1.05); box-shadow: 0 0 16px rgba(110, 231, 255, 0.4); }
     .key small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
     .footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .readout-card { display: flex; flex-direction: column; }
+    .readout-bottom { margin-top: auto; }
     .badge { padding: 4px 10px; border-radius: 999px; background: #0b122b; border: 1px solid #223067; font-size: 11px; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 16px; }
     .stat-card { background: #0b122b; border: 1px solid #223067; border-radius: 12px; padding: 12px; }
@@ -110,11 +113,15 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .sessions { max-height: 300px; overflow-y: auto; }
-    .session-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0b122b; border: 1px solid #223067; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+    .session-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px; background: #0b122b; border: 1px solid #223067; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
     .session-item:hover { background: #101a3f; border-color: var(--acc); }
     .session-info { flex: 1; }
     .session-name { font-weight: 600; font-size: 14px; }
     .session-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .session-grid { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 8px; margin-top: 8px; }
+    .session-metric { background: #0b122b; border: 1px solid #1f2b5a; border-radius: 8px; padding: 6px 8px; }
+    .session-metric .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
+    .session-metric .value { font-size: 13px; font-weight: 700; color: var(--acc); margin-top: 2px; }
     .session-actions { display: flex; gap: 6px; }
     .icon-btn { background: transparent; border: 1px solid #223067; color: var(--text); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
     .icon-btn:hover { background: var(--acc2); color: #07101b; border-color: var(--acc2); }
@@ -165,31 +172,35 @@
         <canvas id="pitch"></canvas>
       </div>
       
-      <div class="card">
-        <div class="readout">
-          <div>
-            <div class="big" id="freq">--<span class="hz"> Hz</span></div>
-            <div class="sub" id="quality">Waiting to start...</div>
-          </div>
-          <div style="text-align:right">
-            <div class="note" id="note">--</div>
-            <div class="sub" id="sargam">Sa —</div>
+      <div class="card readout-card">
+        <div class="readout-top">
+          <div class="readout">
+            <div>
+              <div class="big" id="freq">0.<span class="hz-decimal">00</span><span class="hz"> Hz</span></div>
+              <div class="sub" id="quality">Waiting to start...</div>
+            </div>
+            <div style="text-align:right">
+              <div class="note" id="note">--</div>
+              <div class="sub" id="sargam">Sa —</div>
+            </div>
           </div>
         </div>
         
-        <div class="meter-wrap" aria-label="tuner cents meter">
-          <div class="meter-center"></div>
-          <div id="meterPointer" class="meter-pointer" style="left:50%"></div>
-        </div>
-        
-        <div class="kbd" id="kbd"></div>
-        <div class="kbd" id="kbdHindi"></div>
-        
-        <div class="footer">
-          <span class="badge">A4 = 440 Hz</span>
-          <span class="badge">SR: <span id="sr">—</span></span>
-          <span class="badge">RMS: <span id="rms">—</span></span>
-          <span class="badge">Clarity: <span id="clarity">—</span></span>
+        <div class="readout-bottom">
+          <div class="meter-wrap" aria-label="tuner cents meter">
+            <div class="meter-center"></div>
+            <div id="meterPointer" class="meter-pointer" style="left:50%"></div>
+          </div>
+          
+          <div class="kbd" id="kbd"></div>
+          <div class="kbd" id="kbdHindi"></div>
+          
+          <div class="footer">
+            <span class="badge">A4 = 440 Hz</span>
+            <span class="badge">SR: <span id="sr">—</span></span>
+            <span class="badge">RMS: <span id="rms">—</span></span>
+            <span class="badge">Clarity: <span id="clarity">—</span></span>
+          </div>
         </div>
       </div>
     </div>
@@ -438,14 +449,29 @@ fitAll();
 // ===== State =====
 let pitchHistory = [];
 let currentMidiCenter = 60;
+let lastValidMidiCenter = 60;
 let historyDuration = 5000;
 let smoothingFactor = 0.3;
 let lastSmoothedFreq = 0;
+let hasSignal = false;
+let lastSoundTime = 0;
+let lastSilenceTime = 0;
+const soundHoldMs = 80;
+const silenceHoldMs = 200;
 let pitchStats = { freqs: [], lastCalc: 0 };
 let isRecording = false;
 let recordedData = [];
 let recordStartTime = 0;
 let sessions = JSON.parse(localStorage.getItem('pitchSessions') || '[]');
+let sustainTargetMidi = null;
+let sustainStartTime = 0;
+let sustainCompleted = false;
+let exerciseState = { type: null, step: 0, baseMidi: null, targets: [], stepStart: 0, completed: false };
+const exerciseHoldMs = 500;
+const exerciseToleranceCents = 20;
+let playbackTimeouts = [];
+let isPlaying = false;
+let currentPlaybackId = null;
 
 // ===== Audio System =====
 let audioCtx, source, analyser, biqHP, biqLP, rafId, running=false;
@@ -519,12 +545,18 @@ function drawPitchHistory() {
   ctx.fillStyle = '#070b1a';
   ctx.fillRect(0, 0, w, h);
 
-  const lastPitch = pitchHistory.length > 0 ? pitchHistory[pitchHistory.length - 1].freq : 0;
-  if (lastPitch > 0) {
-    currentMidiCenter = nearestNote(lastPitch).midi;
-  } else {
-    currentMidiCenter = 60;
+  let lastPitch = 0;
+  for (let i = pitchHistory.length - 1; i >= 0; i--) {
+    if (pitchHistory[i].freq > 0) {
+      lastPitch = pitchHistory[i].freq;
+      break;
+    }
   }
+
+  if (lastPitch > 0) {
+    lastValidMidiCenter = nearestNote(lastPitch).midi;
+  }
+  currentMidiCenter = lastValidMidiCenter;
 
   const minMidi = currentMidiCenter - 12;
   const maxMidi = currentMidiCenter + 12;
@@ -741,15 +773,16 @@ function updateReadout(freq, clarity, rms){
   document.getElementById('sr').textContent = sr ? `${sr}Hz` : '--';
   document.getElementById('rms').textContent = rms.toFixed(4);
   document.getElementById('clarity').textContent = clarity.toFixed(2);
+
+  const freqEl = document.getElementById('freq');
+  const formatFreqHtml = (value) => {
+    const parts = value.toFixed(2).split('.');
+    return `${parts[0]}.<span class="hz-decimal">${parts[1]}</span><span class="hz"> Hz</span>`;
+  };
   
   if(!freq){
-    document.getElementById('freq').innerHTML = '--<span class="hz"> Hz</span>';
-    document.getElementById('note').textContent = '--';
-    document.getElementById('sargam').textContent = 'Sa —';
+    freqEl.innerHTML = formatFreqHtml(0);
     document.getElementById('quality').textContent = 'Listening...';
-    document.getElementById('meterPointer').style.left = '50%';
-    keyEls.forEach(e => e.classList.remove('active'));
-    hindiEls.forEach(e => e.classList.remove('active'));
     return;
   }
   
@@ -757,7 +790,7 @@ function updateReadout(freq, clarity, rms){
   const saSemi = parseInt(saSelect.value, 10);
   const sg = makeSargamMapper(saSemi)(midi);
   
-  document.getElementById('freq').innerHTML = `${freq.toFixed(2)}<span class="hz"> Hz</span>`;
+  freqEl.innerHTML = formatFreqHtml(freq);
   document.getElementById('note').textContent = `${name}${octave}`;
   document.getElementById('sargam').textContent = sg.name;
   document.getElementById('quality').textContent = `${cents > 0 ? '+' : ''}${cents.toFixed(1)}¢`;
@@ -783,8 +816,20 @@ function loop(){
 
   const now = performance.now();
   let displayFreq = 0;
-  
+
   if (out.freq > 0) {
+    lastSoundTime = now;
+    if (!hasSignal && (now - lastSilenceTime) > soundHoldMs) {
+      hasSignal = true;
+    }
+  } else {
+    lastSilenceTime = now;
+    if (hasSignal && (now - lastSoundTime) > silenceHoldMs) {
+      hasSignal = false;
+    }
+  }
+
+  if (hasSignal && out.freq > 0) {
     // Exponential smoothing
     if (lastSmoothedFreq === 0) {
       lastSmoothedFreq = out.freq;
@@ -792,8 +837,8 @@ function loop(){
       lastSmoothedFreq = smoothingFactor * out.freq + (1 - smoothingFactor) * lastSmoothedFreq;
     }
     displayFreq = lastSmoothedFreq;
-  } else {
-    lastSmoothedFreq = 0;
+  } else if (!hasSignal) {
+    displayFreq = 0;
   }
   
   pitchHistory.push({ time: now, freq: displayFreq });
@@ -809,6 +854,7 @@ function loop(){
   }
 
   updateReadout(displayFreq, out.clarity, out.rms);
+  updateExerciseProgress(displayFreq, out.clarity);
   updateStats();
   drawPitchHistory();
   drawSpectrum();
@@ -816,6 +862,135 @@ function loop(){
   drawHarmonics();
   
   rafId = requestAnimationFrame(loop);
+}
+
+function updateExerciseProgress(displayFreq, clarity){
+  if (!currentExercise) return;
+  const progressEl = document.getElementById('exerciseProgress');
+  if (!progressEl || progressEl.style.display === 'none') return;
+
+  const bar = document.getElementById('exerciseBar');
+  const score = document.getElementById('exerciseScore');
+  const instruction = document.getElementById('exerciseInstruction');
+  const now = performance.now();
+
+  if (currentExercise === 'sustained' && sustainCompleted) {
+    bar.style.width = '100%';
+    score.textContent = 'Score: 100%';
+    instruction.textContent = '✅ Success! Sustained pitch for 10 seconds.';
+    return;
+  }
+
+  if (!displayFreq) {
+    sustainTargetMidi = null;
+    sustainStartTime = 0;
+    if (currentExercise !== 'sustained') {
+      exerciseState.stepStart = 0;
+      exerciseState.step = 0;
+      bar.style.width = '0%';
+      score.textContent = 'Score: 0%';
+    }
+    return;
+  }
+
+  const { midi, cents, name, octave } = nearestNote(displayFreq);
+  const withinTolerance = Math.abs(cents) <= exerciseToleranceCents;
+
+  if (currentExercise === 'sustained') {
+    if (!withinTolerance) {
+      sustainTargetMidi = null;
+      sustainStartTime = 0;
+      bar.style.width = '0%';
+      score.textContent = 'Score: 0%';
+      return;
+    }
+
+    if (sustainTargetMidi === null || sustainTargetMidi !== midi) {
+      sustainTargetMidi = midi;
+      sustainStartTime = now;
+      bar.style.width = '0%';
+      score.textContent = 'Score: 0%';
+      instruction.textContent = `Hold ${name}${octave} steady...`;
+      return;
+    }
+
+    const elapsed = now - sustainStartTime;
+    const pct = Math.max(0, Math.min(100, (elapsed / 10000) * 100));
+    bar.style.width = `${pct.toFixed(0)}%`;
+    score.textContent = `Score: ${pct.toFixed(0)}%`;
+    instruction.textContent = `Holding ${name}${octave}... ${pct.toFixed(0)}%`;
+
+    if (elapsed >= 10000) {
+      sustainCompleted = true;
+    }
+    return;
+  }
+
+  const noteNameForMidi = (m) => {
+    const n = nearestNote(midiToFreq(m));
+    return `${n.name}${n.octave}`;
+  };
+
+  if (!withinTolerance) {
+    exerciseState.stepStart = 0;
+    exerciseState.step = 0;
+    bar.style.width = '0%';
+    score.textContent = 'Score: 0%';
+    return;
+  }
+
+  if (exerciseState.baseMidi === null) {
+    if (currentExercise === 'sargam') {
+      const saSemi = parseInt(saSelect.value, 10);
+      const semitone = ((midi % 12) + 12) % 12;
+      const down = (semitone - saSemi + 12) % 12;
+      exerciseState.baseMidi = midi - down;
+      exerciseState.targets = [0, 2, 4, 5, 7, 9, 11, 12].map(o => exerciseState.baseMidi + o);
+    } else if (currentExercise === 'chromatic') {
+      exerciseState.baseMidi = midi;
+      exerciseState.targets = Array.from({ length: 12 }, (_, i) => exerciseState.baseMidi + i);
+    } else if (currentExercise === 'interval') {
+      exerciseState.baseMidi = midi;
+      exerciseState.targets = [exerciseState.baseMidi + 5, exerciseState.baseMidi + 7, exerciseState.baseMidi + 12];
+    }
+    exerciseState.step = 0;
+    exerciseState.stepStart = 0;
+  }
+
+  const expectedMidi = exerciseState.targets[exerciseState.step];
+  const expectedName = noteNameForMidi(expectedMidi);
+
+  if (midi !== expectedMidi) {
+    exerciseState.step = 0;
+    exerciseState.stepStart = 0;
+    bar.style.width = '0%';
+    score.textContent = 'Score: 0%';
+    instruction.textContent = `Start at ${noteNameForMidi(exerciseState.targets[0])}`;
+    return;
+  }
+
+  if (!exerciseState.stepStart) {
+    exerciseState.stepStart = now;
+  }
+
+  const stepElapsed = now - exerciseState.stepStart;
+  const stepPct = Math.max(0, Math.min(100, (stepElapsed / exerciseHoldMs) * 100));
+  const overallPct = Math.max(0, Math.min(100, ((exerciseState.step + stepPct / 100) / exerciseState.targets.length) * 100));
+
+  bar.style.width = `${overallPct.toFixed(0)}%`;
+  score.textContent = `Score: ${overallPct.toFixed(0)}%`;
+  instruction.textContent = `Hold ${expectedName}...`;
+
+  if (stepElapsed >= exerciseHoldMs) {
+    exerciseState.step++;
+    exerciseState.stepStart = 0;
+    if (exerciseState.step >= exerciseState.targets.length) {
+      exerciseState.completed = true;
+      bar.style.width = '100%';
+      score.textContent = 'Score: 100%';
+      instruction.textContent = '✅ Success! Exercise complete.';
+    }
+  }
 }
 
 // ===== Recording Functions =====
@@ -845,6 +1020,11 @@ function saveSession() {
   const duration = recordedData[recordedData.length - 1].time / 1000;
   const avgFreq = recordedData.reduce((sum, d) => sum + d.freq, 0) / recordedData.length;
   const avgNote = nearestNote(avgFreq);
+  const minFreq = Math.min(...recordedData.map(d => d.freq));
+  const maxFreq = Math.max(...recordedData.map(d => d.freq));
+  const range = maxFreq - minFreq;
+  const avgClarity = recordedData.reduce((sum, d) => sum + d.clarity, 0) / recordedData.length;
+  const avgRms = recordedData.reduce((sum, d) => sum + d.rms, 0) / recordedData.length;
   
   const session = {
     id: Date.now(),
@@ -852,6 +1032,11 @@ function saveSession() {
     duration: duration.toFixed(1),
     avgNote: `${avgNote.name}${avgNote.octave}`,
     avgFreq: avgFreq.toFixed(2),
+    minFreq: minFreq.toFixed(2),
+    maxFreq: maxFreq.toFixed(2),
+    range: range.toFixed(2),
+    avgClarity: avgClarity.toFixed(2),
+    avgRms: avgRms.toFixed(4),
     dataPoints: recordedData.length,
     data: recordedData
   };
@@ -868,50 +1053,123 @@ function renderSessions() {
     container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">No recordings yet. Click "Record" while mic is active to start!</div>';
     return;
   }
+
+  const formatDuration = (seconds) => {
+    const s = Math.max(0, Math.round(parseFloat(seconds)));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${r.toString().padStart(2, '0')}`;
+  };
   
-  container.innerHTML = sessions.map(s => `
+  container.innerHTML = sessions.map(s => {
+    const playingThis = isPlaying && currentPlaybackId === s.id;
+    return `
     <div class="session-item">
       <div class="session-info">
         <div class="session-name">Session ${new Date(s.date).toLocaleString()}</div>
-        <div class="session-meta">${s.duration}s • Avg: ${s.avgNote} (${s.avgFreq}Hz) • ${s.dataPoints} points</div>
+        <div class="session-meta">Duration ${formatDuration(s.duration)} • ${s.dataPoints} points</div>
+        <div class="session-grid">
+          <div class="session-metric">
+            <div class="label">Avg Note</div>
+            <div class="value">${s.avgNote}</div>
+          </div>
+          <div class="session-metric">
+            <div class="label">Avg Freq</div>
+            <div class="value">${s.avgFreq} Hz</div>
+          </div>
+          <div class="session-metric">
+            <div class="label">Range</div>
+            <div class="value">${s.range ? s.range + ' Hz' : '--'}</div>
+          </div>
+          <div class="session-metric">
+            <div class="label">Clarity</div>
+            <div class="value">${s.avgClarity ?? '--'}</div>
+          </div>
+        </div>
       </div>
       <div class="session-actions">
-        <button class="icon-btn" onclick="playbackSession(${s.id})">▶️</button>
+        <button class="icon-btn" onclick="togglePlayback(${s.id})">${playingThis ? '⏹️' : '▶️'}</button>
         <button class="icon-btn" onclick="downloadSession(${s.id})">💾</button>
         <button class="icon-btn" onclick="deleteSession(${s.id})">🗑️</button>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
-function playbackSession(id) {
+function stopPlayback() {
+  playbackTimeouts.forEach(t => clearTimeout(t));
+  playbackTimeouts = [];
+  isPlaying = false;
+  currentPlaybackId = null;
+  renderSessions();
+}
+
+function togglePlayback(id) {
+  if (isPlaying && currentPlaybackId === id) {
+    stopPlayback();
+    return;
+  }
+
+  stopPlayback();
   const session = sessions.find(s => s.id === id);
   if (!session) return;
-  
+
+  isPlaying = true;
+  currentPlaybackId = id;
   pitchHistory = [];
-  const startTime = performance.now();
-  
+  lastSmoothedFreq = 0;
+
   session.data.forEach(d => {
-    setTimeout(() => {
-      pitchHistory.push({ time: performance.now(), freq: d.freq });
-      pitchHistory = pitchHistory.filter(p => performance.now() - p.time < historyDuration);
+    const tid = setTimeout(() => {
+      const now = performance.now();
+      pitchHistory.push({ time: now, freq: d.freq });
+      pitchHistory = pitchHistory.filter(p => now - p.time < historyDuration);
+      updateReadout(d.freq, d.clarity, d.rms);
       drawPitchHistory();
     }, d.time);
+    playbackTimeouts.push(tid);
   });
+
+  const endId = setTimeout(() => {
+    if (currentPlaybackId === id) stopPlayback();
+  }, (parseFloat(session.duration) * 1000) + 50);
+  playbackTimeouts.push(endId);
+
+  renderSessions();
 }
 
 function downloadSession(id) {
   const session = sessions.find(s => s.id === id);
   if (!session) return;
-  
-  const csv = 'Time(ms),Frequency(Hz),Clarity,RMS\n' + 
-    session.data.map(d => `${d.time.toFixed(2)},${d.freq.toFixed(2)},${d.clarity.toFixed(3)},${d.rms.toFixed(4)}`).join('\n');
+
+  const saSemi = parseInt(saSelect.value, 10);
+  const sargamForMidi = makeSargamMapper(saSemi);
+  const formatTime = (ms) => (ms / 1000).toFixed(2);
+  const sessionDate = new Date(session.date);
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const fileStamp = `${pad2(sessionDate.getDate())}-${pad2(sessionDate.getMonth() + 1)}-${sessionDate.getFullYear()}_${pad2(sessionDate.getHours())}-${pad2(sessionDate.getMinutes())}-${pad2(sessionDate.getSeconds())}`;
+
+  const csv = 'Time(s),Note,Cents,Frequency(Hz),Sargam,Clarity,RMS\n' + 
+    session.data.map(d => {
+      const n = nearestNote(d.freq);
+      const sg = sargamForMidi(n.midi);
+      return [
+        formatTime(d.time),
+        `${n.name}${n.octave}`,
+        n.cents.toFixed(1),
+        d.freq.toFixed(2),
+        sg.name,
+        d.clarity.toFixed(3),
+        d.rms.toFixed(4)
+      ].join(',');
+    }).join('\n');
   
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `pitch-session-${session.id}.csv`;
+  a.download = `Session-${fileStamp}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1033,6 +1291,10 @@ let exerciseProgress = 0;
 function startExercise(type) {
   currentExercise = type;
   exerciseProgress = 0;
+  sustainTargetMidi = null;
+  sustainStartTime = 0;
+  sustainCompleted = false;
+  exerciseState = { type, step: 0, baseMidi: null, targets: [], stepStart: 0, completed: false };
   document.getElementById('exerciseProgress').style.display = 'block';
   
   const exercises = {
