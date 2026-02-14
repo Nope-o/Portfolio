@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="msvalidate.01" content="A72605BA7FB8910817FB6CCBF4DA6A47" />
+  <meta name="yandex-verification" content="6c6f828bec1f723c" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Madhav Kataria - Personal Website</title>
+  
+  <!-- Preconnect to external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  
+  <!-- Fonts - optimized -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- React - production builds -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Tone.js - lazy loaded -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js" defer></script>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="assets/images/logoo.webp" type="image/webp">
+</head>
+<body class="min-h-screen flex flex-col">
+  <div id="root" class="flex-grow"></div>
+  
+  <!-- Security scripts -->
+  <script>
+    // Disable right-click
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+    
+    // Disable inspect shortcuts
+    document.addEventListener('keydown', function(e) {
+      // F12
+      if (e.keyCode === 123) {
+        e.preventDefault();
+      }
+      // Ctrl+Shift+I / Ctrl+Shift+C / Ctrl+Shift+J
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) {
+        e.preventDefault();
+      }
+      // Ctrl+U
+      if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+      }
+      // Ctrl+S
+      if (e.ctrlKey && e.keyCode === 83) {
+        e.preventDefault();
+      }
+    });
+  </script>
+  
+  <!-- Main application script -->
+  <script type="text/babel" src="js/App.js"></script>
+</body>
+</html>
+

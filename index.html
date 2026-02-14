@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Madhav Kataria - Personal Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c96552b2570247ef8450cb4a3e9ec04b"}'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js" defer></script>
+  <link rel="icon" href="assets/images/logoo.webp" type="image/webp">
+</head>
+<body class="min-h-screen flex flex-col">
+  <div id="root" class="flex-grow"></div>
+
+  <script type="text/babel" src="js/config.js"></script>
+  <script src="js/analytics.js"></script>
+
+  <script type="text/babel" src="js/audio.js"></script>
+  <script type="text/babel" src="js/pathfinding.js"></script>
+  <script type="text/babel" src="js/data/projects.js"></script>
+
+  <script type="text/babel" src="js/components/Navbar.js"></script>
+  <script type="text/babel" src="js/components/About.js"></script>
+  <script type="text/babel" src="js/components/PathfinderGame.js"></script>
+  <script type="text/babel" src="js/components/Journey.js"></script>
+  <script type="text/babel" src="js/components/Projects.js"></script>
+  <script type="text/babel" src="js/components/Resume.js"></script>
+  <script type="text/babel" src="js/components/Contact.js"></script>
+  <script type="text/babel" src="js/components/PrivacyPolicy.js"></script>
+
+  <script type="text/babel" src="js/App.js"></script>
+  <script>
+    // Security scripts (Right-click & Inspect disable)
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && [73, 67, 74].includes(e.keyCode)) || (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
