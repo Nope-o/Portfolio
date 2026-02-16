@@ -36,7 +36,7 @@ jobs:
         env:
           # For custom domain, keep as "/".
           # For repo pages, this defaults to "/<repo-name>/" automatically.
-          VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || format('/{0}/', github.event.repository.name) }}
+          VITE_BASE_PATH: './'
           SAFE_BUILD: 'true'
 
       - name: Setup Pages
