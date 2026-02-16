@@ -445,7 +445,7 @@ class PitchVisualizerApp {
   }
 
   openContact() {
-    window.open('https://madhav-kataria.site/#contact', '_blank', 'noopener,noreferrer');
+    window.open('https://madhav-kataria.com/#contact', '_blank', 'noopener,noreferrer');
   }
 
   resetSettings() {
