@@ -34,8 +34,9 @@ jobs:
       - name: Build with Vite
         run: npm run build
         env:
-          # Repo pages base path, e.g. "/Portfolio/".
-          VITE_BASE_PATH: '/${{ github.event.repository.name }}/'
+          # Custom domain: keep "/"
+          # Repo pages: set repository variable PAGES_BASE_PATH to "/<repo>/"
+          VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || '/' }}
           SAFE_BUILD: 'true'
 
       - name: Setup Pages
