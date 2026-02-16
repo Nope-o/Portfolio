@@ -18,6 +18,19 @@ const ROOT_INDEX_FILE = path.resolve(ROOT, 'index.html').replace(/\\/g, '/');
 
 const SAFE_BUILD = process.env.SAFE_BUILD === 'true';
 const DIST_DIR = path.join(ROOT, 'dist');
+const SITE_ORIGIN = 'https://madhav-kataria.com';
+const SITEMAP_LASTMOD = process.env.SITEMAP_LASTMOD || new Date().toISOString().slice(0, 10);
+const SITEMAP_ROUTES = [
+  { path: '/', changefreq: 'weekly', priority: '1.0' },
+  { path: '/projects/sursight-studio-app/', changefreq: 'weekly', priority: '0.9' },
+  { path: '/projects/liteedit-app/', changefreq: 'weekly', priority: '0.9' },
+  { path: '/projects/sursight-studio/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/projects/liteedit/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/projects/AutomationDashboard/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/projects/AttendanceTracker/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/projects/LLM/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/projects/ml/', changefreq: 'monthly', priority: '0.7' }
+];
 
 const STATIC_COPY_ITEMS = [
   { src: 'assets/images', dest: 'assets/images' },
@@ -28,7 +41,6 @@ const STATIC_COPY_ITEMS = [
   { src: 'Madhav_Kataria_Resume.pdf', dest: 'Madhav_Kataria_Resume.pdf' },
   { src: 'robots.txt', dest: 'robots.txt' },
   { src: 'robots.text', dest: 'robots.text' },
-  { src: 'sitemap.xml', dest: 'sitemap.xml' },
   { src: 'BingSiteAuth.xml', dest: 'BingSiteAuth.xml' },
   { src: 'CNAME', dest: 'CNAME' }
 ];
@@ -51,6 +63,46 @@ const MAIN_SITE_SOURCE_SCRIPTS = [
 ];
 
 const OBFUSCATE_ENTRY_NAMES = new Set(['main', 'liteeditApp']);
+
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function normalizeRoutePath(routePath) {
+  if (routePath === '/') return '/';
+  return routePath.endsWith('/') ? routePath : `${routePath}/`;
+}
+
+function buildSitemapXml(routes) {
+  const urlBlocks = routes
+    .map((route) => {
+      const path = normalizeRoutePath(route.path);
+      const loc = `${SITE_ORIGIN}${path}`;
+      const lastmod = route.lastmod || SITEMAP_LASTMOD;
+      return [
+        '  <url>',
+        `    <loc>${escapeXml(loc)}</loc>`,
+        `    <lastmod>${escapeXml(lastmod)}</lastmod>`,
+        `    <changefreq>${escapeXml(route.changefreq || 'monthly')}</changefreq>`,
+        `    <priority>${escapeXml(route.priority || '0.5')}</priority>`,
+        '  </url>'
+      ].join('\n');
+    })
+    .join('\n');
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    urlBlocks,
+    '</urlset>',
+    ''
+  ].join('\n');
+}
 
 async function buildMainSiteLegacyEntry() {
   const transformedParts = [];
@@ -177,6 +229,9 @@ function copyStaticFilesPlugin() {
           filter: (filePath) => path.basename(filePath) !== '.DS_Store'
         });
       }
+
+      const sitemapXml = buildSitemapXml(SITEMAP_ROUTES);
+      await fs.writeFile(path.join(DIST_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
     }
   };
 }
@@ -226,5 +281,4 @@ export default defineConfig({
     copyStaticFilesPlugin()
   ]
 });
-
 
