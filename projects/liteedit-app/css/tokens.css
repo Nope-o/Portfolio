@@ -1,0 +1,43 @@
+    :root {
+      --font-ui: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+      --font-display: "Gill Sans", "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+      --bg: #f0f5fb;
+      --surface: #ffffff;
+      --surface-2: #f6f9ff;
+      --surface-3: #eaf1fb;
+      --text: #0f172a;
+      --muted: #4f5f79;
+      --border: #d6e2f0;
+      --border-strong: #bfd1e6;
+      --primary: #2563eb;
+      --primary-strong: #1e3a8a;
+      --good: #0d9488;
+      --danger: #dc2626;
+      --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.06);
+      --shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+      --shadow-lg: 0 24px 52px rgba(15, 23, 42, 0.18);
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --focus-ring: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+      --topbar-height: 68px;
+      --ease: 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.dark {
+      --bg: #091120;
+      --surface: #101a2d;
+      --surface-2: #16263e;
+      --surface-3: #213757;
+      --text: #e2e8f0;
+      --muted: #99acc7;
+      --border: #2a3d5c;
+      --border-strong: #3f5a82;
+      --primary: #60a5fa;
+      --primary-strong: #3b82f6;
+      --good: #2dd4bf;
+      --danger: #fb7185;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.28);
+      --shadow: 0 12px 30px rgba(1, 6, 16, 0.45);
+      --shadow-lg: 0 24px 52px rgba(1, 6, 16, 0.6);
+    }

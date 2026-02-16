@@ -1,0 +1,222 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import fs from 'fs-extra';
+import esbuild from 'esbuild';
+import JavaScriptObfuscator from 'javascript-obfuscator';
+import { defineConfig } from 'vite';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const ROOT = __dirname;
+const GENERATED_MAIN_ENTRY = path.join(ROOT, '.vite-temp', 'main-site-entry.generated.js');
+const RAW_BASE = process.env.VITE_BASE_PATH || '/';
+const BASE_PATH = RAW_BASE.startsWith('/') ? RAW_BASE : `/${RAW_BASE}`;
+const NORMALIZED_BASE = BASE_PATH.endsWith('/') ? BASE_PATH : `${BASE_PATH}/`;
+const GENERATED_MAIN_ENTRY_PUBLIC = `${NORMALIZED_BASE}.vite-temp/main-site-entry.generated.js`;
+const ROOT_INDEX_FILE = path.resolve(ROOT, 'index.html').replace(/\\/g, '/');
+
+const SAFE_BUILD = process.env.SAFE_BUILD === 'true';
+const DIST_DIR = path.join(ROOT, 'dist');
+
+const STATIC_COPY_ITEMS = [
+  { src: 'assets/images', dest: 'assets/images' },
+  { src: 'projects/project-protection.js', dest: 'projects/project-protection.js' },
+  { src: 'projects/ml/app.js', dest: 'projects/ml/app.js' },
+  { src: 'Madhav_Kataria_Resume.pdf', dest: 'Madhav_Kataria_Resume.pdf' },
+  { src: 'robots.text', dest: 'robots.text' },
+  { src: 'sitemap.xml', dest: 'sitemap.xml' },
+  { src: 'BingSiteAuth.xml', dest: 'BingSiteAuth.xml' },
+  { src: 'CNAME', dest: 'CNAME' }
+];
+
+const MAIN_SITE_SOURCE_SCRIPTS = [
+  'js/config.js',
+  'js/analytics.js',
+  'js/audio.js',
+  'js/pathfinding.js',
+  'js/data/projects.js',
+  'js/components/Navbar.js',
+  'js/components/About.js',
+  'js/components/PathfinderGame.js',
+  'js/components/Journey.js',
+  'js/components/Projects.js',
+  'js/components/Resume.js',
+  'js/components/Contact.js',
+  'js/components/PrivacyPolicy.js',
+  'js/App.js'
+];
+
+const OBFUSCATE_ENTRY_NAMES = new Set(['main', 'liteeditApp']);
+
+async function buildMainSiteLegacyEntry() {
+  const transformedParts = [];
+
+  for (const rel of MAIN_SITE_SOURCE_SCRIPTS) {
+    const absPath = path.join(ROOT, rel);
+    const source = await fs.readFile(absPath, 'utf8');
+    const transformed = await esbuild.transform(source, {
+      loader: 'jsx',
+      minify: false,
+      target: 'es2018',
+      jsxFactory: 'React.createElement',
+      jsxFragment: 'React.Fragment',
+      legalComments: 'none',
+      sourcefile: rel,
+      charset: 'utf8'
+    });
+    transformedParts.push(`// ${rel}\n${transformed.code}`);
+  }
+
+  await fs.ensureDir(path.dirname(GENERATED_MAIN_ENTRY));
+  await fs.writeFile(GENERATED_MAIN_ENTRY, transformedParts.join('\n\n'), 'utf8');
+}
+
+function transformMainIndexHtml(html) {
+  let output = html;
+  output = output.replace(
+    /<script\s+src=["']https:\/\/unpkg\.com\/@babel\/standalone\/babel\.min\.js["']><\/script>\s*/i,
+    ''
+  );
+  output = output.replace(/<script\s+type=["']text\/babel["']\s+src=["']js\/[^"']+["']><\/script>\s*/gi, '');
+  output = output.replace(/<script\s+src=["']js\/analytics\.js["']><\/script>\s*/i, '');
+
+  if (!new RegExp(`src=["']${GENERATED_MAIN_ENTRY_PUBLIC.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i').test(output)) {
+    if (/<script>\s*\/\/ Security scripts/i.test(output)) {
+      output = output.replace(
+        /<script>\s*\/\/ Security scripts/i,
+        `<script type="module" src="${GENERATED_MAIN_ENTRY_PUBLIC}"></script>\n  <script>\n    // Security scripts`
+      );
+    } else {
+      output = output.replace(
+        /<\/body>/i,
+        `  <script type="module" src="${GENERATED_MAIN_ENTRY_PUBLIC}"></script>\n</body>`
+      );
+    }
+  }
+  return output;
+}
+
+function mainSiteLegacyEntryPlugin() {
+  return {
+    name: 'main-site-legacy-entry',
+    apply: 'build',
+    async buildStart() {
+      await buildMainSiteLegacyEntry();
+    },
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html, ctx) {
+        if (!ctx.filename) return html;
+        const normalized = ctx.filename.replace(/\\/g, '/');
+        if (normalized !== ROOT_INDEX_FILE) return html;
+        return transformMainIndexHtml(html);
+      }
+    }
+  };
+}
+
+function selectiveObfuscationPlugin() {
+  return {
+    name: 'selective-obfuscation',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      if (SAFE_BUILD) return;
+
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== 'chunk') continue;
+        if (!chunk.isEntry) continue;
+        if (!OBFUSCATE_ENTRY_NAMES.has(chunk.name)) continue;
+
+        const obfuscated = JavaScriptObfuscator.obfuscate(chunk.code, {
+          compact: true,
+          simplify: true,
+          stringArray: true,
+          stringArrayThreshold: 0.55,
+          rotateStringArray: true,
+          splitStrings: false,
+          deadCodeInjection: false,
+          controlFlowFlattening: false,
+          debugProtection: false,
+          selfDefending: false,
+          disableConsoleOutput: false,
+          renameGlobals: false,
+          unicodeEscapeSequence: false
+        }).getObfuscatedCode();
+        chunk.code = obfuscated;
+      }
+    },
+    async closeBundle() {
+      try {
+        await fs.remove(GENERATED_MAIN_ENTRY);
+      } catch (err) {}
+    }
+  };
+}
+
+function copyStaticFilesPlugin() {
+  return {
+    name: 'copy-static-files',
+    apply: 'build',
+    async closeBundle() {
+      for (const item of STATIC_COPY_ITEMS) {
+        const srcPath = path.join(ROOT, item.src);
+        const destPath = path.join(DIST_DIR, item.dest);
+
+        if (!(await fs.pathExists(srcPath))) continue;
+        await fs.ensureDir(path.dirname(destPath));
+        await fs.copy(srcPath, destPath, {
+          overwrite: true,
+          filter: (filePath) => path.basename(filePath) !== '.DS_Store'
+        });
+      }
+    }
+  };
+}
+
+export default defineConfig({
+  base: NORMALIZED_BASE,
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    sourcemap: false,
+    minify: 'terser',
+    cssCodeSplit: true,
+    terserOptions: {
+      compress: {
+        drop_console: false,
+        passes: 2
+      },
+      mangle: {
+        toplevel: true
+      },
+      format: {
+        comments: false
+      }
+    },
+    rollupOptions: {
+      input: {
+        main: path.resolve(ROOT, 'index.html'),
+        sursightApp: path.resolve(ROOT, 'projects/sursight-studio-app/index.html'),
+        liteeditApp: path.resolve(ROOT, 'projects/liteedit-app/index.html'),
+        sursightDetail: path.resolve(ROOT, 'projects/sursight-studio/index.html'),
+        liteeditDetail: path.resolve(ROOT, 'projects/liteedit/index.html'),
+        automationDetail: path.resolve(ROOT, 'projects/AutomationDashboard/index.html'),
+        attendanceDetail: path.resolve(ROOT, 'projects/AttendanceTracker/index.html'),
+        llm: path.resolve(ROOT, 'projects/LLM/index.html'),
+        ml: path.resolve(ROOT, 'projects/ml/index.html')
+      },
+      output: {
+        entryFileNames: 'assets/[name].bundle.js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]'
+      }
+    }
+  },
+  plugins: [
+    mainSiteLegacyEntryPlugin(),
+    selectiveObfuscationPlugin(),
+    copyStaticFilesPlugin()
+  ]
+});
+

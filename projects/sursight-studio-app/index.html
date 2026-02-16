@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Advanced pitch and Sargam visualizer for vocal training">
+  <title>SurSight Studio</title>
+    <script src="../project-protection.js" defer></script>
+<link rel="icon" type="image/webp" href="../../assets/images/logoo.webp">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="https://madhav-kataria.site/#projects" class="logo-container">
+        <img src="../../assets/images/logoo.webp" alt="Logo" class="app-logo">
+      </a>
+      <h2 class="app-title">SurSight Studio</h2>
+      <button class="settings-btn" onclick="app.toggleSettingsSidebar()" aria-label="Open settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.325 4.317a1.724 1.724 0 0 1 3.35 0 1.724 1.724 0 0 0 2.574 1.066 1.724 1.724 0 0 1 2.898 1.676 1.724 1.724 0 0 0 .839 2.532 1.724 1.724 0 0 1 0 2.818 1.724 1.724 0 0 0-.839 2.532 1.724 1.724 0 0 1-2.898 1.676 1.724 1.724 0 0 0-2.574 1.066 1.724 1.724 0 0 1-3.35 0 1.724 1.724 0 0 0-2.574-1.066 1.724 1.724 0 0 1-2.898-1.676 1.724 1.724 0 0 0-.839-2.532 1.724 1.724 0 0 1 0-2.818 1.724 1.724 0 0 0 .839-2.532 1.724 1.724 0 0 1 2.898-1.676 1.724 1.724 0 0 0 2.574-1.066Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 15.75A3.75 3.75 0 1 0 12 8.25a3.75 3.75 0 0 0 0 7.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Settings Sidebar -->
+  <div id="settingsSidebar" class="settings-sidebar">
+    <div class="sidebar-overlay" onclick="app.toggleSettingsSidebar()"></div>
+    <div class="sidebar-content">
+      <div class="sidebar-header">
+        <h3>⚙️ Settings</h3>
+        <button class="sidebar-close" onclick="app.toggleSettingsSidebar()">&times;</button>
+      </div>
+      <div class="sidebar-body">
+        <div class="settings-grid">
+          <div class="setting-group">
+            <h4>Quick Controls</h4>
+            <label class="pill">
+              <span class="pill-label">Sa</span>
+              <select id="saSelectSettings" aria-label="Select tonic note in settings"></select>
+            </label>
+            <label class="pill">
+              <span class="pill-label">Low Cut</span>
+              <input id="lowCutSettings" class="range" type="range" min="50" max="200" value="70" step="1" aria-label="Low cut frequency in settings">
+              <span id="lowCutValSettings" class="pill-value">70Hz</span>
+            </label>
+            <label class="pill">
+              <span class="pill-label">Gate</span>
+              <input id="rmsGateSettings" class="range" type="range" min="1" max="50" value="5" step="1" aria-label="Silence gate in settings">
+              <span id="rmsGateValSettings" class="pill-value">0.005</span>
+            </label>
+            <label class="pill">
+              <span class="pill-label">Clarity</span>
+              <input id="clarityGateSettings" class="range" type="range" min="20" max="80" value="35" step="1" aria-label="Clarity gate in settings">
+              <span id="clarityGateValSettings" class="pill-value">0.35</span>
+            </label>
+          </div>
+
+          <div class="setting-group">
+            <h4>Display</h4>
+            <label class="setting-item">
+              <input type="checkbox" id="showHarmonics" checked>
+              <span>Show Harmonics Analysis</span>
+            </label>
+            <label class="setting-item">
+              <input type="checkbox" id="autoTuneVisualization" checked>
+              <span>Auto-Tune Visualization</span>
+            </label>
+            <label class="setting-item">
+              <input type="checkbox" id="showFormants">
+              <span>Show Formant Analysis</span>
+            </label>
+            <label class="setting-item">
+              <input type="checkbox" id="darkMode" checked>
+              <span>Dark Mode</span>
+            </label>
+          </div>
+
+          <div class="setting-group">
+            <h4>Performance</h4>
+            <label class="pill">
+              <span class="pill-label">Timeline Duration</span>
+              <input id="historyDuration" class="range" type="range" min="3" max="15" value="5" step="1">
+              <span id="historyDurationVal" class="pill-value">5s</span>
+            </label>
+            <label class="pill">
+              <span class="pill-label">Smoothing</span>
+              <input id="smoothingFactor" class="range" type="range" min="0" max="90" value="30" step="10">
+              <span id="smoothingFactorVal" class="pill-value">0.3</span>
+            </label>
+            <label class="pill">
+              <span class="pill-label">FPS Limit</span>
+              <select id="fpsLimit">
+                <option value="120">120 FPS</option>
+                <option value="90">90 FPS</option>
+                <option value="60">60 FPS</option>
+                <option value="30" selected>30 FPS</option>
+                <option value="15">15 FPS</option>
+              </select>
+            </label>
+            <label class="pill">
+              <span class="pill-label">Exercise Difficulty</span>
+              <select id="exerciseDifficulty">
+                <option value="beginner">Beginner</option>
+                <option value="normal" selected>Normal</option>
+                <option value="strict">Strict</option>
+              </select>
+            </label>
+            <label class="pill">
+              <span class="pill-label">Exercise Octave</span>
+              <select id="exerciseRegister">
+                <option value="low" selected>Octave 3 (C3)</option>
+                <option value="mid">Octave 4 (C4)</option>
+                <option value="high">Octave 5 (C5)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="setting-group">
+            <h4>Audio</h4>
+            <button class="btn btn-secondary" onclick="audio.calibrateNoise()">
+              Calibrate Noise Floor
+            </button>
+            <label class="setting-item">
+              <input type="checkbox" id="autoTonicDetection">
+              <span>Auto-Detect Tonic (Sa)</span>
+            </label>
+            <label class="setting-item">
+              <input type="checkbox" id="playExerciseTargetPrompt" checked>
+              <span>Play Target Note Prompts</span>
+            </label>
+          </div>
+
+          <div class="setting-group">
+            <h4>Data</h4>
+            <button class="btn btn-secondary settings-action-btn action-reset" onclick="app.resetSettings()">
+              Reset Settings to Default
+            </button>
+            <button class="btn btn-secondary settings-action-btn action-export" onclick="sessions.exportAll()">
+              Export All Sessions
+            </button>
+            <button class="btn btn-secondary settings-action-btn action-help" onclick="app.showHelp()">
+              Show Help Again
+            </button>
+            <button class="btn btn-secondary settings-action-btn action-contact" onclick="app.openContact()">
+              Need Help / Give Feedback
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Permission Request Overlay -->
+  <div id="permissionOverlay" class="permission-overlay" style="display: none;">
+    <div class="permission-card">
+      <div class="permission-icon">🎤</div>
+      <h2>Microphone Access Required</h2>
+      <p>This app needs access to your microphone to analyze your pitch and help you train your voice.</p>
+      <button class="btn btn-primary" onclick="audio.requestPermission()">Grant Access</button>
+      <button class="btn btn-secondary" onclick="app.hidePermissionOverlay()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- First-Time Help Overlay -->
+  <div id="helpOverlay" class="help-overlay" style="display: none;">
+    <div class="help-content">
+      <button class="help-close" onclick="app.hideHelp()">&times;</button>
+      <h2>SurSight Studio Guide</h2>
+      <div class="help-sections">
+        <div class="help-section">
+          <h3>Purpose</h3>
+          <p>This app is built for vocal and melodic pitch training. It tracks live microphone input, maps notes to Western + Sargam, and provides visual feedback for tuning, stability, and structured exercise practice.</p>
+        </div>
+        <div class="help-section">
+          <h3>Quick Start</h3>
+          <ul>
+            <li>Click <strong>Start</strong> and grant microphone access.</li>
+            <li>Select your tonic (<strong>Sa</strong>) in controls.</li>
+            <li>Sing a steady note and watch frequency, note, Sargam, cents meter, and pitch timeline.</li>
+            <li>Use <strong>Practice</strong> mode for focused exercise training with target-note guidance.</li>
+            <li>Open <strong>Settings</strong> for quick controls, exercise difficulty/octave, and display options.</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Readout & Timeline Specifications</h3>
+          <ul>
+            <li>Frequency is shown in Hz with 2-decimal precision.</li>
+            <li>Nearest note + Sargam label update continuously.</li>
+            <li>Cents meter range is <strong>-50¢ to +50¢</strong>; center means in tune.</li>
+            <li>Timeline displays pitch history with silence gaps not connected.</li>
+            <li>Auto-Tune guide line appears when <strong>Auto-Tune Visualization</strong> is enabled.</li>
+            <li><strong>Tone</strong> estimates timbre quality from harmonic balance and breath/noise content.</li>
+            <li><strong>Stability</strong> scores recent cents jitter (higher means steadier pitch).</li>
+            <li><strong>Musician DNA</strong> learns per-swara intonation tendency (sharp/flat bias).</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Controls & Settings</h3>
+          <ul>
+            <li><strong>Sa:</strong> tonic root used for Sargam mapping.</li>
+            <li><strong>Low Cut (50-200Hz):</strong> high-pass filter to suppress low-frequency noise.</li>
+            <li><strong>Gate (0.001-0.050):</strong> silence threshold; higher value rejects weak signals.</li>
+            <li><strong>Clarity (0.20-0.80):</strong> stricter pitch confidence threshold.</li>
+            <li><strong>Timeline Duration (3-15s):</strong> visible pitch history length.</li>
+            <li><strong>Smoothing (0.0-0.9):</strong> stabilizes pitch display; higher is smoother but slower.</li>
+            <li><strong>FPS Limit:</strong> rendering speed/performance balance.</li>
+            <li><strong>Auto-Detect Tonic (Sa):</strong> when enabled, the app can set Sa from a stable detected note.</li>
+            <li><strong>Show Formant Analysis:</strong> visible in <strong>Advanced Analysis → Spectrum</strong>.</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Advanced Analysis</h3>
+          <ul>
+            <li><strong>Waveform:</strong> raw time-domain mic signal for attack/sustain behavior.</li>
+            <li><strong>Harmonics:</strong> strongest overtone peaks in the current sound.</li>
+            <li><strong>Frequency Spectrum:</strong> distribution of energy across frequencies.</li>
+            <li><strong>Intonation Drift Heatmap:</strong> time vs Sargam map colored by cents drift (flat/in-tune/sharp).</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Exercise Specifications</h3>
+          <ul>
+            <li><strong>Chromatic / Sargam / Interval / Octave Switch / Sustained:</strong> guided pitch exercises with real-time target tracking.</li>
+            <li><strong>Exercise Octave:</strong> choose <strong>Octave 3 (C3)</strong>, <strong>Octave 4 (C4)</strong>, or <strong>Octave 5 (C5)</strong> as base note for sequence/interval exercises.</li>
+            <li><strong>Sustained Pitch:</strong> hold one stable note; required hold duration depends on selected difficulty.</li>
+            <li><strong>Difficulty presets:</strong> Beginner (easier tolerance, shorter holds), Normal (balanced), Strict (tighter tolerance, longer holds).</li>
+            <li>Target tolerance uses cents-based pitch matching (Normal mode is around ±20¢).</li>
+            <li>Guidance prompts include: go higher/lower, tune up/down, and next target note.</li>
+            <li>Use <strong>Play Targeted Note</strong> to hear the target pitch and <strong>Restart</strong> to retry quickly.</li>
+            <li>Exercise cards store best stats per context (exercise + difficulty + octave + Sa).</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Recording & Data</h3>
+          <ul>
+            <li>Use <strong>Record</strong> to capture live pitch sessions.</li>
+            <li>Session list supports playback, CSV + timeline graph export, and delete.</li>
+            <li><strong>Export All Sessions</strong> downloads an Excel-compatible CSV with full note details.</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Privacy & Security</h3>
+          <ul>
+            <li>This app runs in the browser on your current machine only.</li>
+            <li>Your microphone stream is used only for real-time analysis and is not uploaded by the app.</li>
+            <li>Saved sessions are stored only in this browser profile on this machine (localStorage), unless you export them.</li>
+            <li>No practice data is shared externally by default.</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Troubleshooting & Best Results</h3>
+          <ul>
+            <li>Practice in a quiet room and keep constant mic distance.</li>
+            <li>If pitch flickers, increase Gate slightly or reduce background noise.</li>
+            <li>If detection feels too strict, reduce Clarity threshold.</li>
+            <li>Use noise calibration before practice for cleaner gating.</li>
+            <li>If response feels slow, reduce Smoothing and/or increase FPS limit.</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>Keyboard Shortcuts</h3>
+          <p>
+            <span class="help-kbd">Space</span> Start/Stop Mic
+            <span class="help-kbd">R</span> Record
+            <span class="help-kbd">P</span> Practice Mode
+            <span class="help-kbd">H</span> Help
+            <span class="help-kbd">Esc</span> Close/Exit
+          </p>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="app.hideHelp()">Got it!</button>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div class="wrap" id="mainView">
+    <!-- Control Bar -->
+    <div class="control-bar">
+      <!-- Desktop Controls -->
+      <div class="controls desktop-controls">
+        <label class="pill tooltip" data-tooltip="Base note for Sargam">
+          <span class="pill-label">Sa</span>
+          <select id="saSelect" aria-label="Select tonic note"></select>
+        </label>
+        
+        <label class="pill tooltip" data-tooltip="High-pass filter">
+          <span class="pill-label">Low Cut</span>
+          <input id="lowCut" class="range" type="range" min="50" max="200" value="70" step="1" aria-label="Low cut frequency">
+          <span id="lowCutVal" class="pill-value">70Hz</span>
+        </label>
+        
+        <label class="pill tooltip" data-tooltip="Silence threshold">
+          <span class="pill-label">Gate</span>
+          <input id="rmsGate" class="range" type="range" min="1" max="50" value="5" step="1" aria-label="Silence gate">
+          <span id="rmsGateVal" class="pill-value">0.005</span>
+        </label>
+        
+        <label class="pill tooltip" data-tooltip="Clarity threshold">
+          <span class="pill-label">Clarity</span>
+          <input id="clarityGate" class="range" type="range" min="20" max="80" value="35" step="1" aria-label="Clarity gate">
+          <span id="clarityGateVal" class="pill-value">0.35</span>
+        </label>
+      </div>
+
+      <!-- Mobile Controls Toggle -->
+      <button
+        class="mobile-controls-toggle"
+        id="mobileControlsToggle"
+        onclick="app.toggleMobileControls()"
+        aria-controls="mobileControlsPanel"
+        aria-expanded="false"
+      >
+        <svg class="icon-open" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg class="icon-close" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="mobile-toggle-label">Quick Controls</span>
+      </button>
+
+      <!-- Mobile Collapsible Controls -->
+      <div class="mobile-controls-panel" id="mobileControlsPanel">
+        <label class="pill">
+          <span class="pill-label">Sa</span>
+          <select id="saSelectMobile" aria-label="Select tonic note"></select>
+        </label>
+        
+        <label class="pill">
+          <span class="pill-label">Low Cut</span>
+          <input id="lowCutMobile" class="range" type="range" min="50" max="200" value="70" step="1" aria-label="Low cut frequency">
+          <span id="lowCutValMobile" class="pill-value">70Hz</span>
+        </label>
+        
+        <label class="pill">
+          <span class="pill-label">Gate</span>
+          <input id="rmsGateMobile" class="range" type="range" min="1" max="50" value="5" step="1" aria-label="Silence gate">
+          <span id="rmsGateValMobile" class="pill-value">0.005</span>
+        </label>
+        
+        <label class="pill">
+          <span class="pill-label">Clarity</span>
+          <input id="clarityGateMobile" class="range" type="range" min="20" max="80" value="35" step="1" aria-label="Clarity gate">
+          <span id="clarityGateValMobile" class="pill-value">0.35</span>
+        </label>
+      </div>
+
+      <div class="action-buttons">
+        <button id="practiceBtn" class="btn btn-secondary" onclick="app.togglePracticeMode()" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="btn-icon">
+            <path d="M1 1h14v14H1V1zm2 2v10h10V3H3z"/>
+          </svg>
+          <span class="btn-text">Practice</span>
+        </button>
+        <button id="startBtn" class="btn btn-primary" onclick="audio.start()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="btn-icon">
+            <path d="M8 3a5 5 0 100 10A5 5 0 008 3z"/>
+          </svg>
+          <span class="btn-text">Start</span>
+        </button>
+        <button id="stopBtn" class="btn btn-stop" style="display:none;" onclick="audio.stop()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="btn-icon">
+            <rect x="4" y="4" width="8" height="8"/>
+          </svg>
+          <span class="btn-text">Stop</span>
+        </button>
+        <button id="recordBtn" class="btn btn-secondary" style="display:none;" disabled onclick="recording.toggle()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="btn-icon">
+            <circle cx="8" cy="8" r="4"/>
+          </svg>
+          <span class="btn-text">Record</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recording Indicator -->
+    <div id="recordingIndicator" class="recording-indicator">
+      <div class="recording-dot"></div>
+      Recording
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="main-grid" id="mainGrid">
+      <!-- Pitch Timeline -->
+      <div class="card card-pitch">
+        <div class="card-header">
+          <h3 class="card-title">📊 Pitch Timeline</h3>
+          <div class="card-controls">
+            <button class="icon-btn" onclick="visualization.zoomOut()" aria-label="Zoom out">-</button>
+            <span id="timelineZoom">5s</span>
+            <button class="icon-btn" onclick="visualization.zoomIn()" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+        <canvas id="pitch" aria-label="Pitch timeline graph"></canvas>
+      </div>
+      
+      <!-- Readout Card -->
+      <div class="card card-readout">
+        <div class="readout-main">
+          <div class="readout-top">
+            <div class="freq-note-row">
+              <div class="freq-display">
+                <div class="big" id="freq" aria-live="polite"><span class="freq-value"><span class="freq-int">0</span><span class="hz-decimal">.00</span></span><span class="hz"> Hz</span></div>
+              </div>
+              <div class="note-display">
+                <div class="note" id="note" aria-live="polite">--</div>
+                <div class="sargam" id="sargam">Sa —</div>
+              </div>
+            </div>
+            <div class="quality-indicator" id="quality">Ready to start</div>
+          </div>
+        </div>
+
+        <div class="mic-power-strip" id="micPowerStrip">
+          <div class="mic-metric">
+            <span class="metric-label">Tone</span>
+            <strong class="metric-value" id="ToneQuality">--</strong>
+          </div>
+          <div class="mic-metric">
+            <span class="metric-label">Stability</span>
+            <strong class="metric-value" id="StabilityScore">--</strong>
+          </div>
+          <div class="mic-metric mic-metric-wide">
+            <span class="metric-label">Musician DNA</span>
+            <strong class="metric-value metric-bias" id="BiasText">Bias: learning</strong>
+            <small class="metric-hint" id="BiasHint">Hold a steady note</small>
+          </div>
+        </div>
+        
+        <div class="meter-container">
+          <div class="meter-wrap" role="meter" aria-label="Pitch accuracy meter">
+            <div class="meter-center"></div>
+            <div id="meterPointer" class="meter-pointer"></div>
+          </div>
+          <div class="meter-labels">
+            <span>-50¢</span>
+            <span>0</span>
+            <span>+50¢</span>
+          </div>
+        </div>
+        
+        <div class="kbd" id="kbd" role="group" aria-label="Western note keyboard"></div>
+        <div class="kbd" id="kbdHindi" role="group" aria-label="Sargam keyboard"></div>
+        
+        <div class="footer-badges">
+          <span class="badge">A4 = 440Hz</span>
+          <span class="badge">SR: <span id="sr">—</span></span>
+          <span class="badge">RMS: <span id="rms">—</span></span>
+          <span class="badge">Clarity: <span id="clarity">—</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid stats-scroll">
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-label">Avg Pitch</div>
+        <div class="stat-value" id="avgPitch">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Range</div>
+        <div class="stat-value" id="pitchRange">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎵</div>
+        <div class="stat-label">Vibrato</div>
+        <div class="stat-value" id="vibratoRate">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✓</div>
+        <div class="stat-label">Stability</div>
+        <div class="stat-value" id="stability">--</div>
+      </div>
+    </div>
+
+    <!-- Tabbed Content -->
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" data-tab="exercises" aria-selected="true">
+          🎯 Exercises
+        </button>
+        <button class="tab" role="tab" data-tab="metronome" aria-selected="false">
+          🎼 Metronome
+        </button>
+        <button class="tab" role="tab" data-tab="sessions" aria-selected="false">
+          📝 Sessions
+        </button>
+      </div>
+
+      <!-- Exercises Tab -->
+      <div id="exercisesTab" class="tab-content active" role="tabpanel">
+        <div class="tab-header">
+          <h3>Vocal Exercises</h3>
+          <label class="pill exercise-difficulty-picker">
+            <span class="pill-label">Difficulty</span>
+            <select id="exerciseDifficultyInline" aria-label="Exercise difficulty">
+              <option value="beginner">Beginner</option>
+              <option value="normal" selected>Normal</option>
+              <option value="strict">Strict</option>
+            </select>
+          </label>
+          <label class="pill exercise-difficulty-picker">
+            <span class="pill-label">Octave</span>
+            <select id="exerciseRegisterInline" aria-label="Exercise octave">
+              <option value="low" selected>Octave 3 (C3)</option>
+              <option value="mid">Octave 4 (C4)</option>
+              <option value="high">Octave 5 (C5)</option>
+            </select>
+          </label>
+        </div>
+        <div class="exercises-grid">
+          <div class="exercise-card" onclick="app.startExerciseSession('chromatic')">
+            <div class="exercise-icon">🎵</div>
+            <div class="exercise-info">
+              <h4>Chromatic Scale</h4>
+              <p>Practice all 12 semitones in sequence (base follows selected octave)</p>
+              <div class="exercise-best" id="exerciseBest-chromatic">Best: --</div>
+            </div>
+          </div>
+          <div class="exercise-card" onclick="app.startExerciseSession('sargam')">
+            <div class="exercise-icon">🎶</div>
+            <div class="exercise-info">
+              <h4>Sargam Practice</h4>
+              <p>Aroha: Sa Re Ga Ma Pa Dha Ni Sa (base follows selected octave)</p>
+              <div class="exercise-best" id="exerciseBest-sargam">Best: --</div>
+            </div>
+          </div>
+          <div class="exercise-card" onclick="app.startExerciseSession('sargamFull')">
+            <div class="exercise-icon">🪔</div>
+            <div class="exercise-info">
+              <h4>Sargam Aroha-Avaroha</h4>
+              <p>Up and down full Sargam cycle (base follows selected octave)</p>
+              <div class="exercise-best" id="exerciseBest-sargamFull">Best: --</div>
+            </div>
+          </div>
+          <div class="exercise-card" onclick="app.startExerciseSession('interval')">
+            <div class="exercise-icon">🎼</div>
+            <div class="exercise-info">
+              <h4>Interval Training</h4>
+              <p>Root-return jumps for P4, P5, and octave (base follows selected octave)</p>
+              <div class="exercise-best" id="exerciseBest-interval">Best: --</div>
+            </div>
+          </div>
+          <div class="exercise-card" onclick="app.startExerciseSession('octaveSwitch')">
+            <div class="exercise-icon">🧭</div>
+            <div class="exercise-info">
+              <h4>Octave Switches</h4>
+              <p>Rapid lower/upper octave changes across scale notes</p>
+              <div class="exercise-best" id="exerciseBest-octaveSwitch">Best: --</div>
+            </div>
+          </div>
+          <div class="exercise-card" onclick="app.startExerciseSession('sustained')">
+            <div class="exercise-icon">⏱️</div>
+            <div class="exercise-info">
+              <h4>Sustained Pitch</h4>
+              <p>Hold one stable note (duration by difficulty)</p>
+              <div class="exercise-best" id="exerciseBest-sustained">Best: --</div>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-progress-hint">Start any exercise to open focused training view.</div>
+      </div>
+
+      <!-- Metronome Tab -->
+      <div id="metronomeTab" class="tab-content" role="tabpanel">
+        <div class="metronome-controls">
+          <label class="pill">
+            <span class="pill-label">BPM</span>
+            <button class="icon-btn" onclick="metronome.adjustBpm(-1)" aria-label="Decrease BPM">-</button>
+            <input id="metronomeBpm" class="range" type="range" min="40" max="208" value="120" step="1">
+            <span id="metronomeBpmVal" class="pill-value">120</span>
+            <button class="icon-btn" onclick="metronome.adjustBpm(1)" aria-label="Increase BPM">+</button>
+          </label>
+          <label class="pill">
+            <span class="pill-label">Beats</span>
+            <select id="metronomeBeats">
+              <option value="2">2/4</option>
+              <option value="3">3/4</option>
+              <option value="4" selected>4/4</option>
+              <option value="6">6/8</option>
+            </select>
+          </label>
+          <button id="metronomeToggle" class="btn btn-primary" onclick="metronome.toggle()">
+            ▶️ Start
+          </button>
+        </div>
+        <div class="metronome-visual" id="metronomeVisual">--</div>
+      </div>
+
+      <!-- Sessions Tab -->
+      <div id="sessionsTab" class="tab-content" role="tabpanel">
+        <div class="tab-header">
+          <h3>Your Practice Sessions</h3>
+          <button class="btn btn-secondary btn-sm" onclick="sessions.clearAll()">Clear All</button>
+        </div>
+        <div id="sessionsList" class="sessions-list"></div>
+      </div>
+    </div>
+
+    <!-- Show More Button -->
+    <div class="show-more-container">
+      <button id="showMoreBtn" class="btn btn-secondary btn-block" onclick="app.toggleAdvancedGraphs()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
+          <path d="M8 4v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Show Advanced Analysis
+      </button>
+    </div>
+
+    <!-- Advanced Graphs (Hidden by default) -->
+    <div id="advancedGraphs" class="advanced-graphs" style="display: none;">
+      <div id="advancedEmptyState" class="advanced-empty-state">
+        <div class="advanced-empty-illustration" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <h4>Advanced Analysis Ready</h4>
+        <p>Start microphone to see live waveform, harmonics, spectrum, and intonation heatmap.</p>
+      </div>
+      <!-- Analysis Panels -->
+      <div class="analysis-grid">
+        <div class="card advanced-analysis-card">
+          <h3 class="card-title">🌊 Waveform</h3>
+          <p class="card-subtitle">See attack, sustain, and breath-flow shape in real time.</p>
+          <canvas id="waveform" aria-label="Audio waveform"></canvas>
+        </div>
+        <div class="card advanced-analysis-card">
+          <h3 class="card-title">🎵 Harmonics</h3>
+          <p class="card-subtitle">Track overtone peaks and timbre richness of your tone.</p>
+          <canvas id="harmonics" aria-label="Harmonic analysis"></canvas>
+        </div>
+      </div>
+
+      <div class="card advanced-analysis-card">
+        <h3 class="card-title">📈 Frequency Spectrum</h3>
+        <p class="card-subtitle">Energy distribution across low, mid, and high frequencies.</p>
+        <canvas id="spectrum" aria-label="Frequency spectrum"></canvas>
+      </div>
+
+      <div class="card advanced-analysis-card">
+        <h3 class="card-title">🧭 Intonation Drift Heatmap</h3>
+        <p class="card-subtitle">Color map of flat/in-tune/sharp drift across swaras over time.</p>
+        <canvas id="intonationHeatmap" aria-label="Intonation drift heatmap"></canvas>
+        <div class="heatmap-legend-inline" aria-hidden="true">
+          <span class="legend-chip legend-flat">Flat</span>
+          <span class="legend-chip legend-center">In tune</span>
+          <span class="legend-chip legend-sharp">Sharp</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Practice Mode View -->
+  <div class="practice-view" id="practiceView" style="display: none;">
+    <div class="practice-header">
+      <div class="practice-header-row">
+        <button class="btn btn-secondary practice-exit-btn" onclick="exercises.stop()" aria-label="Exit exercise view">
+          <span class="btn-icon" aria-hidden="true">←</span>
+          <span class="practice-exit-label">Exit</span>
+        </button>
+        <div class="exercise-session-title" id="exerciseSessionTitle">Exercise Session</div>
+        <button class="btn btn-secondary btn-sm practice-settings-btn" onclick="app.toggleSettingsSidebar()" aria-label="Open settings">
+          <span class="practice-settings-label">Settings</span>
+          </button>
+        </div>
+      </div>
+
+    <div class="practice-content">
+      <div class="practice-graphs-grid">
+        <div class="practice-pitch card">
+          <div class="card-header compact">
+            <h3 class="card-title">📊 Pitch Timeline</h3>
+          </div>
+          <canvas id="exerciseTimeline" aria-label="Exercise pitch timeline graph"></canvas>
+        </div>
+        <div id="exerciseProgress" class="exercise-progress exercise-progress-focused" style="display: none;">
+          <div class="exercise-progress-placeholder">Start an exercise to see progress and guidance.</div>
+        </div>
+        <div class="card card-readout practice-readout-card">
+          <div class="card-header compact practice-readout-header">
+            <h3 class="card-title">🎯 Scale Graph</h3>
+            <div class="exercise-note-actions">
+              <button class="btn btn-secondary btn-sm" id="playTargetedNoteBtn" onclick="exercises.playTargetNotePreview()">
+                ▶ Play Targeted Note
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="exercises.retry()">
+                ↻ Restart
+              </button>
+            </div>
+          </div>
+          <div class="readout-main">
+            <div class="readout-top">
+              <div class="freq-note-row">
+                <div class="freq-display">
+                  <div class="big" id="practiceFreq" aria-live="polite"><span class="freq-value"><span class="freq-int">0</span><span class="hz-decimal">.00</span></span><span class="hz"> Hz</span></div>
+                </div>
+                <div class="note-display">
+                  <div class="note" id="practiceNote">--</div>
+                  <div class="sargam" id="practiceSargam">Sa —</div>
+                </div>
+              </div>
+              <div class="quality-indicator" id="practiceQuality">Microphone stopped</div>
+            </div>
+          </div>
+
+          <div class="mic-power-strip" id="practiceMicPowerStrip">
+            <div class="mic-metric">
+              <span class="metric-label">Tone</span>
+              <strong class="metric-value" id="practiceToneQuality">--</strong>
+            </div>
+            <div class="mic-metric">
+              <span class="metric-label">Stability</span>
+              <strong class="metric-value" id="practiceStabilityScore">--</strong>
+            </div>
+            <div class="mic-metric mic-metric-wide">
+              <span class="metric-label">Musician DNA</span>
+              <strong class="metric-value metric-bias" id="practiceBiasText">Bias: learning</strong>
+              <small class="metric-hint" id="practiceBiasHint">Hold a steady note</small>
+            </div>
+          </div>
+
+          <div class="meter-container">
+            <div class="meter-wrap">
+              <div class="meter-center"></div>
+              <div id="meterPointerPractice" class="meter-pointer"></div>
+            </div>
+            <div class="meter-labels">
+              <span>-50¢</span>
+              <span>0</span>
+              <span>+50¢</span>
+            </div>
+          </div>
+
+          <div class="kbd" id="kbdPractice" role="group" aria-label="Western note keyboard"></div>
+          <div class="kbd" id="kbdHindiPractice" role="group" aria-label="Sargam keyboard"></div>
+
+          <div class="footer-badges">
+            <span class="badge">A4 = 440Hz</span>
+            <span class="badge">SR: <span id="practiceSr">--</span></span>
+            <span class="badge">RMS: <span id="practiceRms">0.0000</span></span>
+            <span class="badge">Clarity: <span id="practiceClarity">0.00</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-site-footer" aria-label="Application version">
+    <span class="footer-brand">SurSight Studio</span>
+    <span class="footer-sep">•</span>
+    <span class="footer-version">Version 2.2.1</span>
+    <span class="footer-note">Made with care by Madhav for your daily Riyaz.</span>
+  </footer>
+
+  <!-- Loading Indicator -->
+  <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+    <div class="spinner"></div>
+    <p>Initializing audio...</p>
+  </div>
+
+  <!-- Scripts -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "32cb29e69d90477a87437f0db6d8543b"}'></script>
+  <script>
+    // Cost saver mode:
+    // true  -> disable analytics network calls for this app
+    // false -> use configured endpoint below
+    window.COST_SAVER_MODE = false;
+    window.SURSIGHT_ANALYTICS_API_URL = window.COST_SAVER_MODE
+      ? ""
+      : "https://script.google.com/macros/s/AKfycbzYC8ALFxcSincB76_u1bWqpUlKZZVL-epqjY0S1IblSIiORUFyP3xdkNww1UxgdfpNiA/exec";
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

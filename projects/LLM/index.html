@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser ML Studio Pro | On-Device AI</title>
+      <script src="../project-protection.js" defer></script>
+<!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.10.0"></script>
+    
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-primary: #2563eb;
+            --accent-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Navigation */
+        nav { background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 1rem 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-weight: 800; font-size: 1.5rem; color: var(--accent-primary); display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; }
+        .nav-links a:hover { color: var(--accent-primary); }
+
+        /* Hero */
+        .hero { padding: 80px 0; text-align: center; background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent); }
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 1.5rem; letter-spacing: -1px; }
+        .highlight { color: var(--accent-primary); }
+        .hero p { max-width: 700px; margin: 0 auto 2rem; font-size: 1.25rem; color: var(--text-secondary); }
+
+        /* Demo Grid */
+        .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin: 40px 0; }
+        .demo-card { 
+            background: var(--bg-secondary); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius); 
+            padding: 24px; 
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .demo-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow); border-color: var(--accent-primary); }
+        .demo-badge { position: absolute; top: 12px; right: 12px; background: var(--accent-primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .demo-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .demo-card h3 { margin-bottom: 0.5rem; font-weight: 700; }
+        .demo-card p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+        /* Modals */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { 
+            background: var(--bg-secondary); 
+            width: 100%; 
+            max-width: 800px; 
+            max-height: 90vh; 
+            border-radius: var(--radius); 
+            padding: 32px; 
+            position: relative; 
+            overflow-y: auto; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .modal-close { position: absolute; top: 20px; right: 20px; border: none; background: var(--bg-tertiary); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+
+        /* LLM Chat UI */
+        .chat-container { display: flex; flex-direction: column; height: 500px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-tertiary); }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .message { max-width: 80%; padding: 10px 16px; border-radius: 12px; font-size: 0.95rem; }
+        .message.user { align-self: flex-end; background: var(--accent-primary); color: white; }
+        .message.ai { align-self: flex-start; background: var(--bg-secondary); border: 1px solid var(--border-color); }
+        .chat-input-area { padding: 16px; display: flex; gap: 8px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); }
+        input[type="text"], textarea { 
+            width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); outline: none; 
+        }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--accent-primary); color: white; }
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        /* Object Detection Viewport */
+        .viewport-wrapper { position: relative; width: 100%; max-width: 640px; margin: 0 auto; border-radius: 12px; overflow: hidden; background: #000; }
+        #webcamVideo { width: 100%; height: auto; display: block; }
+        #detectionCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+        /* Digit Recognition UI */
+        .digit-ui { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+        .canvas-box { border: 4px solid var(--accent-primary); border-radius: 8px; background: white; cursor: crosshair; }
+        .prediction-list { flex: 1; min-width: 250px; }
+        .pred-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .pred-bar-bg { flex: 1; height: 12px; background: var(--bg-tertiary); border-radius: 6px; overflow: hidden; }
+        .pred-bar-fill { height: 100%; background: var(--accent-primary); width: 0%; transition: width 0.3s; }
+        .pred-label { font-weight: bold; width: 20px; }
+
+        /* Loading States */
+        .loader-overlay { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
+        .loader-overlay.active { display: flex; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--bg-tertiary); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Theme Toggle */
+        .theme-btn { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.25rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="container nav-content">
+        <div class="brand"><span>◆</span> ML Studio Pro</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <ul class="nav-links">
+                <li><a href="#demos">Demos</a></li>
+                <li><a href="#about">Privacy</a></li>
+            </ul>
+            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>Advanced AI <span class="highlight">On Your Device</span></h1>
+        <p>No servers. No data tracking. Pure client-side machine learning using TensorFlow.js and Transformers.js.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="#demos" class="btn btn-primary" style="text-decoration: none;">Launch Demos</a>
+        </div>
+    </div>
+</section>
+
+<section id="demos" class="container">
+    <div class="demo-grid">
+        <!-- LLM Chat -->
+        <div class="demo-card" onclick="openDemo('llm-modal')">
+            <div class="demo-badge">Neural</div>
+            <div class="demo-icon">🤖</div>
+            <h3>Local LLM Chat</h3>
+            <p>Chat with a real language model running entirely in your browser memory.</p>
+            <button class="btn btn-primary">Open Chat</button>
+        </div>
+
+        <!-- Object Detection -->
+        <div class="demo-card" onclick="openDemo('vision-modal')">
+            <div class="demo-badge">Real-time</div>
+            <div class="demo-icon">📹</div>
+            <h3>Smart Vision</h3>
+            <p>High-speed object detection via webcam using synchronized COCO-SSD.</p>
+            <button class="btn btn-primary">Start Camera</button>
+        </div>
+
+        <!-- Digit Recognition -->
+        <div class="demo-card" onclick="openDemo('digit-modal')">
+            <div class="demo-badge">99% Acc</div>
+            <div class="demo-icon">✏️</div>
+            <h3>MNIST Classifier</h3>
+            <p>Real neural network recognizing your handwriting in real-time.</p>
+            <button class="btn btn-primary">Start Drawing</button>
+        </div>
+    </div>
+</section>
+
+<!-- MODALS -->
+
+<!-- LLM Modal -->
+<div id="llm-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModals()">&times;</button>
+        <h2>Local AI Chat</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Using <b>LaMini-Flan-T5</b>. The first run will download ~300MB to your browser cache.</p>
+        
+        <div id="llmLoader" class="loader-overlay">
+            <div class="spinner"></div>
+            <p id="llmStatus">Initializing Model...</p>
+        </div>
+
+        <div id="chatUI" class="chat-container" style="display: none;">
+            <div class="chat-messages" id="chatMsgs">
+                <div class="message ai">Hello! I am a neural network running locally in your browser. Ask me anything!</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Type a message...">
+                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vision Modal -->
+<div id="vision-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="stopVision()">&times;</button>
+        <h2>Smart Object Detection</h2>
+        <div class="viewport-wrapper" style="margin-top: 20px;">
+            <video id="webcamVideo" autoplay playsinline muted></video>
+            <canvas id="detectionCanvas"></canvas>
+        </div>
+        <div id="visionLoading" class="loader-overlay active" style="margin-top: 20px;">
+            <div class="spinner"></div>
+            <p>Loading Computer Vision Model...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Digit Modal -->
+<div id="digit-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModals()">&times;</button>
+        <h2>MNIST Digit Classifier</h2>
+        <p style="margin-bottom: 20px;">Draw a single digit (0-9) below.</p>
+        <div class="digit-ui">
+            <canvas id="digitCanvas" class="canvas-box" width="280" height="280"></canvas>
+            <div class="prediction-list" id="predList">
+                <!-- Rows injected by JS -->
+            </div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button class="btn btn-primary" onclick="clearDigitCanvas()">Clear Canvas</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /** STATE & MODELS **/
+    let llmPipe = null;
+    let cocoModel = null;
+    let mnistModel = null;
+    let videoStream = null;
+    let isVisionRunning = false;
+    let isDigitDrawing = false;
+    
+    const colors = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+
+    /** INITIALIZATION **/
+    window.onload = async () => {
+        initDigitList();
+        // Pre-load MNIST model (small, 500KB)
+        try {
+            mnistModel = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mnist/model.json');
+        } catch(e) { console.error("MNIST failed to load", e); }
+    };
+
+    /** MODAL HANDLER **/
+    function openDemo(id) {
+        document.getElementById(id).classList.add('active');
+        if (id === 'llm-modal') initLLM();
+        if (id === 'vision-modal') initVision();
+        if (id === 'digit-modal') initDigitCanvas();
+    }
+
+    function closeModals() {
+        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+    }
+
+    /** LOCAL LLM LOGIC (Transformers.js) **/
+    async function initLLM() {
+        if (llmPipe) return;
+        const loader = document.getElementById('llmLoader');
+        const chat = document.getElementById('chatUI');
+        loader.classList.add('active');
+        
+        try {
+            // Using a lightweight model for browser demo
+            llmPipe = await window.transformers.pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-783M', {
+                progress_callback: (p) => {
+                    document.getElementById('llmStatus').innerText = `Downloading Model: ${Math.round(p.progress || 0)}%`;
+                }
+            });
+            loader.classList.remove('active');
+            chat.style.display = 'flex';
+        } catch (e) {
+            alert("LLM failed to load. Check console for details.");
+        }
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+
+        const aiMsgDiv = addMessage('Thinking...', 'ai');
+        
+        // Generate
+        const output = await llmPipe(text, { max_new_tokens: 100, temperature: 0.7 });
+        aiMsgDiv.innerText = output[0].generated_text;
+    }
+
+    function addMessage(text, role) {
+        const container = document.getElementById('chatMsgs');
+        const div = document.createElement('div');
+        div.className = `message ${role}`;
+        div.innerText = text;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        return div;
+    }
+
+    /** COMPUTER VISION (Sync'd Fix) **/
+    async function initVision() {
+        const video = document.getElementById('webcamVideo');
+        const loader = document.getElementById('visionLoading');
+        
+        if (!cocoModel) {
+            cocoModel = await cocoSsd.load();
+        }
+        loader.classList.remove('active');
+
+        try {
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = videoStream;
+            isVisionRunning = true;
+            
+            video.onloadedmetadata = () => {
+                const canvas = document.getElementById('detectionCanvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                runDetectionLoop();
+            };
+        } catch (e) {
+            alert("Webcam access denied.");
+            closeModals();
+        }
+    }
+
+    function stopVision() {
+        isVisionRunning = false;
+        if (videoStream) videoStream.getTracks().forEach(t => t.stop());
+        closeModals();
+    }
+
+    async function runDetectionLoop() {
+        if (!isVisionRunning) return;
+        
+        const video = document.getElementById('webcamVideo');
+        const canvas = document.getElementById('detectionCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const predictions = await cocoModel.detect(video);
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        predictions.forEach((p, i) => {
+            const [x, y, w, h] = p.bbox;
+            const color = colors[i % colors.length];
+            
+            // Box
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 4;
+            ctx.strokeRect(x, y, w, h);
+            
+            // Label
+            ctx.fillStyle = color;
+            const label = `${p.class} ${Math.round(p.score * 100)}%`;
+            ctx.fillRect(x, y - 30, ctx.measureText(label).width + 10, 30);
+            ctx.fillStyle = 'white';
+            ctx.font = '18px sans-serif';
+            ctx.fillText(label, x + 5, y - 8);
+        });
+
+        requestAnimationFrame(runDetectionLoop);
+    }
+
+    /** DIGIT RECOGNITION (MNIST Neural Net) **/
+    function initDigitList() {
+        const list = document.getElementById('predList');
+        list.innerHTML = '';
+        for (let i = 0; i < 10; i++) {
+            list.innerHTML += `
+                <div class="pred-row">
+                    <span class="pred-label">${i}</span>
+                    <div class="pred-bar-bg"><div id="bar-${i}" class="pred-bar-fill"></div></div>
+                    <span id="val-${i}" style="width: 40px; font-size: 0.8rem;">0%</span>
+                </div>
+            `;
+        }
+    }
+
+    function initDigitCanvas() {
+        const canvas = document.getElementById('digitCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = "white";
+        ctx.fillRect(0,0,280,280);
+        
+        canvas.onmousedown = () => isDigitDrawing = true;
+        window.onmouseup = () => {
+            if (isDigitDrawing) {
+                isDigitDrawing = false;
+                predictDigit();
+            }
+        };
+        canvas.onmousemove = (e) => {
+            if (!isDigitDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(e.clientX - rect.left, e.clientY - rect.top, 10, 0, Math.PI * 2);
+            ctx.fill();
+        };
+
+        // Touch support
+        canvas.ontouchmove = (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(touch.clientX - rect.left, touch.clientY - rect.top, 10, 0, Math.PI * 2);
+            ctx.fill();
+            predictDigit();
+        };
+    }
+
+    function clearDigitCanvas() {
+        const canvas = document.getElementById('digitCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = "white";
+        ctx.fillRect(0,0,280,280);
+        initDigitList();
+    }
+
+    async function predictDigit() {
+        if (!mnistModel) return;
+        const canvas = document.getElementById('digitCanvas');
+        
+        // 1. Pre-process
+        const tensor = tf.tidy(() => {
+            return tf.browser.fromPixels(canvas)
+                .resizeNearestNeighbor([28, 28])
+                .mean(2)
+                .expandDims(2)
+                .expandDims(0)
+                .toFloat()
+                .div(255.0)
+                .sub(1.0)
+                .abs(); // Invert colors for MNIST (White on Black)
+        });
+
+        // 2. Predict
+        const predictions = await mnistModel.predict(tensor).data();
+        
+        // 3. UI Update
+        predictions.forEach((p, i) => {
+            const perc = Math.round(p * 100);
+            document.getElementById(`bar-${i}`).style.width = perc + '%';
+            document.getElementById(`val-${i}`).innerText = perc + '%';
+        });
+
+        tensor.dispose();
+    }
+
+    /** THEME SYSTEM **/
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+</script>
+</body>
+</html>
