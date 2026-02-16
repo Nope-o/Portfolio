@@ -13,7 +13,7 @@ const GENERATED_MAIN_ENTRY = path.join(ROOT, '.vite-temp', 'main-site-entry.gene
 const RAW_BASE = process.env.VITE_BASE_PATH || '/';
 const BASE_PATH = RAW_BASE.startsWith('/') ? RAW_BASE : `/${RAW_BASE}`;
 const NORMALIZED_BASE = BASE_PATH.endsWith('/') ? BASE_PATH : `${BASE_PATH}/`;
-const GENERATED_MAIN_ENTRY_PUBLIC = `${NORMALIZED_BASE}.vite-temp/main-site-entry.generated.js`;
+const GENERATED_MAIN_ENTRY_PUBLIC = '/.vite-temp/main-site-entry.generated.js';
 const ROOT_INDEX_FILE = path.resolve(ROOT, 'index.html').replace(/\\/g, '/');
 
 const SAFE_BUILD = process.env.SAFE_BUILD === 'true';
@@ -225,7 +225,6 @@ export default defineConfig({
     copyStaticFilesPlugin()
   ]
 });
-
 
 
 
