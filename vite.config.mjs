@@ -21,6 +21,8 @@ const DIST_DIR = path.join(ROOT, 'dist');
 
 const STATIC_COPY_ITEMS = [
   { src: 'assets/images', dest: 'assets/images' },
+  { src: 'js', dest: 'js' },
+  { src: 'style.css', dest: 'style.css' },
   { src: 'projects/project-protection.js', dest: 'projects/project-protection.js' },
   { src: 'projects/ml/app.js', dest: 'projects/ml/app.js' },
   { src: 'Madhav_Kataria_Resume.pdf', dest: 'Madhav_Kataria_Resume.pdf' },
@@ -223,6 +225,7 @@ export default defineConfig({
     copyStaticFilesPlugin()
   ]
 });
+
 
 
 
