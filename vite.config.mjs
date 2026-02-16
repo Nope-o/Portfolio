@@ -128,6 +128,10 @@ function selectiveObfuscationPlugin() {
         if (!chunk.isEntry) continue;
         if (!OBFUSCATE_ENTRY_NAMES.has(chunk.name)) continue;
 
+        // Avoid breaking ESM entry parsing on GitHub Pages.
+        // If static imports are present, skip obfuscation for that entry.
+        if (/^\s*import\s/m.test(chunk.code)) continue;
+
         const obfuscated = JavaScriptObfuscator.obfuscate(chunk.code, {
           compact: true,
           simplify: true,
@@ -219,4 +223,5 @@ export default defineConfig({
     copyStaticFilesPlugin()
   ]
 });
+
 
