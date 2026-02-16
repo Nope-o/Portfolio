@@ -1,0 +1,616 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiteEdit Pro - Browser Image Editor</title>
+  <meta name="description" content="LiteEdit Pro is a privacy-first browser image editor to resize, clean, annotate, compare quality, and export optimized images locally on your device." />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta property="og:title" content="LiteEdit Pro" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="Edit, optimize, and export images directly in your browser with local processing." />
+  <meta property="og:image" content="../../assets/images/logoo.webp" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="LiteEdit Pro" />
+  <meta name="twitter:description" content="Privacy-first browser image editing with local processing and fast export." />
+  <meta name="twitter:image" content="../../assets/images/logoo.webp" />
+  <script src="../project-protection.js" defer></script>
+  <link rel="icon" type="image/webp" href="../../assets/images/logoo.webp" />
+  <link rel="apple-touch-icon" href="../../assets/images/logoo.webp" />
+  <link rel="stylesheet" href="./css/tokens.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+</head>
+<body>
+  <div class="app" id="appRoot">
+    <header class="topbar">
+      <a class="brand" href="../../#projects" title="Back to Projects">
+        <img src="../../assets/images/logoo.webp" alt="Madhav Kataria logo" />
+        <h1>LiteEdit Pro</h1>
+      </a>
+      <div class="topbar-actions">
+        <div class="mode-switch" role="tablist" aria-label="Editor mode">
+          <button id="simpleModeBtn" class="mode-btn" type="button" aria-selected="true" aria-label="Simple mode">
+            <span class="mode-full">Simple</span><span class="mode-short">S</span>
+          </button>
+          <button id="advancedModeBtn" class="mode-btn" type="button" aria-selected="false" aria-label="Advanced mode">
+            <span class="mode-full">Advanced</span><span class="mode-short">A</span>
+          </button>
+        </div>
+        <button id="toggleThumbsBtn" class="btn-ghost desktop-only active" type="button" aria-pressed="true" title="Toggle uploads panel">Uploads</button>
+        <button id="openSettingsBtn" class="btn-ghost" type="button" title="Settings" aria-pressed="false">
+          <span class="settings-icon">&#9881;</span>
+          <span class="settings-btn-label">Settings</span>
+        </button>
+        <button id="openExportBtn" class="btn btn-export" type="button">Export</button>
+        <button id="addMediaBtn" class="btn-primary plus-btn" type="button" title="Add media" aria-label="Add media">+</button>
+        <input id="fileInput" type="file" multiple accept="image/jpeg, image/png, image/webp, image/avif, image/bmp, image/gif, image/tiff, image/svg+xml" />
+        <input id="folderInput" type="file" multiple webkitdirectory directory accept="image/*" />
+        <input id="cameraPhotoInput" type="file" accept="image/*" capture="environment" />
+        <input id="cameraScanInput" type="file" accept="image/*" capture="environment" />
+      </div>
+    </header>
+
+    <div class="mobile-action-header">
+      <button id="mobileImportBtn" class="btn" type="button">+ Import</button>
+      <button id="mobileExportBtn" class="btn btn-export" type="button">Export</button>
+    </div>
+
+    <main class="layout">
+      <section class="panel left-panel">
+        <div class="panel-head">
+          <div class="panel-head-main">
+            <span>Uploads</span>
+            <span id="countInfo">0 / 20</span>
+          </div>
+          <div class="panel-head-actions">
+            <button id="panelAddMediaBtn" class="mini-icon-btn" type="button" title="Upload images" aria-label="Upload images">+</button>
+            <button id="panelHideThumbsBtn" class="mini-hide-btn" type="button" title="Hide uploads">Hide</button>
+          </div>
+        </div>
+        <div id="thumbs" class="thumbs"></div>
+      </section>
+
+      <section class="panel workspace">
+        <div class="toolbar">
+          <button class="tool-btn active" data-tool="pen" type="button" title="Pen" aria-label="Pen">&#9998;</button>
+          <button class="tool-btn" data-tool="highlighter" type="button" title="Highlighter" aria-label="Highlighter">&#128396;</button>
+          <button class="tool-btn" data-tool="blur" type="button">Blur Brush</button>
+          <button class="tool-btn" data-tool="crop" type="button">Crop</button>
+
+          <div id="sizeGroup" class="group">
+            <label for="brushSize">Size</label>
+            <input id="brushSize" type="range" min="2" max="80" value="18" />
+            <label id="brushSizeVal">18</label>
+          </div>
+
+          <div id="opacityGroup" class="group">
+            <label for="blurStrength">Opacity</label>
+            <input id="blurStrength" type="range" min="10" max="100" value="35" />
+            <label id="blurStrengthVal">35%</label>
+          </div>
+
+          <div id="colorGroup" class="group">
+            <label for="highlighterColorInput">Color</label>
+            <select id="highlighterColorInput">
+              <option value="#facc15" selected>Yellow</option>
+              <option value="#34d399">Green</option>
+              <option value="#60a5fa">Blue</option>
+              <option value="#f472b6">Pink</option>
+              <option value="#fb923c">Orange</option>
+            </select>
+          </div>
+
+          <div id="cropOptionsGroup" class="group crop-only">
+            <label for="cropRatioInput">Ratio</label>
+            <select id="cropRatioInput">
+              <option value="free" selected>Free</option>
+              <option value="1:1">1:1</option>
+              <option value="4:3">4:3</option>
+              <option value="3:4">3:4</option>
+              <option value="16:9">16:9</option>
+              <option value="9:16">9:16</option>
+            </select>
+          </div>
+
+          <button id="undoBtn" class="btn" type="button">&#8630; Undo</button>
+          <button id="redoBtn" class="btn" type="button">&#8631; Redo</button>
+          <button id="applyCropBtn" class="btn crop-action" type="button">Apply Crop</button>
+          <button id="cancelCropBtn" class="btn crop-cancel" type="button">Cancel</button>
+          <button id="hideToolsBtn" class="mini-hide mobile-only" type="button" title="Hide tools">&#10005;</button>
+        </div>
+
+        <div class="canvas-zone" id="canvasZone">
+          <div class="zoom-controls" aria-label="Zoom controls">
+            <button id="zoomOutBtn" class="mini-icon-btn" type="button" title="Zoom out">-</button>
+            <button id="zoomResetBtn" class="zoom-readout" type="button" title="Reset zoom">100%</button>
+            <button id="zoomInBtn" class="mini-icon-btn" type="button" title="Zoom in">+</button>
+          </div>
+          <div class="history-fab" aria-label="History controls">
+            <button id="floatingUndoBtn" class="mini-icon-btn" type="button" title="Undo" aria-label="Undo">&#8630;</button>
+            <button id="floatingRedoBtn" class="mini-icon-btn" type="button" title="Redo" aria-label="Redo">&#8631;</button>
+          </div>
+          <div id="liveImageInfo" class="live-info"></div>
+          <div id="cropTip" class="crop-tip">Drag to create crop, adjust handles, then tap Apply Crop</div>
+          <div id="textQuickEditor" class="text-quick-editor" aria-hidden="true">
+            <div class="text-quick-row">
+              <input id="textQuickInput" type="text" placeholder="Edit selected text..." />
+              <button id="textQuickApplyBtn" class="btn-primary" type="button">Apply</button>
+              <button id="textQuickCloseBtn" class="btn" type="button" title="Close">×</button>
+            </div>
+            <label class="text-quick-size-lock">
+              <input id="textQuickKeepSizeInput" type="checkbox" checked />
+              Keep size
+            </label>
+          </div>
+          <div id="emptyState" class="empty">
+            <div class="empty-hero">
+              <div class="empty-orb empty-orb-1"></div>
+              <div class="empty-orb empty-orb-2"></div>
+              <h3>Drop, Paste, or select the Image</h3>
+              <p>Everything stays local. Import images, try quick edits, and export clean optimized files in seconds.</p>
+              <div class="empty-actions">
+                <button id="emptyUploadBtn" class="btn-primary" type="button">Upload Images</button>
+                <button id="emptyPasteBtn" class="btn" type="button">Paste from Clipboard</button>
+                <button id="emptyCaptureBtn" class="btn" type="button">Capture Image</button>
+              </div>
+              <div class="empty-drop-hint">or drag and drop files directly in this area</div>
+              <div class="empty-demo-strip" aria-label="Demo images">
+                <button class="demo-chip" type="button" data-demo-src="../../assets/images/pitch1.webp" data-demo-name="demo-photo.webp" data-demo-type="image/webp">
+                  <img src="../../assets/images/pitch1.webp" alt="Demo photo" loading="lazy" decoding="async" />
+                  <span>Portrait • 2.8 MB</span>
+                </button>
+                <button class="demo-chip" type="button" data-demo-src="../../assets/images/pitch2.webp" data-demo-name="demo-artwork.webp" data-demo-type="image/webp">
+                  <img src="../../assets/images/pitch2.webp" alt="Demo artwork" loading="lazy" decoding="async" />
+                  <span>Artwork • 2.9 MB</span>
+                </button>
+                <button class="demo-chip" type="button" data-demo-src="../../assets/images/dashboard.png" data-demo-name="demo-screen.png" data-demo-type="image/png">
+                  <img src="../../assets/images/dashboard.png" alt="Demo dashboard screenshot" loading="lazy" decoding="async" />
+                  <span>Screen • 1.6 MB</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <canvas id="mainCanvas"></canvas>
+        </div>
+      </section>
+
+      <section class="panel right-panel">
+        <div class="panel-head">
+          <div class="panel-head-main">
+            <span>Editor Controls</span>
+          </div>
+          <div class="panel-head-actions">
+            <button id="hideControlsBtn" class="mini-hide-btn" type="button" title="Hide controls">Hide</button>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="fieldset basic-only">
+            <div class="legend">Quick Edit</div>
+            <p class="simple-hint">Use sliders for fast preview, then export. Switch to Advanced for pro controls.</p>
+            <div class="row">
+              <button id="quickAutoBtn" class="btn" type="button">Auto Enhance</button>
+              <button id="quickResetBtn" class="btn" type="button">Reset Quick</button>
+            </div>
+          </div>
+
+          <div class="fieldset">
+            <div class="legend">Adjustments</div>
+            <div class="field">
+              <label for="brightnessInput">Brightness (%)</label>
+              <input id="brightnessInput" type="range" min="40" max="180" value="100" />
+            </div>
+            <div class="field">
+              <label for="contrastInput">Contrast (%)</label>
+              <input id="contrastInput" type="range" min="40" max="200" value="100" />
+            </div>
+            <div class="field">
+              <label for="saturationInput">Saturation (%)</label>
+              <input id="saturationInput" type="range" min="0" max="220" value="100" />
+            </div>
+            <div class="field">
+              <label for="globalBlurInput">Global Blur (px)</label>
+              <input id="globalBlurInput" type="range" min="0" max="12" value="0" />
+            </div>
+            <button id="applyAdjustBtn" class="btn" type="button">Apply Adjustments</button>
+            <button id="resetAdjustBtn" class="btn" type="button">Reset Slider Values</button>
+          </div>
+
+          <div class="fieldset advanced-only">
+            <div class="legend">Smart Text Edit (Beta)</div>
+            <p class="simple-hint">Detect text, then tap a highlighted block on the image to edit directly there.</p>
+            <div class="row">
+              <button id="detectTextBtn" class="btn" type="button">Detect Text</button>
+              <button id="clearTextBoxesBtn" class="btn" type="button">Clear Boxes</button>
+            </div>
+            <div id="detectedTextField" class="field">
+              <label for="detectedTextSelect">Detected Blocks</label>
+              <select id="detectedTextSelect">
+                <option value="">No text detected</option>
+              </select>
+            </div>
+          <div id="replaceTextField" class="field">
+            <label for="replaceTextInput">Replace With</label>
+            <input id="replaceTextInput" type="text" placeholder="Type replacement text" />
+          </div>
+            <div id="smartTextFontField" class="field">
+              <label for="textFontFamilySelect">Font Family</label>
+              <select id="textFontFamilySelect">
+                <option value="auto">Auto Match (Recommended)</option>
+                <option value="&quot;Segoe UI&quot;, Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                <option value="Arial, Helvetica, sans-serif">Arial</option>
+                <option value="&quot;Trebuchet MS&quot;, &quot;Lucida Sans Unicode&quot;, sans-serif">Trebuchet</option>
+                <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                <option value="&quot;Times New Roman&quot;, Times, serif">Times New Roman</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="&quot;Courier New&quot;, Courier, monospace">Courier New</option>
+              </select>
+            </div>
+            <label id="smartTextAutoSizeLabel" class="inline">
+              <input id="smartTextAutoSizeInput" type="checkbox" checked />
+              Auto-fit replacement text to original box width
+            </label>
+            <button id="applyTextReplaceBtn" class="btn" type="button">Apply Text Replace</button>
+            <p id="detectTextSupportNote" class="simple-hint">Detect text locally. Exact font family matching can vary by image.</p>
+          </div>
+
+          <div class="fieldset">
+            <div class="legend">Output</div>
+            <p class="simple-hint">Use the dedicated <strong>Export</strong> button in top-right for single or bulk export controls.</p>
+            <button id="openExportFromSettingsBtn" class="btn btn-export" type="button">Open Export</button>
+          </div>
+
+          <div id="statusBox" class="status">Ready</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div>
+        <strong>LiteEdit Pro</strong><span class="footer-build">v2.2.3</span>
+      </div>
+      <div class="footer-note">Fast edits, clean exports, and privacy-first processing on your own device.</div>
+    </footer>
+
+    <div class="floating-dock">
+      <button id="floatingThumbsBtn" class="dock-btn desktop-only" type="button" title="Toggle uploads">
+        <span class="icon">U</span><span class="label">Uploads</span>
+      </button>
+      <button id="floatingToolsBtn" class="dock-btn" type="button" title="Toggle edit tools">
+        <span class="icon">E</span><span class="label">Edit Tools</span>
+      </button>
+      <button id="floatingControlsBtn" class="dock-btn" type="button" title="Toggle editor panel">
+        <span class="icon">P</span><span class="label">Panel</span>
+      </button>
+    </div>
+
+    <button id="showUploadsBtn" class="show-uploads-btn" type="button" title="Show uploads">
+      <span class="uploads-tab-stack" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="uploads-tab-label">Uploads</span>
+      <span id="showUploadsCount" class="uploads-tab-count">0</span>
+    </button>
+    <button id="showControlsBtn" class="show-controls-btn" type="button" title="Show edit controls">Edit Controls</button>
+    <div id="mobileAdjustOverlay" class="mobile-adjust-overlay" aria-hidden="true">
+      <canvas id="mobileAdjustPreviewCanvas"></canvas>
+      <div class="hint">Slide to preview, release to apply</div>
+    </div>
+
+    <div id="importSheet" class="import-sheet" aria-hidden="true">
+      <div class="import-card" role="dialog" aria-modal="true" aria-labelledby="importSheetTitle">
+        <div id="importSheetTitle" class="import-title">Add Media</div>
+        <p class="import-sub">Choose one option to start editing.</p>
+        <div class="import-options">
+          <button id="importImageBtn" class="import-option" type="button">
+            <strong>Select Image</strong>
+            <small>Pick one or multiple photos from your device.</small>
+          </button>
+          <button id="importFolderBtn" class="import-option" type="button">
+            <strong>Select Folder</strong>
+            <small>Import all images from a folder.</small>
+          </button>
+          <button id="importCaptureBtn" class="import-option" type="button">
+            <strong>Capture</strong>
+            <small>Use camera with document/photo mode.</small>
+          </button>
+        </div>
+        <div class="import-actions">
+          <button id="cancelImportSheetBtn" class="btn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="exportSheet" class="export-sheet mode-single" aria-hidden="true">
+      <div class="export-card" role="dialog" aria-modal="true" aria-labelledby="exportSheetTitle">
+        <div class="export-head">
+          <div id="exportSheetTitle" class="export-title">Export Output</div>
+          <button id="closeExportSheetBtn" class="mini-hide" type="button" title="Close">×</button>
+        </div>
+        <p class="export-sub">Choose export flow based on your goal.</p>
+        <div class="export-mode-switch">
+          <button id="exportModeSingleBtn" class="export-mode-btn active" type="button">Single File</button>
+          <button id="exportModeBulkBtn" class="export-mode-btn" type="button">Bulk</button>
+        </div>
+
+        <div class="export-block export-block-single">
+          <div class="fieldset">
+            <div class="legend">Single File Controls</div>
+            <div class="field">
+              <label for="renameInput">File Name</label>
+              <div class="row">
+                <input id="renameInput" type="text" placeholder="Rename selected image" />
+                <button id="applyRenameBtn" class="btn" type="button">Rename</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="widthInput">Width (px)</label>
+                <input id="widthInput" type="number" min="1" placeholder="Width" />
+              </div>
+              <div class="field">
+                <label for="heightInput">Height (px)</label>
+                <input id="heightInput" type="number" min="1" placeholder="Height" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="resizeMethodInput">Resize Method</label>
+                <select id="resizeMethodInput">
+                  <option value="lanczos3">High Quality (Lanczos style)</option>
+                  <option value="mitchell">Balanced (Mitchell style)</option>
+                  <option value="triangle">Fast (Triangle/Bilinear)</option>
+                  <option value="pixelated">Pixelated (Nearest Neighbor)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="resizeFitInput">Resize Fit</label>
+                <select id="resizeFitInput">
+                  <option value="stretch">Stretch to target</option>
+                  <option value="contain">Contain (keep full image)</option>
+                </select>
+              </div>
+            </div>
+            <label class="inline"><input id="keepAspect" type="checkbox" checked /> Keep aspect ratio</label>
+            <button id="applyResizeBtn" class="btn" type="button">Apply Resize</button>
+          </div>
+
+          <div class="fieldset">
+            <div class="legend">Transform</div>
+            <div class="row">
+              <button id="rotateLeftBtn" class="btn" type="button">Rotate Left</button>
+              <button id="rotateRightBtn" class="btn" type="button">Rotate Right</button>
+            </div>
+            <div class="row">
+              <button id="flipXBtn" class="btn" type="button">Flip Horizontal</button>
+              <button id="flipYBtn" class="btn" type="button">Flip Vertical</button>
+            </div>
+            <button id="resetImageBtn" class="btn" type="button">Reset to Original</button>
+          </div>
+        </div>
+
+        <div class="export-block export-block-bulk">
+          <div class="fieldset">
+            <div class="legend">Bulk Export</div>
+            <p class="simple-hint">Exports all loaded images with current edits applied.</p>
+            <div id="bulkPdfOptions" class="bulk-pdf-options">
+              <label class="inline">
+                <input id="pdfBulkModeCombined" type="radio" name="pdfBulkMode" value="combined" checked />
+                One combined PDF
+              </label>
+              <label class="inline">
+                <input id="pdfBulkModeSeparate" type="radio" name="pdfBulkMode" value="separate" />
+                Separate PDFs (ZIP)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <div class="legend">Export Options</div>
+          <div class="field">
+            <label for="formatInput">Format</label>
+            <select id="formatInput">
+              <option value="image/jpeg">JPG</option>
+              <option value="image/png">PNG</option>
+              <option value="image/webp">WebP</option>
+              <option value="image/avif">AVIF</option>
+              <option value="application/pdf">PDF</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="qualityInput">Quality (JPG/WebP/AVIF/PDF image)</label>
+            <input id="qualityInput" type="range" min="40" max="100" value="90" />
+          </div>
+          <label class="inline"><input id="stripMetaInput" type="checkbox" checked /> Strip metadata for safety</label>
+          <div id="exportSizeInfo" class="export-size">Estimated size: --</div>
+          <p class="muted">When exporting via canvas, EXIF metadata is removed by default for privacy and safer sharing.</p>
+        </div>
+
+        <div id="exportSummary" class="status">Mode: Single • Files: 0 • Format: JPG • Quality: 90%</div>
+        <div id="exportProgress" class="export-progress" aria-live="polite">
+          <div class="export-progress-bar">
+            <div id="exportProgressFill" class="export-progress-fill"></div>
+          </div>
+          <div id="exportProgressText" class="export-progress-text">Preparing export...</div>
+        </div>
+        <div id="exportSavings" class="export-savings" aria-live="polite">
+          <div class="export-savings-bar">
+            <div id="exportSavingsFill" class="export-savings-fill"></div>
+          </div>
+          <div id="exportSavingsText" class="export-savings-text">Size saving: --</div>
+        </div>
+
+        <div class="export-actions-row">
+          <button id="cancelExportSheetBtn" class="btn" type="button">Cancel</button>
+          <button id="downloadBtn" class="btn" type="button">Export</button>
+          <button id="downloadAllBtn" class="btn-primary" type="button">Export All</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsSheet" class="export-sheet settings-sheet" aria-hidden="true">
+      <div class="export-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsSheetTitle">
+        <div class="export-head">
+          <div id="settingsSheetTitle" class="export-title">App Settings</div>
+          <button id="closeSettingsSheetBtn" class="mini-hide" type="button" title="Close">×</button>
+        </div>
+        <p class="export-sub">Theme, performance, and support preferences for LiteEdit Pro.</p>
+        <div class="controls settings-controls">
+          <div class="fieldset">
+            <div class="legend">Appearance</div>
+            <p class="simple-hint">Choose your working theme.</p>
+            <div class="row">
+              <button id="themeLightBtn" class="btn" type="button">Light</button>
+              <button id="themeDarkBtn" class="btn" type="button">Dark</button>
+            </div>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Performance</div>
+            <label class="inline">
+              <input id="importOptimizeInput" type="checkbox" checked />
+              Auto downscale very large images on import
+            </label>
+            <div class="field">
+              <label for="importMaxEdgeInput">Max image edge (px)</label>
+              <select id="importMaxEdgeInput">
+                <option value="2560">2560</option>
+                <option value="3200">3200</option>
+                <option value="4096" selected>4096</option>
+                <option value="5000">5000</option>
+              </select>
+            </div>
+            <p class="simple-hint">Keeps the app smoother on mobile and avoids memory spikes.</p>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Help & Support</div>
+            <p class="simple-hint">Open the complete guide for all workflows, tools, and usage tips.</p>
+            <div class="row help-actions">
+              <button id="openHelpSheetBtn" class="btn" type="button">Open Full Guide</button>
+              <button id="contactDeveloperBtn" class="btn" type="button">Contact Developer</button>
+            </div>
+          </div>
+          <div class="row">
+            <button id="cancelSettingsSheetBtn" class="btn" type="button">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="helpSheet" class="export-sheet help-sheet" aria-hidden="true">
+      <div class="export-card help-card" role="dialog" aria-modal="true" aria-labelledby="helpSheetTitle">
+        <div class="export-head">
+          <div id="helpSheetTitle" class="export-title">LiteEdit Complete Guide</div>
+          <button id="closeHelpSheetBtn" class="mini-hide" type="button" title="Close">×</button>
+        </div>
+        <p class="export-sub">Complete walkthrough for import, editing, text tools, and export workflows.</p>
+        <div class="controls help-controls">
+          <div class="fieldset">
+            <div class="legend">Start & Import</div>
+            <ul class="help-list">
+              <li>Import from Uploads panel, Add Media (+), drag-and-drop, or camera capture.</li>
+              <li>You can work with up to 20 images in one session.</li>
+              <li>Use the left Uploads side tab if uploads panel is hidden.</li>
+            </ul>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Modes & Panels</div>
+            <ul class="help-list">
+              <li>Simple mode is for quick edits; Advanced mode unlocks full controls.</li>
+              <li>Use Hide in Editor Controls header to close the panel.</li>
+              <li>Use the right Edit Controls side tab to reopen it.</li>
+            </ul>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Image Editing</div>
+            <ul class="help-list">
+              <li>Use top toolbar for Pen, Highlighter, Blur, and Crop.</li>
+              <li>Crop mode has ratio, apply, and cancel actions.</li>
+              <li>Use undo/redo whenever available for safe iteration.</li>
+            </ul>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Smart Text Edit</div>
+            <ul class="help-list">
+              <li>Tap Detect Text, then select blocks directly on image.</li>
+              <li>Edit from the on-image editor for faster workflow.</li>
+              <li>Keep Size preserves style/scale; drag selected block to reposition.</li>
+              <li>Long replacement text can extend box width when needed.</li>
+            </ul>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Export</div>
+            <ul class="help-list">
+              <li>Use top-right Export for Single or Bulk output.</li>
+              <li>Adjust format, quality, metadata strip, and PDF mode.</li>
+              <li>Check size estimate and progress before final save.</li>
+            </ul>
+          </div>
+          <div class="fieldset">
+            <div class="legend">Performance Tips</div>
+            <ul class="help-list">
+              <li>Keep import optimization enabled for large photos.</li>
+              <li>Use lower max edge on low-memory mobile devices.</li>
+              <li>Hide extra panels on smaller screens for smoother editing.</li>
+            </ul>
+          </div>
+          <div class="row">
+            <button id="cancelHelpSheetBtn" class="btn" type="button">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="camera-sheet" id="cameraSheet" aria-hidden="true">
+      <div class="camera-sheet-card" role="dialog" aria-modal="true" aria-labelledby="cameraSheetTitle">
+        <div class="camera-sheet-head">
+          <div id="cameraSheetTitle" class="camera-sheet-title">Capture Image</div>
+          <button id="closeCameraSheetBtn" class="mini-hide" type="button" title="Close">×</button>
+        </div>
+        <p class="camera-sheet-sub">Pick capture mode for best result. Everything stays on-device.</p>
+        <div class="camera-options">
+          <button id="cameraScanBtn" class="camera-option" type="button">
+            <strong>Scan Document</strong>
+            <small>Auto-enhanced for papers, IDs, receipts and notes.</small>
+          </button>
+          <button id="cameraPhotoBtn" class="camera-option" type="button">
+            <strong>Normal Photo</strong>
+            <small>Natural color capture for regular photos and artwork.</small>
+          </button>
+        </div>
+        <div class="camera-sheet-actions">
+          <button id="cancelCameraSheetBtn" class="btn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="live-capture-modal" id="liveCaptureModal" aria-hidden="true">
+      <div class="live-capture-card" role="dialog" aria-modal="true" aria-labelledby="liveCaptureTitle">
+        <div class="live-capture-head">
+          <div id="liveCaptureTitle" class="live-capture-title">Live Camera Capture</div>
+          <button id="closeLiveCaptureBtn" class="mini-hide" type="button" title="Close">×</button>
+        </div>
+        <p class="live-capture-sub">Desktop: webcam capture. Mobile: uses native camera capture flow.</p>
+        <div class="live-capture-frame">
+          <video id="liveCaptureVideo" autoplay playsinline muted></video>
+        </div>
+        <div class="live-capture-actions">
+          <button id="captureLiveBtn" class="btn-primary" type="button">Capture Image</button>
+          <button id="cancelLiveCaptureBtn" class="btn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+  </div>
+
+  <script type="module" src="./js/app-core.js"></script>
+</body>
+</html>
+
+
