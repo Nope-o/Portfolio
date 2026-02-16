@@ -26,6 +26,7 @@ const STATIC_COPY_ITEMS = [
   { src: 'projects/project-protection.js', dest: 'projects/project-protection.js' },
   { src: 'projects/ml/app.js', dest: 'projects/ml/app.js' },
   { src: 'Madhav_Kataria_Resume.pdf', dest: 'Madhav_Kataria_Resume.pdf' },
+  { src: 'robots.txt', dest: 'robots.txt' },
   { src: 'robots.text', dest: 'robots.text' },
   { src: 'sitemap.xml', dest: 'sitemap.xml' },
   { src: 'BingSiteAuth.xml', dest: 'BingSiteAuth.xml' },
@@ -225,6 +226,5 @@ export default defineConfig({
     copyStaticFilesPlugin()
   ]
 });
-
 
 
