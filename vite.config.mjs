@@ -104,6 +104,12 @@ function buildSitemapXml(routes) {
   ].join('\n');
 }
 
+function buildIndexableUrlList(routes) {
+  return routes
+    .map((route) => `${SITE_ORIGIN}${normalizeRoutePath(route.path)}`)
+    .join('\n') + '\n';
+}
+
 async function buildMainSiteLegacyEntry() {
   const transformedParts = [];
 
@@ -232,6 +238,8 @@ function copyStaticFilesPlugin() {
 
       const sitemapXml = buildSitemapXml(SITEMAP_ROUTES);
       await fs.writeFile(path.join(DIST_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
+      const indexableUrls = buildIndexableUrlList(SITEMAP_ROUTES);
+      await fs.writeFile(path.join(DIST_DIR, 'search-console-urls.txt'), indexableUrls, 'utf8');
     }
   };
 }
@@ -281,4 +289,3 @@ export default defineConfig({
     copyStaticFilesPlugin()
   ]
 });
-

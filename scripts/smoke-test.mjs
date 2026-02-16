@@ -27,6 +27,8 @@ async function run() {
   const sursightHtml = await readIfExists('projects/sursight-studio-app/index.html');
   const liteeditHtml = await readIfExists('projects/liteedit-app/index.html');
   const detailHtml = await readIfExists('projects/liteedit/index.html');
+  const sitemapXml = await readIfExists('sitemap.xml');
+  const indexableUrlList = await readIfExists('search-console-urls.txt');
 
   assert(!/@babel\/standalone\/babel\.min\.js/i.test(mainHtml), 'Main site still references Babel standalone');
   assert(!/type=["']text\/babel["']/i.test(mainHtml), 'Main site still contains text/babel scripts');
@@ -37,6 +39,10 @@ async function run() {
     /assets\/project-details-entry-[^"']+\.js/i.test(detailHtml),
     'Project detail module wiring missing'
   );
+  assert(/https:\/\/madhav-kataria\.com\/projects\/liteedit-app\//i.test(sitemapXml), 'Sitemap missing LiteEdit app URL');
+  assert(/https:\/\/madhav-kataria\.com\/projects\/sursight-studio-app\//i.test(sitemapXml), 'Sitemap missing SurSight app URL');
+  assert(/https:\/\/madhav-kataria\.com\//i.test(indexableUrlList), 'Search Console URL list missing homepage');
+  assert(/https:\/\/madhav-kataria\.com\/projects\/ml\//i.test(indexableUrlList), 'Search Console URL list missing ML page');
 
   const entryBundles = [
     'assets/main.bundle.js',
@@ -48,7 +54,8 @@ async function run() {
     'assets/images/pitch1.webp',
     'projects/project-protection.js',
     'projects/ml/app.js',
-    'Madhav_Kataria_Resume.pdf'
+    'Madhav_Kataria_Resume.pdf',
+    'search-console-urls.txt'
   ];
 
   for (const rel of entryBundles) {
