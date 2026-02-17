@@ -7,7 +7,7 @@ window.PROJECT_DETAILS = {
     createdOn: "November 2025",
     visibility: "Public",
     status: "Active",
-    likes: 8,
+    likes: 28,
     heroImage: "../../assets/images/dashboard.png",
     heroFit: "contain",
     logoImage: "../../assets/images/logoo.webp",
@@ -45,9 +45,10 @@ window.PROJECT_DETAILS = {
     createdOn: "August 2025",
     visibility: "Internal",
     status: "Active",
-    likes: 16,
+    likes: 30,
     heroImage: "../../assets/images/Mondelez.webp",
     heroFit: "contain",
+    headerIcon: "../../assets/images/attendance.svg",
     logoImage: "../../assets/images/logoo.webp",
     overview:
       "This project streamlines daily attendance operations, reduces manual edits, and provides clean reporting for managers and stakeholders.",
@@ -83,9 +84,11 @@ window.PROJECT_DETAILS = {
     createdOn: "January 2026",
     visibility: "Public",
     status: "Live",
-    likes: 12,
-    heroImage: "../../assets/images/pitch1.webp",
+    likes: 35,
+    heroImage: "../../assets/images/Sur1.webp",
     heroFit: "contain",
+    headerIcon: "../../assets/images/music.svg",
+    headerHighlights: ["Practice", "Visualise", "Tune", "Excel"],
     logoImage: "../../assets/images/logoo.webp",
     overview:
       "SurSight Studio (v2) is a musician-focused web app for real-time pitch training and Sargam practice. It captures microphone input, tracks note stability live, maps frequencies to both Western notes and Indian swaras relative to the selected Sa, and visualizes progress across timeline, cent deviation, and advanced analysis views. The latest version adds stronger practice syncing (Sa + octave), richer guided exercises, compact mobile workflows, and polished onboarding so learners can start faster and practice with more precision.",
@@ -109,51 +112,57 @@ window.PROJECT_DETAILS = {
     ],
     techStack: ["JavaScript", "Web Audio API", "Canvas", "CSS", "Music Pedagogy"],
     gallery: [
-      { src: "../../assets/images/pitch2.webp", alt: "Pitch-Sargam controls and live readouts" },
-      { src: "../../assets/images/pitch3.webp", alt: "Pitch-Sargam timeline and practice visuals" }
+      { src: "../../assets/images/Sur1.webp", alt: "SurSight Studio preview 1" },
+      { src: "../../assets/images/Sur2.webp", alt: "SurSight Studio preview 2" },
+      { src: "../../assets/images/Sur3.webp", alt: "SurSight Studio preview 3" },
+      { src: "../../assets/images/Sur4.webp", alt: "SurSight Studio preview 4" },
+      { src: "../../assets/images/Sur5.webp", alt: "SurSight Studio preview 5" }
     ],
     links: [
-      { label: "Try Now", href: "../sursight-studio-app/", external: false },
+      { label: "Open", href: "../sursight-studio-app/", style: "success", external: false },
       { label: "Back to Projects", href: "../../#projects", external: false }
     ]
   },
 
   liteedit: {
     title: "LiteEdit",
-    subtitle: "A local-first image editing studio with pro export workflows, camera import, and mobile-optimized controls.",
+    subtitle: "A privacy-first browser image studio focused on compression, format conversion, and bulk photo workflows.",
     createdOn: "February 2026",
     visibility: "Public",
-    status: "Live",
-    likes: 0,
+    status: "Under Development",
+    likes: 32,
     heroImage: "../../assets/images/dashboard.png",
     heroFit: "contain",
+    headerIcon: "../../assets/images/gallery-edit.svg",
+    headerHighlights: ["Local Edit", "Compress", "Change Type", "Export"],
     logoImage: "../../assets/images/logoo.webp",
     overview:
-      "LiteEdit Pro runs entirely in the browser and keeps every edit on-device for privacy. It now supports simple and advanced workflows, multi-source import (file, folder, camera photo, and document scan), brush-based editing tools, export progress with size-savings insights, and advanced output modes including single exports, bulk ZIP, and PDF (combined or separate).",
+      "LiteEdit Pro runs fully on-device in the browser, so images are processed locally without server upload. The app is built for practical production use: import many photos at once (files/folder/camera), apply edits quickly, compress outputs using quality and resize controls, convert formats (JPG, PNG, WebP, AVIF, PDF), and export in single or bulk modes with progress and size-saving visibility.",
     requirements: [
       "Modern browser with JavaScript enabled",
-      "Image files (JPG, PNG, WebP, AVIF, BMP, GIF, TIFF)",
-      "Sufficient local memory for processing up to 20 images"
+      "Image files such as JPG, PNG, WebP, AVIF, BMP, GIF, TIFF, or SVG",
+      "Enough device memory for batch editing up to 20 images in one session"
     ],
     highlights: [
-      "Simple and Advanced modes for beginner-friendly and power-user workflows",
-      "Import from image, folder, camera photo, or document scan with optional auto-optimization",
-      "Pro editing tools: crop, pen, highlighter, blur brush, resize, rotate, flip, brightness, contrast, and saturation",
-      "Dedicated export center with format, quality, metadata strip, progress bar, and size-saving comparison",
-      "Bulk export supports ZIP and PDF modes (single combined PDF or separate PDFs in ZIP)",
-      "Compact mobile experience with floating actions, collapsible controls, and live adjustment preview overlay"
+      "Privacy-first local processing: edits stay in browser and export pipeline strips metadata for safer sharing",
+      "Bulk import flow for multiple images and folders, plus camera capture modes (photo/document scan)",
+      "Batch-ready workflow with up to 20 photos per session and quick switching across uploaded items",
+      "Compression controls with quality + resize tuning, estimated output size, and visual savings meter",
+      "Format conversion for JPG, PNG, WebP, AVIF, and PDF from the same export panel",
+      "Bulk export options: ZIP bundle, combined PDF, or separate PDFs for large photo sets",
+      "Simple and Advanced modes with responsive mobile controls for fast editing on smaller screens"
     ],
     mvp: [
-      "Privacy-first editing with full on-device processing, no server uploads required",
-      "Fast import-to-export workflow optimized for both single edits and bulk output production"
+      "Delivers private, on-device image optimization and format conversion without cloud dependency",
+      "Reduces repetitive effort in multi-photo jobs through bulk import, quick edits, and one-tap batch export"
     ],
-    techStack: ["HTML", "CSS", "JavaScript", "Canvas API", "JSZip", "FileSaver.js", "jsPDF"],
+    techStack: ["HTML", "CSS", "JavaScript", "Canvas API", "Web APIs", "JSZip", "FileSaver.js", "jsPDF"],
     gallery: [
-      { src: "../../assets/images/dashboard.png", alt: "LiteEdit workspace preview" },
-      { src: "../../assets/images/pitch2.webp", alt: "LiteEdit controls and workflow context" }
+      { src: "../../assets/images/dashboard.png", alt: "LiteEdit bulk-ready workspace and export controls" },
+      { src: "../../assets/images/pitch2.webp", alt: "LiteEdit editing panel and output workflow context" }
     ],
     links: [
-      { label: "Try Now", href: "../liteedit-app/", external: false },
+      { label: "Open", href: "../liteedit-app/", style: "success", external: false },
       { label: "Back to Projects", href: "../../#projects", external: false }
     ]
   }

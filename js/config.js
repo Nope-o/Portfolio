@@ -11,7 +11,28 @@ const NAV_TABS = [
 const GRID_SIZE = 7;
 const SWIPE_THRESHOLD = 60;
 const SCROLL_DOWN_THRESHOLD = 70;
-const SCROLL_UP_THRESHOLD = 70;
+window.THEME_STORAGE_KEY = "portfolioTheme";
+
+window.getPortfolioTheme = function getPortfolioTheme() {
+  try {
+    return localStorage.getItem(window.THEME_STORAGE_KEY) === "light" ? "light" : "dark";
+  } catch (err) {
+    return "dark";
+  }
+};
+
+window.applyPortfolioTheme = function applyPortfolioTheme(theme) {
+  const safeTheme = theme === "light" ? "light" : "dark";
+  try {
+    localStorage.setItem(window.THEME_STORAGE_KEY, safeTheme);
+  } catch (err) {}
+
+  if (typeof document !== "undefined" && document.body) {
+    document.body.dataset.theme = safeTheme;
+  }
+
+  return safeTheme;
+};
 
 // Cost saver mode:
 // true  -> disable remote likes/analytics/IP logging (minimum backend cost)

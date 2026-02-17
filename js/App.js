@@ -21,6 +21,7 @@ function WinAnimationOverlay() {
 // Main App Component
 // ===========================
 function App() {
+  const themeStorageKey = window.THEME_STORAGE_KEY || "portfolioTheme";
   const getInitialTab = () => {
     const hash = window.location.hash.replace('#', '');
     const validTabIds = NAV_TABS.map(tab => tab.id);
@@ -28,6 +29,16 @@ function App() {
   };
 
   const [activeTab, setActiveTabState] = React.useState(getInitialTab);
+  const [theme, setTheme] = React.useState(() => {
+    if (typeof window.getPortfolioTheme === "function") {
+      return window.getPortfolioTheme();
+    }
+    try {
+      return localStorage.getItem(themeStorageKey) === "light" ? "light" : "dark";
+    } catch (err) {
+      return "dark";
+    }
+  });
   const [touchStartX, setTouchStartX] = React.useState(0);
   const [dragX, setDragX] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -75,6 +86,19 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  React.useEffect(() => {
+    if (typeof window.applyPortfolioTheme === "function") {
+      window.applyPortfolioTheme(theme);
+      return;
+    }
+    try {
+      localStorage.setItem(themeStorageKey, theme);
+    } catch (err) {}
+    if (typeof document !== "undefined" && document.body) {
+      document.body.dataset.theme = theme;
+    }
+  }, [theme]);
+
   const setActiveTab = (tabId, origin = 'click') => {
     const navigableTabs = NAV_TABS.filter(tab => tab.id !== 'privacy');
     const oldIndex = navigableTabs.findIndex(tab => tab.id === activeTab);
@@ -101,6 +125,7 @@ function App() {
     }
   };
   const handleTouchMove = (e) => {
+    if (!isMobile || activeTab === 'privacy') return;
     if (e.target.closest('.game-grid')) return;
   
     const dx = e.touches[0].clientX - touchStartX;
@@ -125,6 +150,11 @@ function App() {
   };
 
   const handleTouchEnd = (e) => {
+    if (!isMobile || activeTab === 'privacy') {
+      setDragX(0);
+      setIsDragging(false);
+      return;
+    }
     if (!isDragging) return;
     if (e.target.closest('.game-grid')) return;
   
@@ -161,22 +191,33 @@ function App() {
     };
   }, []);
 
+  React.useEffect(() => {
+    if (activeTab === 'privacy') {
+      setDragX(0);
+      setIsDragging(false);
+      setCancelSwipe(false);
+    }
+  }, [activeTab]);
+
+  const isDark = theme !== "light";
+  const toggleTheme = () => setTheme((prev) => (prev === "light" ? "dark" : "light"));
+
 
 
   const components = {
-    about: <About showSection={setActiveTab} />,
-    journey: <Journey setAppWinAnimation={setShowFullPageWinAnimation} />,
-    projects: <Projects />,
-    resume: <Resume />,
-    contact: <Contact />,
-    privacy: <PrivacyPolicy setActiveTab={setActiveTab} />
+    about: <About showSection={setActiveTab} isDark={isDark} />,
+    journey: <Journey setAppWinAnimation={setShowFullPageWinAnimation} isDark={isDark} />,
+    projects: <Projects isDark={isDark} />,
+    resume: <Resume isDark={isDark} />,
+    contact: <Contact isDark={isDark} />,
+    privacy: <PrivacyPolicy setActiveTab={setActiveTab} isDark={isDark} />
   };
 
   const currentYear = new Date().getFullYear();
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} isDark={isDark} onToggleTheme={toggleTheme} />
         <main
           className="container mx-auto w-full overflow-hidden relative px-4 py-8 flex-1"
           onTouchStart={handleTouchStart}
@@ -206,13 +247,13 @@ function App() {
         </div>
       </main>
       
-      <footer className="w-full text-center py-4 text-gray-600 text-sm bg-white/75 backdrop-blur shadow-inner mt-auto">
+      <footer className={`w-full text-center py-4 text-sm backdrop-blur shadow-inner mt-auto ${isDark ? 'bg-black/86 text-slate-300' : 'bg-white/75 text-gray-600'}`}>
         <div className={`flex flex-col items-center ${!isMobile ? 'md:flex-row md:justify-center' : ''}`}>
           <span>© {currentYear} - Crafted with ❤️ and lots of ☕</span>
           <span className="hidden md:inline-block md:mx-2">|</span>
           <button
             onClick={() => setActiveTab('privacy', 'click')}
-            className="text-blue-700 font-semibold hover:underline mt-1 md:mt-0"
+            className={`font-semibold hover:underline mt-1 md:mt-0 ${isDark ? 'text-sky-300' : 'text-blue-700'}`}
           >
             Privacy Policy
           </button>
@@ -224,7 +265,7 @@ function App() {
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-4 right-4 z-50 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-full p-3 shadow-lg transition-opacity duration-500"
+          className={`fixed bottom-4 right-4 z-50 rounded-full p-3 shadow-lg transition-opacity duration-500 ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-100' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}
           aria-label="Back to top"
         >
           ↑
@@ -313,5 +354,3 @@ if (IP_LOG_ENDPOINT) {
     }
   });
 }
-
-

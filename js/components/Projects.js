@@ -1,7 +1,7 @@
 // ===========================
 // PROJECT COMPONENT
 // ===========================
-function Projects() {
+function Projects({ isDark }) {
   const projects = Array.isArray(window.PROJECTS_DATA) ? window.PROJECTS_DATA : [];
   const likesApiUrl = window.LIKES_API_URL;
   const [likesBySlug, setLikesBySlug] = React.useState({});
@@ -144,12 +144,48 @@ function Projects() {
   }, [projects, activeStack, likeCountBySlug]);
 
   const getVisibilityClasses = (visibility) => {
+    if (!isDark) {
+      return visibility === "Public"
+        ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+        : "bg-amber-100 text-amber-700 border border-amber-300";
+    }
     return visibility === "Public"
-      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-      : "bg-amber-50 text-amber-800 border border-amber-200";
+      ? "bg-emerald-500/18 text-emerald-200 shadow-[0_6px_16px_rgba(16,185,129,0.16)]"
+      : "bg-amber-500/18 text-amber-200 shadow-[0_6px_16px_rgba(245,158,11,0.14)]";
+  };
+
+  const getStatusClasses = (status) => {
+    if (!isDark) {
+      if (status === "Under Development") {
+        return "bg-amber-100 text-amber-700 border border-amber-300";
+      }
+      if (status === "Live") {
+        return "bg-blue-100 text-blue-700 border border-blue-300";
+      }
+      return "bg-slate-100 text-slate-700 border border-slate-300";
+    }
+    if (status === "Under Development") {
+      return "bg-amber-500/18 text-amber-200 shadow-[0_6px_16px_rgba(245,158,11,0.14)]";
+    }
+    if (status === "Live") {
+      return "bg-blue-500/18 text-blue-200 shadow-[0_6px_16px_rgba(59,130,246,0.15)]";
+    }
+    return "bg-slate-500/18 text-slate-200 shadow-[0_6px_16px_rgba(71,85,105,0.15)]";
   };
 
   const getActionClasses = (style) => {
+    if (!isDark) {
+      if (style === "primary") {
+        return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-blue-700 text-white text-sm sm:text-base font-semibold hover:bg-blue-600 transition";
+      }
+      if (style === "success") {
+        return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-emerald-600 text-white text-sm sm:text-base font-semibold hover:bg-emerald-500 transition";
+      }
+      if (style === "ghost") {
+        return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full border border-slate-300 text-slate-700 text-sm sm:text-base font-semibold hover:bg-slate-100 transition";
+      }
+      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-slate-200 text-slate-500 text-sm sm:text-base font-semibold cursor-not-allowed";
+    }
     if (style === "primary") {
       return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-blue-800 text-white text-sm sm:text-base font-semibold hover:bg-blue-700 transition";
     }
@@ -157,9 +193,20 @@ function Projects() {
       return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-emerald-600 text-white text-sm sm:text-base font-semibold hover:bg-emerald-500 transition";
     }
     if (style === "ghost") {
-      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full border border-slate-300 text-slate-700 text-sm sm:text-base font-semibold hover:bg-slate-100 transition";
+      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-slate-700/50 text-slate-100 text-sm sm:text-base font-semibold hover:bg-slate-600/60 transition";
     }
     return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-slate-200 text-slate-500 text-sm sm:text-base font-semibold cursor-not-allowed";
+  };
+
+  const getLikeButtonClasses = (slug) => {
+    if (!likesApiUrl || likedBySession[slug]) {
+      return isDark
+        ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+        : "bg-slate-200 text-slate-500 cursor-not-allowed";
+    }
+    return isDark
+      ? "bg-blue-500/20 text-blue-200 hover:bg-blue-500/30"
+      : "bg-blue-100 text-blue-700 hover:bg-blue-200";
   };
 
   const getDefaultDetailAction = (project) => {
@@ -212,12 +259,54 @@ function Projects() {
     )
     : null;
 
+  const themeStyles = isDark
+    ? {
+      sectionClass: "mx-auto max-w-6xl bg-transparent p-5 sm:p-7 rounded-3xl mb-10",
+      heroPanelClass: "rounded-2xl bg-transparent p-3 sm:p-4 mb-4 sm:mb-5 relative",
+      headingClass: "text-2xl sm:text-2xl font-extrabold text-white leading-tight",
+      introClass: "text-sm sm:text-sm text-slate-200 mt-1",
+      filterBtnClass: "inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full bg-slate-900/55 text-slate-100 hover:bg-slate-800/55 transition shadow-[0_10px_24px_rgba(2,6,23,0.35)]",
+      filterPanelClass: "mt-2.5 p-2.5 sm:p-3 rounded-xl bg-slate-900/40 shadow-[0_10px_24px_rgba(2,6,23,0.35)]",
+      inactiveFilterClass: "bg-slate-900/50 text-slate-100 border-transparent hover:bg-slate-800/55",
+      activeLabelClass: "text-[11px] sm:text-xs text-slate-300 mt-2",
+      activeValueClass: "font-semibold text-slate-100",
+      cardClass: "group about-bg rounded-2xl overflow-hidden shadow-none hover:-translate-y-0.5 transition duration-300 h-full flex flex-col cursor-pointer",
+      cardTitleClass: "px-3.5 sm:px-4 pt-3 pb-2 bg-transparent text-center",
+      cardTitleTextClass: "text-lg sm:text-xl font-bold text-white leading-tight",
+      metaDateClass: "text-[11px] sm:text-xs font-medium text-slate-300 shrink-0",
+      summaryClass: "text-slate-200 mb-3 text-base sm:text-sm leading-relaxed",
+      techChipClass: "text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-800/70 text-slate-200 shadow-[0_6px_16px_rgba(2,6,23,0.25)]",
+      likeBarClass: "flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-900/45 mb-2.5",
+      likeCountClass: "text-xs font-semibold text-blue-300",
+      emptyStateClass: "text-slate-300"
+    }
+    : {
+      sectionClass: "mx-auto max-w-6xl bg-transparent p-5 sm:p-7 rounded-3xl mb-10",
+      heroPanelClass: "rounded-2xl bg-white/55 p-3 sm:p-4 mb-4 sm:mb-5 relative",
+      headingClass: "text-2xl sm:text-2xl font-extrabold text-slate-900 leading-tight",
+      introClass: "text-sm sm:text-sm text-slate-700 mt-1",
+      filterBtnClass: "inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full border border-slate-300 bg-white/85 text-slate-700 hover:bg-white transition",
+      filterPanelClass: "mt-2.5 p-2.5 sm:p-3 rounded-xl bg-white/80 border border-slate-200 shadow-sm",
+      inactiveFilterClass: "bg-white text-slate-700 border-slate-300 hover:bg-slate-100",
+      activeLabelClass: "text-[11px] sm:text-xs text-slate-600 mt-2",
+      activeValueClass: "font-semibold text-slate-800",
+      cardClass: "group bg-gradient-to-br from-white via-slate-50 to-slate-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-0.5 transition duration-300 h-full flex flex-col cursor-pointer",
+      cardTitleClass: "px-3.5 sm:px-4 pt-3 pb-2 bg-gradient-to-r from-white to-slate-100 text-center",
+      cardTitleTextClass: "text-lg sm:text-xl font-bold text-slate-900 leading-tight",
+      metaDateClass: "text-[11px] sm:text-xs font-medium text-slate-500 shrink-0",
+      summaryClass: "text-slate-600 mb-3 text-base sm:text-sm leading-relaxed",
+      techChipClass: "text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-100 border border-slate-300 text-slate-700",
+      likeBarClass: "flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-50 border border-slate-300 mb-2.5",
+      likeCountClass: "text-xs font-semibold text-blue-700",
+      emptyStateClass: "text-slate-600"
+    };
+
   return (
-    <section className="mx-auto max-w-6xl bg-gradient-to-br from-slate-50/95 via-slate-100/90 to-blue-50/90 p-5 sm:p-7 rounded-3xl shadow-xl mb-10 border border-slate-200/70 backdrop-blur">
-      <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-r from-white via-slate-50 to-blue-50 p-3 sm:p-4 mb-4 sm:mb-5">
+    <section className={themeStyles.sectionClass}>
+      <div className={themeStyles.heroPanelClass}>
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-2xl sm:text-2xl font-extrabold text-slate-900 leading-tight">My Projects</h2>
-          <p className="text-sm sm:text-sm text-slate-600 mt-1">Here are selected builds from my journey. Explore what is live, what is internal, and how each project creates real impact.</p>
+          <h2 className={themeStyles.headingClass}>My Projects</h2>
+          <p className={themeStyles.introClass}>Here are selected builds from my journey. Explore what is live, what is internal, and how each project creates real impact.</p>
         </div>
       </div>
 
@@ -226,7 +315,7 @@ function Projects() {
           <button
             type="button"
             onClick={() => setShowFilters((prev) => !prev)}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 transition"
+            className={themeStyles.filterBtnClass}
             aria-expanded={showFilters}
           >
             <svg
@@ -246,7 +335,7 @@ function Projects() {
           </button>
         </div>
         {showFilters && (
-          <div className="mt-2.5 p-2.5 sm:p-3 rounded-xl bg-white/80 border border-slate-200">
+          <div className={themeStyles.filterPanelClass}>
             <div className="flex flex-wrap gap-2">
               {stackOptions.map((stack) => (
                 <button
@@ -256,15 +345,15 @@ function Projects() {
                   className={`text-xs sm:text-sm px-3 py-1.5 rounded-full border font-semibold transition ${
                     activeStack === stack
                       ? "bg-blue-700 text-white border-blue-700"
-                      : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                      : themeStyles.inactiveFilterClass
                   }`}
                 >
                   {stack}
                 </button>
               ))}
             </div>
-            <p className="text-[11px] sm:text-xs text-slate-500 mt-2">
-              Active: <span className="font-semibold text-slate-700">{activeStack}</span>
+            <p className={themeStyles.activeLabelClass}>
+              Active: <span className={themeStyles.activeValueClass}>{activeStack}</span>
             </p>
           </div>
         )}
@@ -272,14 +361,14 @@ function Projects() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
         {filteredAndSortedProjects.length === 0 && (
-          <p className="text-gray-600">
+          <p className={themeStyles.emptyStateClass}>
             No projects found for the selected stack.
           </p>
         )}
         {filteredAndSortedProjects.map((p, i) => (
           <div
             key={i}
-            className="group bg-white/95 border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition duration-300 h-full flex flex-col cursor-pointer"
+            className={themeStyles.cardClass}
             onClick={(e) => {
               if (e.target.closest("a, button")) return;
               openProjectDetail(p);
@@ -294,29 +383,39 @@ function Projects() {
             tabIndex={0}
             aria-label={`Open details for ${p.title}`}
           >
-            <div className="w-full h-40 sm:h-36 bg-gradient-to-br from-slate-100 to-slate-200/80 flex items-center justify-center p-3">
+            <div className={themeStyles.cardTitleClass}>
+              <h3 className={themeStyles.cardTitleTextClass}>{p.title}</h3>
+            </div>
+
+            <div className="w-full h-44 sm:h-40 bg-transparent flex items-center justify-center p-2 sm:p-2.5">
               <img
                 src={p.image}
                 alt={p.title}
-                className="max-h-full w-full object-contain"
+                className="h-full w-full object-contain"
                 loading="lazy"
               />
             </div>
 
             <div className="p-3.5 sm:p-4 min-h-[208px] flex flex-col">
               <div className="flex items-start justify-between gap-2.5 mb-2.5">
-                <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${getVisibilityClasses(p.visibility)}`}>
-                  {p.visibility}
-                </span>
-                <span className="text-[11px] sm:text-xs font-medium text-slate-500 shrink-0">{p.createdOn}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${getVisibilityClasses(p.visibility)}`}>
+                    {p.visibility}
+                  </span>
+                  {!!p.status && (
+                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${getStatusClasses(p.status)}`}>
+                      {p.status}
+                    </span>
+                  )}
+                </div>
+                <span className={themeStyles.metaDateClass}>{p.createdOn}</span>
               </div>
 
-              <h3 className="text-xl sm:text-xl font-bold text-slate-900 mb-1.5 leading-tight">{p.title}</h3>
-              <p className="text-slate-600 mb-3 text-base sm:text-sm leading-relaxed">{p.summary}</p>
+              <p className={themeStyles.summaryClass}>{p.summary}</p>
               {!!(p.techStack && p.techStack.length) && (
                 <div className="flex flex-wrap gap-1.5 mb-2.5">
                   {p.techStack.slice(0, 3).map((stack) => (
-                    <span key={stack} className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">
+                    <span key={stack} className={themeStyles.techChipClass}>
                       {stack}
                     </span>
                   ))}
@@ -324,21 +423,15 @@ function Projects() {
               )}
 
               <div className="mt-auto">
-                <div className="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-50 border border-slate-200 mb-2.5">
-                  <span className="text-xs font-semibold text-blue-700">
+                <div className={themeStyles.likeBarClass}>
+                  <span className={themeStyles.likeCountClass}>
                     {"\uD83D\uDC4D"} {likeCountBySlug[p.slug] ?? (p.likes || 0)}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleCardLike(p.slug)}
                     disabled={!likesApiUrl || !!likedBySession[p.slug] || !!submittingBySlug[p.slug]}
-                    className={`text-[11px] sm:text-xs px-2 py-0.5 rounded-full font-semibold transition ${
-                      !likesApiUrl
-                        ? "bg-slate-200 text-slate-500 cursor-not-allowed"
-                        : likedBySession[p.slug]
-                        ? "bg-slate-200 text-slate-500 cursor-not-allowed"
-                        : "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                    }`}
+                    className={`text-[11px] sm:text-xs px-2 py-0.5 rounded-full font-semibold transition ${getLikeButtonClasses(p.slug)}`}
                     aria-label={`Like ${p.title}`}
                   >
                     {!likesApiUrl
@@ -386,8 +479,3 @@ function Projects() {
     </section>
   );
 }
-
-
-
-
-

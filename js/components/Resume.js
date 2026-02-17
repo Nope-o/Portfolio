@@ -1,10 +1,10 @@
 // ===========================
 // Resume Component
 // ===========================
-function Resume() {
+function Resume({ isDark }) {
   return (
-    <section className="bg-white p-7 rounded-3xl shadow-2xl mb-10 relative">
-      <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 tracking-tight drop-shadow-sm">Resume</h2>
+    <section className={`${isDark ? 'bg-transparent shadow-none' : 'resume-shell-light'} p-7 rounded-3xl shadow-2xl mb-10 relative`}>
+      <h2 className={`text-3xl font-extrabold text-center mb-6 tracking-tight drop-shadow-sm ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Resume</h2>
       
       <div className="absolute top-4 right-4">
         <a 
@@ -12,7 +12,7 @@ function Resume() {
           download="Madhav_Kataria_Resume.pdf"
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-blue-700 font-semibold text-sm hover:underline flex items-center"
+          className={`font-semibold text-sm hover:underline flex items-center ${isDark ? 'text-sky-300' : 'text-blue-700'}`}
         >
           Download
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,7 +21,7 @@ function Resume() {
         </a>
       </div>
 
-      <div id="resume-content" className="card-float-in mb-6 bg-gradient-to-br from-slate-100 via-gray-50 to-white rounded-xl p-6 shadow-md">
+      <div id="resume-content" className={`card-float-in mb-6 rounded-xl p-6 shadow-md ${isDark ? 'resume-content-dark' : 'bg-gradient-to-br from-slate-100 via-gray-50 to-white'}`}>
         <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
         <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, , with a solid foundation in analytics, machine learning, and practical industry exposure. Possess <strong>3+ years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Skilled in analyzing complex organizational data within IT Infrastructure, identifying patterns, optimizing processes, and monitoring SLA and KPI performance to drive operational excellence.</p>

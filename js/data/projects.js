@@ -9,9 +9,9 @@ window.PROJECTS_DATA = [
     summary: "SurSight Studio (v2) is a real-time pitch and Sargam training suite with synced Sa/octave practice, smart exercises, advanced analysis, and musician-first mobile + desktop UX.",
     createdOn: "January 2026",
     visibility: "Public",
-    likes: 12,
+    likes: 35,
     techStack: ["JavaScript", "Web Audio", "Music Tech"],
-    image: "assets/images/pitch1.webp",
+    image: "assets/images/Sur1.webp",
     actions: [
       { label: "Open", href: "projects/sursight-studio-app/", style: "success", external: false },
       { label: "Know More", href: "projects/sursight-studio/", style: "ghost", external: false }
@@ -23,7 +23,8 @@ window.PROJECTS_DATA = [
     summary: "LiteEdit Pro is a local-first image workflow studio with simple/advanced modes, brush + crop tools, smart import/camera flow, PDF export options, and optimized mobile editing.",
     createdOn: "February 2026",
     visibility: "Public",
-    likes: 0,
+    status: "Under Development",
+    likes: 32,
     techStack: ["JavaScript", "Canvas API", "JSZip", "jsPDF"],
     image: "assets/images/dashboard.png",
     actions: [
@@ -37,7 +38,7 @@ window.PROJECTS_DATA = [
     summary: "Power BI dashboard for IT infrastructure analytics with SLA/KPI visibility.",
     createdOn: "November 2025",
     visibility: "Internal",
-    likes: 8,
+    likes: 28,
     techStack: ["Power BI", "Analytics", "Data Visualization"],
     image: "assets/images/dashboard.png",
     actions: [
@@ -51,7 +52,7 @@ window.PROJECTS_DATA = [
     summary: "Power Apps + Power Automate attendance workflow with reporting and automation.",
     createdOn: "August 2025",
     visibility: "Internal",
-    likes: 16,
+    likes: 30,
     techStack: ["Power Apps", "Power Automate", "Workflow"],
     image: "assets/images/Mondelez.webp",
     actions: [
@@ -60,4 +61,3 @@ window.PROJECTS_DATA = [
     ]
   }
 ];
-

@@ -1,10 +1,9 @@
 // ===========================
 // Journey Component
 // ===========================
-function Journey({ setAppWinAnimation }) {
+function Journey({ setAppWinAnimation, isDark }) {
   const [showDetails, setShowDetails] = React.useState({});
   const [gameWon, setGameWon] = React.useState(false);
-  const [animatingIcon, setAnimatingIcon] = React.useState(null);
   const [showGameIntro, setShowGameIntro] = React.useState(true);
 
   React.useEffect(() => {
@@ -84,11 +83,11 @@ Both projects involved end-to-end development, from requirements gathering to de
   ];
 
   return (
-    <section className="mx-auto max-w-6xl bg-gradient-to-br from-indigo-50/70 via-blue-50/70 to-white p-5 sm:p-6 lg:p-7 rounded-3xl shadow-xl mb-10">
+    <section className={`mx-auto max-w-6xl ${isDark ? 'journey-space-shell' : 'journey-light-shell'} p-5 sm:p-6 lg:p-7 rounded-3xl shadow-xl mb-10`}>
       {!gameWon ? (
         showGameIntro ? (
           <div
-            className="relative isolate overflow-hidden rounded-3xl border border-sky-100/60 bg-[radial-gradient(circle_at_18%_16%,rgba(186,230,253,0.9),transparent_36%),radial-gradient(circle_at_85%_84%,rgba(253,224,71,0.35),transparent_34%),linear-gradient(145deg,#0f4c81_0%,#2563eb_48%,#0f172a_100%)] p-5 sm:p-10 text-center text-white shadow-[0_24px_70px_rgba(15,23,42,0.35)] animate-section-in min-h-[380px] sm:min-h-[450px] flex items-center justify-center"
+            className={`relative isolate overflow-hidden rounded-3xl border p-5 sm:p-10 text-center shadow-[0_24px_70px_rgba(15,23,42,0.35)] animate-section-in min-h-[380px] sm:min-h-[450px] flex items-center justify-center ${isDark ? 'border-sky-100/40 bg-[radial-gradient(circle_at_16%_14%,rgba(148,163,184,0.28),transparent_33%),radial-gradient(circle_at_86%_82%,rgba(96,165,250,0.16),transparent_36%),linear-gradient(120deg,#1e293b_60%,#0f172a_100%)] text-white' : 'border-blue-200/70 bg-[radial-gradient(circle_at_16%_14%,rgba(186,230,253,0.6),transparent_33%),radial-gradient(circle_at_86%_82%,rgba(147,197,253,0.4),transparent_36%),linear-gradient(120deg,#f8fbff_40%,#dbeafe_100%)] text-slate-900'}`}
             onClick={() => setShowGameIntro(false)}
             role="button"
             tabIndex={0}
@@ -107,21 +106,21 @@ Both projects involved end-to-end development, from requirements gathering to de
             <div className="pointer-events-none absolute bottom-10 left-10 text-base sm:text-lg text-blue-100 animate-pulse">✧</div>
             <div className="pointer-events-none absolute bottom-8 right-8 text-xl sm:text-2xl text-yellow-100 animate-bounce">★</div>
 
-            <div className="relative z-10 max-w-2xl mx-auto rounded-3xl border border-white/65 bg-white/90 backdrop-blur-md px-4 py-8 sm:px-8 sm:py-10 shadow-[0_18px_40px_rgba(15,23,42,0.25)]">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-300/70 bg-slate-100 mb-4">
+            <div className={`relative z-10 max-w-2xl mx-auto rounded-3xl backdrop-blur-md px-4 py-8 sm:px-8 sm:py-10 shadow-[0_18px_40px_rgba(15,23,42,0.25)] ${isDark ? 'border border-white/10 bg-white/5' : 'border border-white/65 bg-white/90'}`}>
+              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 ${isDark ? 'border border-white/15 bg-transparent' : 'border border-slate-300/70 bg-slate-100'}`}>
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-black text-white">!</span>
-                <p className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-slate-700">Life Journey Challenge</p>
+                <p className={`text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Life Journey Challenge</p>
               </div>
-              <h2 className="text-3xl sm:text-5xl font-extrabold leading-tight mb-3 text-slate-900">Unlock My Journey</h2>
-              <p className="text-sm sm:text-xl text-slate-700 mb-5 leading-relaxed">Solve the mini puzzle to reveal milestones, wins, and lessons from my path.</p>
-              <p className="text-xs sm:text-sm text-slate-500 mb-6">Tap anywhere or press OK to begin.</p>
+              <h2 className={`text-3xl sm:text-5xl font-extrabold leading-tight mb-3 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Unlock My Journey</h2>
+              <p className={`text-sm sm:text-xl mb-5 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Solve the mini puzzle to reveal milestones, wins, and lessons from my path.</p>
+              <p className={`text-xs sm:text-sm mb-6 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Tap anywhere or press OK to begin.</p>
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowGameIntro(false);
                 }}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-blue-600 text-white font-extrabold text-sm sm:text-base hover:bg-blue-500 hover:scale-[1.03] active:scale-[0.98] transition shadow-[0_12px_28px_rgba(37,99,235,0.35)]"
+                className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-white font-extrabold text-sm sm:text-base transition ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15 shadow-[0_10px_22px_rgba(2,6,23,0.35)]' : 'bg-blue-600 hover:bg-blue-500 hover:scale-[1.03] active:scale-[0.98] shadow-[0_12px_28px_rgba(37,99,235,0.35)]'}`}
               >
                 <span className="text-base leading-none">▶</span>
                 <span>OK, Start Challenge</span>
@@ -129,17 +128,17 @@ Both projects involved end-to-end development, from requirements gathering to de
             </div>
           </div>
         ) : (
-          <PathfinderGame onGameWin={handleGameWin} />
+          <PathfinderGame onGameWin={handleGameWin} isDark={isDark} />
         )
       ) : (
         <>
-          <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-2 tracking-tight drop-shadow-sm">My Life Journey & Experiences</h2>
-          <p className="text-center text-gray-800 text-lg mb-6 font-semibold animate-section-in">
+          <h2 className={`text-3xl font-extrabold text-center mb-2 tracking-tight drop-shadow-sm ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>My Life Journey & Experiences</h2>
+          <p className={`text-center text-lg mb-6 font-semibold ${isDark ? 'text-slate-200' : 'text-gray-800'}`}>
             "🎉 You've unlocked my life journey! Here's how I've navigated challenges and milestones — I hope it inspires you too."
           </p>
-          <p className="text-center text-gray-700 mb-6">Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
+          <p className={`text-center mb-6 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
           <div className="mt-8 sm:mt-10 max-w-5xl mx-auto">
-            <h3 className="text-xl font-bold text-blue-950 mb-2">Timeline....</h3>
+            <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-sky-200' : 'text-blue-950'}`}>Timeline</h3>
             <ol className="timeline-list">
               {timelineItems.map((item, i) => (
                 <li className="timeline-item" key={i}>
@@ -147,23 +146,21 @@ Both projects involved end-to-end development, from requirements gathering to de
                     <img
                       src={item.iconUrl}
                       alt="icon"
-                      className={`timeline-icon ${animatingIcon === i ? 'animate-jiggle' : ''}`}
+                      className="timeline-icon"
                       loading="lazy"
                     />
                   </span>
                   <div className="flex-1">
                     <div 
-                      className="timeline-content cursor-pointer flex justify-between items-start"
+                      className={`timeline-content journey-timeline-card cursor-pointer flex justify-between items-start ${isDark ? 'text-slate-100' : ''}`}
                       onClick={() => {
                         toggleDetails(i);
-                        setAnimatingIcon(i);
-                        setTimeout(() => setAnimatingIcon(null), 500);
                       }}
                     >
                       <div className="flex-grow">
-                        <h4 className="font-bold text-slate-800">{item.title}</h4>
-                        <span className="block text-gray-500 text-xs mb-1">{item.time}</span>
-                        <p className="text-slate-700">{item.desc}</p>
+                        <h4 className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>{item.title}</h4>
+                        <span className={`block text-xs mb-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>{item.time}</span>
+                        <p className={isDark ? 'text-slate-300' : 'text-slate-700'}>{item.desc}</p>
                       </div>
                       {item.logoUrl && (
                         <img 
@@ -175,28 +172,25 @@ Both projects involved end-to-end development, from requirements gathering to de
                       )}
                       {!showDetails[i] && (
                         <div className="absolute bottom-2 right-2">
-                          <svg className="w-6 h-6 text-gray-400 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className={`w-6 h-6 animate-bounce-slow ${isDark ? 'text-slate-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7"></path>
                           </svg>
                         </div>
                       )}
                     </div>
-                    <div className={`timeline-details mt-2${showDetails[i] ? ' open' : ''}`} onClick={() => toggleDetails(i)}>
-                      {showDetails[i] && <p>{item.fullDesc}</p>}
-                    </div>
+                    {showDetails[i] && (
+                      <div className={`journey-details-panel mt-2 ${isDark ? 'journey-space-panel' : 'journey-light-panel'}`}>
+                        <p>{item.fullDesc}</p>
+                      </div>
+                    )}
                   </div>
                 </li>
               ))}
             </ol>
-            <p className="text-center text-gray-700 mt-8 text-lg font-semibold">Learning and developing skills to contribute and make a meaningful impact!</p>
+            <p className={`text-center mt-8 text-lg font-semibold ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>Learning and developing skills to contribute and make a meaningful impact!</p>
           </div>
         </>
       )}
     </section>
   );
 }
-
-
-
-
-

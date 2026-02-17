@@ -1,7 +1,7 @@
 // ===========================
 // PathfinderGame Component
 // ===========================
-function PathfinderGame({ onGameWin }) {
+function PathfinderGame({ onGameWin, isDark }) {
   const [board, setBoard] = React.useState([]);
   const [playerPos, setPlayerPos] = React.useState({ row: 0, col: 0 });
   const [endPos, setEndPos] = React.useState({ row: 0, col: 0 });
@@ -173,22 +173,62 @@ const handleTouchEnd = (e) => {
   }
 };
 
+  const sectionClass = isDark
+    ? "relative bg-transparent p-6 sm:p-8 rounded-3xl shadow-none mb-8 max-w-3xl mx-auto text-center flex flex-col items-center"
+    : "relative bg-gradient-to-br from-white via-slate-50 to-blue-50/90 p-6 sm:p-8 rounded-3xl shadow-xl mb-8 max-w-3xl mx-auto text-center flex flex-col items-center border border-slate-200/80";
+  const titleClass = isDark
+    ? "text-3xl md:text-4xl font-extrabold text-slate-100 mb-4 tracking-tight"
+    : "text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight";
+  const loadingTextClass = isDark ? "text-slate-300 mb-6" : "text-gray-700 mb-6";
+  const introClass = isDark ? "text-slate-300 mb-4 max-w-2xl" : "text-slate-700 mb-4 max-w-2xl";
+  const boardShellClass = isDark
+    ? "w-full max-w-[540px] rounded-2xl bg-transparent shadow-none p-0 mb-4"
+    : "w-full max-w-[540px] rounded-2xl border border-slate-300/70 bg-white/80 shadow-[0_10px_30px_rgba(30,41,59,0.12)] p-3 sm:p-4 mb-5";
+  const tipClass = isDark ? "hidden md:block text-[12px] text-slate-400" : "hidden md:block text-[12px] text-slate-500";
+  const mobileResetClass = isDark
+    ? "absolute bottom-14 left-4 bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden"
+    : "absolute bottom-14 left-4 bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden";
+  const mobileControlClass = isDark
+    ? "control-button-directional bg-slate-800 hover:bg-slate-700 text-white p-2 rounded-lg"
+    : "control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg";
+  const desktopResetClass = isDark
+    ? "mt-4 bg-slate-700 hover:bg-slate-600 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm"
+    : "mt-4 bg-slate-800 hover:bg-slate-700 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm";
+  const winBoxClass = isDark
+    ? "bg-slate-900 text-slate-100 px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.5)] text-center text-xl font-bold"
+    : "bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.7)] text-center text-xl font-bold";
+  const lostBoxClass = isDark
+    ? "bg-slate-900 text-slate-100 px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.45)] text-center text-xl font-bold"
+    : "bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold";
+  const statusOverlay = (gameStatus === 'won' || gameStatus === 'lost') && typeof document !== "undefined"
+    ? ReactDOM.createPortal(
+      <div className={`fixed inset-0 z-[1200] flex items-center justify-center backdrop-blur-sm transition-all duration-700 ${gameStatus === 'won' ? 'bg-green-400/10' : 'bg-red-400/10'}`}>
+        <div className={gameStatus === 'won' ? winBoxClass : lostBoxClass}>
+          {gameStatus === 'won'
+            ? "🎉 Congratulations! You've found your path!"
+            : "❌ Oops! You hit an obstacle. Resetting..."}
+        </div>
+      </div>,
+      document.body
+    )
+    : null;
+
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
-      <section className="relative bg-gradient-to-br from-white via-slate-50 to-blue-50/90 p-6 sm:p-8 rounded-3xl shadow-xl mb-8 max-w-3xl mx-auto text-center flex flex-col items-center border border-slate-200/80" style={{ minHeight: '560px' }}>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Pathfinder's Puzzle</h2>
-        <p className="text-gray-700 mb-6">Loading game... Please wait.</p>
+      <section className={sectionClass} style={{ minHeight: '560px' }}>
+        <h2 className={titleClass}>Pathfinder's Puzzle</h2>
+        <p className={loadingTextClass}>Loading game... Please wait.</p>
       </section>
     );
   }
 
   return (
-    <section className="relative bg-gradient-to-br from-white via-slate-50 to-blue-50/90 p-6 sm:p-8 rounded-3xl shadow-xl mb-8 max-w-3xl mx-auto text-center flex flex-col items-center border border-slate-200/80" style={{ minHeight: '620px' }}>
-      <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Pathfinder's Puzzle</h2>
-      <p className="text-slate-700 mb-4 max-w-2xl">Navigate the board to reach the destination. Use <strong>Arrow Keys</strong> or <strong>Swipe</strong> to move.</p>
+    <section className={sectionClass} style={{ minHeight: '620px' }}>
+      <h2 className={titleClass}>Pathfinder's Puzzle</h2>
+      <p className={introClass}>Navigate the board to reach the destination. Use <strong>Arrow Keys</strong> or <strong>Swipe</strong> to move.</p>
 
 
-      <div className="w-full max-w-[540px] rounded-2xl border border-slate-300/70 bg-white/80 shadow-[0_10px_30px_rgba(30,41,59,0.12)] p-3 sm:p-4 mb-5">
+      <div className={boardShellClass}>
       <div 
         className="game-grid mb-3 mx-auto"
         onTouchStart={handleTouchStart}
@@ -222,28 +262,13 @@ const handleTouchEnd = (e) => {
           </div>
         ))}
       </div>
-        <p className="hidden md:block text-[12px] text-slate-500">Tip: Use arrow keys for precise movement.</p>
+        <p className={tipClass}>Tip: Use arrow keys for precise movement.</p>
       </div>
 
-      {gameStatus === 'won' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-400/10 backdrop-blur-sm transition-all duration-700">
-          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.7)] text-center text-xl font-bold">
-            🎉 Congratulations! You've found your path!
-          </div>
-        </div>
-      )}
-      
-      {gameStatus === 'lost' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-red-400/10 backdrop-blur-sm transition-all duration-700">
-          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold">
-            ❌ Oops! You hit an obstacle. Resetting...
-          </div>
-        </div>
-      )}
-
+      {statusOverlay}
       <button
         onClick={generateBoard}
-        className="absolute bottom-14 left-4 bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden"
+        className={mobileResetClass}
       >
         {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
       </button>
@@ -251,22 +276,21 @@ const handleTouchEnd = (e) => {
       <div className="absolute bottom-2 right-4 md:hidden">
         <div className="grid grid-rows-2 grid-cols-3 gap-1 w-40">
           <div></div>
-          <button onClick={() => movePlayer('up')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↑</button>
+          <button onClick={() => movePlayer('up')} className={`${mobileControlClass} w-full`}>↑</button>
           <div></div>
-          <button onClick={() => movePlayer('left')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg">←</button>
-          <button onClick={() => movePlayer('down')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg w-full">↓</button>
-          <button onClick={() => movePlayer('right')} className="control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg">→</button>
+          <button onClick={() => movePlayer('left')} className={mobileControlClass}>←</button>
+          <button onClick={() => movePlayer('down')} className={`${mobileControlClass} w-full`}>↓</button>
+          <button onClick={() => movePlayer('right')} className={mobileControlClass}>→</button>
         </div>
       </div>
 
       <button
         onClick={generateBoard}
-        className="mt-4 bg-slate-800 hover:bg-slate-700 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm"
+        className={desktopResetClass}
       >
         {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
       </button>
     </section>
   );
 }
-
 
