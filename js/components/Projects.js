@@ -7,18 +7,8 @@ function Projects({ isDark }) {
   const [likesBySlug, setLikesBySlug] = React.useState({});
   const [likedBySession, setLikedBySession] = React.useState({});
   const [submittingBySlug, setSubmittingBySlug] = React.useState({});
-  const [showThanksOverlay, setShowThanksOverlay] = React.useState(false);
   const [activeStack, setActiveStack] = React.useState("All");
   const [showFilters, setShowFilters] = React.useState(false);
-  const thanksOverlayTimerRef = React.useRef(null);
-
-  React.useEffect(() => {
-    return () => {
-      if (thanksOverlayTimerRef.current !== null) {
-        clearTimeout(thanksOverlayTimerRef.current);
-      }
-    };
-  }, []);
 
   React.useEffect(() => {
     if (!likesApiUrl) return;
@@ -118,14 +108,9 @@ function Projects({ isDark }) {
         project_slug: slug,
         source: "project_card"
       });
-      setShowThanksOverlay(true);
-      if (thanksOverlayTimerRef.current !== null) {
-        clearTimeout(thanksOverlayTimerRef.current);
+      if (typeof window.showLikeThankYouOverlay === "function") {
+        window.showLikeThankYouOverlay();
       }
-      thanksOverlayTimerRef.current = setTimeout(() => {
-        setShowThanksOverlay(false);
-        thanksOverlayTimerRef.current = null;
-      }, 1400);
     } catch (err) {
       // keep UI unchanged on failure; user can retry
     } finally {
@@ -288,18 +273,6 @@ function Projects({ isDark }) {
     }
     window.location.href = action.href;
   };
-
-  const thanksOverlay = showThanksOverlay && typeof document !== "undefined"
-    ? ReactDOM.createPortal(
-      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/20 backdrop-blur-sm">
-        <div className="bg-white border border-blue-200 rounded-2xl px-6 py-5 shadow-2xl text-center animate-section-in">
-          <div className="text-3xl mb-1">{"\uD83C\uDF89"}</div>
-          <p className="text-blue-900 font-bold">Thank you for your feedback!</p>
-        </div>
-      </div>,
-      document.body
-    )
-    : null;
 
   const themeStyles = isDark
     ? {
@@ -517,7 +490,6 @@ function Projects({ isDark }) {
           </div>
         ))}
       </div>
-      {thanksOverlay}
     </section>
   );
 }

@@ -47,6 +47,7 @@ const STATIC_COPY_ITEMS = [
 const MAIN_SITE_SOURCE_SCRIPTS = [
   'js/config.js',
   'js/analytics.js',
+  'js/like-feedback.js',
   'js/audio.js',
   'js/pathfinding.js',
   'js/data/projects.js',

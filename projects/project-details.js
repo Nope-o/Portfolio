@@ -284,26 +284,6 @@
     return count;
   };
 
-  const showThankYouOverlay = () => {
-    const existing = document.getElementById("thankyou-overlay");
-    if (existing) existing.remove();
-
-    const overlay = document.createElement("div");
-    overlay.id = "thankyou-overlay";
-    overlay.className = "thankyou-overlay";
-    overlay.innerHTML = `
-      <div class="thankyou-box">
-        <span class="thankyou-emoji">&#127881;</span>
-        <h3 class="thankyou-title">Thank You!</h3>
-        <p class="thankyou-text">Your like means a lot.</p>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    setTimeout(() => {
-      overlay.remove();
-    }, 1700);
-  };
-
   syncLikeCount();
 
   let galleryLightboxIndex = -1;
@@ -755,7 +735,9 @@
         likeBtn.setAttribute("aria-label", "Feedback already submitted");
         likeBtn.textContent = likeEmoji;
         if (likeStatus) likeStatus.textContent = "Thank you for liking, it means a lot!";
-        showThankYouOverlay();
+        if (typeof window.showLikeThankYouOverlay === "function") {
+          window.showLikeThankYouOverlay();
+        }
       } catch (err) {
         likeBtn.removeAttribute("disabled");
         if (likeStatus) likeStatus.textContent = "Could not submit right now. Please try again.";
