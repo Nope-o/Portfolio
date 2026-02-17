@@ -197,19 +197,6 @@ const handleTouchEnd = (e) => {
   const desktopResetClass = isDark
     ? "mt-4 bg-slate-700 hover:bg-slate-600 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm"
     : "mt-4 bg-slate-800 hover:bg-slate-700 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm";
-  const lostBoxClass = isDark
-    ? "bg-slate-900 text-slate-100 px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.45)] text-center text-xl font-bold"
-    : "bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold";
-  const statusOverlay = gameStatus === 'lost' && typeof document !== "undefined"
-    ? ReactDOM.createPortal(
-      <div className="fixed inset-0 z-[1200] flex items-center justify-center backdrop-blur-sm transition-all duration-700 bg-red-400/10">
-        <div className={lostBoxClass}>
-          ❌ Oops! You hit an obstacle. Resetting...
-        </div>
-      </div>,
-      document.body
-    )
-    : null;
 
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
@@ -283,7 +270,13 @@ const handleTouchEnd = (e) => {
         <p className={tipClass}>Tip: Use arrow keys for precise movement.</p>
       </div>
 
-      {statusOverlay}
+      {gameStatus === 'lost' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-red-400/10 backdrop-blur-sm transition-all duration-700">
+          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold">
+            ❌ Oops! You hit an obstacle. Resetting...
+          </div>
+        </div>
+      )}
       <button
         onClick={generateBoard}
         className={mobileResetClass}

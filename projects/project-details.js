@@ -122,7 +122,12 @@
     <header class="header">
       <a class="back-btn" href="../../#projects">Back</a>
       <div class="header-center">
-        <h1>${data.title}</h1>
+        <div class="title-row">
+          <h1>${data.title}</h1>
+          <span class="brand-link header-logo" aria-hidden="true">
+            <img src="${headerIconSrc}" alt="${data.title} icon" />
+          </span>
+        </div>
         ${headerFeatureLine ? "" : `<p class="brand-subline">${headerSublineClean}</p>`}
         ${headerFeatureLine ? `<p class="brand-subline-secondary">${headerFeatureLine}</p>` : ""}
       </div>
@@ -144,9 +149,6 @@
           ${alreadyLiked ? "Thank you for liking, it means a lot!" : (likesEnabled ? "" : "Likes are currently disabled to reduce backend costs.")}
         </p>
       </section>
-      <span class="brand-link header-logo" aria-hidden="true">
-        <img src="${headerIconSrc}" alt="${data.title} icon" />
-      </span>
     </header>
 
     <section class="hero">
@@ -309,10 +311,19 @@
   let galleryPanX = 0;
   let galleryPanY = 0;
   let galleryDragState = null;
+  let gallerySwipeState = null;
+  const galleryActivePointers = new Map();
+  let galleryPinchState = null;
   const galleryMinZoom = 1;
   const galleryMaxZoom = 4;
   const galleryZoomStep = 0.25;
+  const gallerySwipeThresholdPx = 48;
+  const gallerySwipeAxisRatio = 1.2;
   const galleryImageElements = Array.from(app.querySelectorAll(".gallery-image"));
+  let galleryOverlayEl = null;
+  let galleryLightboxContentEl = null;
+  let galleryLightboxImageEl = null;
+  let galleryLightboxZoomReadoutEl = null;
 
   const getWrappedGalleryIndex = (index) => {
     const total = galleryImageElements.length;
@@ -320,17 +331,53 @@
     return ((index % total) + total) % total;
   };
 
+  const clearGalleryDomRefs = () => {
+    galleryOverlayEl = null;
+    galleryLightboxContentEl = null;
+    galleryLightboxImageEl = null;
+    galleryLightboxZoomReadoutEl = null;
+  };
+
   const updateGalleryLightboxTransform = () => {
-    const overlay = document.getElementById("gallery-lightbox");
-    if (!overlay) return;
-    const img = overlay.querySelector(".gallery-lightbox-image");
-    if (!img) return;
-    img.style.transform = `translate(${galleryPanX}px, ${galleryPanY}px) scale(${galleryZoom})`;
-    img.style.cursor = galleryZoom > 1 ? (galleryDragState ? "grabbing" : "grab") : "zoom-in";
-    const readout = overlay.querySelector(".gallery-lightbox-zoom-readout");
-    if (readout) {
-      readout.textContent = `${Math.round(galleryZoom * 100)}%`;
+    if (!galleryOverlayEl || !galleryOverlayEl.isConnected || !galleryLightboxImageEl) return;
+    galleryLightboxImageEl.style.transform = `translate(${galleryPanX}px, ${galleryPanY}px) scale(${galleryZoom})`;
+    galleryLightboxImageEl.classList.toggle("is-gesturing", Boolean(galleryDragState || galleryPinchState));
+    galleryLightboxImageEl.style.cursor = galleryZoom > 1 ? (galleryDragState ? "grabbing" : "grab") : "zoom-in";
+    if (galleryLightboxZoomReadoutEl) {
+      galleryLightboxZoomReadoutEl.textContent = `${Math.round(galleryZoom * 100)}%`;
     }
+  };
+
+  const getTouchPinchSnapshot = () => {
+    const points = Array.from(galleryActivePointers.values());
+    if (points.length < 2) return null;
+    const [a, b] = points;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    return {
+      distance: Math.hypot(dx, dy),
+      centerX: (a.x + b.x) / 2,
+      centerY: (a.y + b.y) / 2
+    };
+  };
+
+  const beginTouchPinch = (imgEl) => {
+    const snapshot = getTouchPinchSnapshot();
+    if (!snapshot || !imgEl) return;
+    const rect = imgEl.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const baseZoom = Math.max(0.001, galleryZoom);
+    galleryPinchState = {
+      startDistance: Math.max(1, snapshot.distance),
+      startZoom: galleryZoom,
+      imageCenterX: centerX,
+      imageCenterY: centerY,
+      localX: (snapshot.centerX - centerX - galleryPanX) / baseZoom,
+      localY: (snapshot.centerY - centerY - galleryPanY) / baseZoom
+    };
+    galleryDragState = null;
+    updateGalleryLightboxTransform();
   };
 
   const resetGalleryZoom = () => {
@@ -338,18 +385,46 @@
     galleryPanX = 0;
     galleryPanY = 0;
     galleryDragState = null;
+    gallerySwipeState = null;
+    galleryPinchState = null;
     updateGalleryLightboxTransform();
   };
 
-  const setGalleryZoom = (nextZoom) => {
+  const setGalleryZoom = (nextZoom, anchorClientX = null, anchorClientY = null) => {
+    const prevZoom = galleryZoom;
     const safeZoom = Math.max(galleryMinZoom, Math.min(galleryMaxZoom, nextZoom));
+    if (
+      Number.isFinite(anchorClientX) &&
+      Number.isFinite(anchorClientY) &&
+      prevZoom > 0 &&
+      safeZoom > galleryMinZoom &&
+      galleryLightboxImageEl
+    ) {
+      const rect = galleryLightboxImageEl.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const localX = (anchorClientX - centerX - galleryPanX) / prevZoom;
+      const localY = (anchorClientY - centerY - galleryPanY) / prevZoom;
+      galleryPanX = anchorClientX - centerX - localX * safeZoom;
+      galleryPanY = anchorClientY - centerY - localY * safeZoom;
+    }
     galleryZoom = safeZoom;
     if (galleryZoom <= galleryMinZoom) {
       galleryPanX = 0;
       galleryPanY = 0;
       galleryDragState = null;
+      galleryPinchState = null;
     }
     updateGalleryLightboxTransform();
+  };
+
+  const isGalleryGestureControlTarget = (target) => {
+    if (!(target instanceof Element)) return false;
+    return Boolean(
+      target.closest(
+        ".gallery-lightbox-close, .gallery-lightbox-nav, .gallery-lightbox-zoom-controls, .gallery-lightbox-zoom-btn, .gallery-lightbox-zoom-readout"
+      )
+    );
   };
 
   const onGalleryLightboxKeydown = (e) => {
@@ -383,12 +458,16 @@
   };
 
   const closeGalleryLightbox = () => {
-    const overlay = document.getElementById("gallery-lightbox");
+    const overlay = galleryOverlayEl || document.getElementById("gallery-lightbox");
     if (!overlay) return;
     overlay.remove();
+    clearGalleryDomRefs();
     document.body.classList.remove("no-scroll");
     document.removeEventListener("keydown", onGalleryLightboxKeydown);
     galleryDragState = null;
+    gallerySwipeState = null;
+    galleryPinchState = null;
+    galleryActivePointers.clear();
   };
 
   const openGalleryLightboxByIndex = (requestedIndex) => {
@@ -456,61 +535,181 @@
     document.body.classList.add("no-scroll");
     document.addEventListener("keydown", onGalleryLightboxKeydown);
 
-    const content = overlay.querySelector(".gallery-lightbox-content");
-    const zoomImage = overlay.querySelector(".gallery-lightbox-image");
+    galleryOverlayEl = overlay;
+    galleryLightboxContentEl = overlay.querySelector(".gallery-lightbox-content");
+    galleryLightboxImageEl = overlay.querySelector(".gallery-lightbox-image");
+    galleryLightboxZoomReadoutEl = overlay.querySelector(".gallery-lightbox-zoom-readout");
+
+    const content = galleryLightboxContentEl;
+    const zoomImage = galleryLightboxImageEl;
 
     if (content) {
       content.addEventListener("wheel", (e) => {
         e.preventDefault();
         if (e.deltaY < 0) {
-          setGalleryZoom(galleryZoom + galleryZoomStep);
+          setGalleryZoom(galleryZoom + galleryZoomStep, e.clientX, e.clientY);
         } else {
-          setGalleryZoom(galleryZoom - galleryZoomStep);
+          setGalleryZoom(galleryZoom - galleryZoomStep, e.clientX, e.clientY);
         }
       }, { passive: false });
     }
 
-    if (zoomImage) {
-      zoomImage.addEventListener("dblclick", (e) => {
+    if (content && zoomImage) {
+      content.addEventListener("dblclick", (e) => {
+        if (isGalleryGestureControlTarget(e.target)) return;
         e.preventDefault();
         if (galleryZoom > 1) {
           resetGalleryZoom();
         } else {
-          setGalleryZoom(2);
+          setGalleryZoom(2, e.clientX, e.clientY);
         }
       });
 
-      zoomImage.addEventListener("pointerdown", (e) => {
-        if (galleryZoom <= 1) return;
+      content.addEventListener("pointerdown", (e) => {
+        if (isGalleryGestureControlTarget(e.target)) return;
+        if (typeof content.setPointerCapture === "function") {
+          content.setPointerCapture(e.pointerId);
+        }
+        if (e.pointerType === "touch") {
+          galleryActivePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (galleryActivePointers.size >= 2) {
+            e.preventDefault();
+            gallerySwipeState = null;
+            beginTouchPinch(zoomImage);
+            return;
+          }
+          if (galleryZoom <= galleryMinZoom) {
+            gallerySwipeState = {
+              pointerId: e.pointerId,
+              startX: e.clientX,
+              startY: e.clientY,
+              lastX: e.clientX,
+              lastY: e.clientY
+            };
+            return;
+          }
+        } else if (galleryZoom <= 1) {
+          return;
+        }
         e.preventDefault();
+        gallerySwipeState = null;
+        galleryPinchState = null;
         galleryDragState = {
+          pointerId: e.pointerId,
           startX: e.clientX,
           startY: e.clientY,
           originX: galleryPanX,
           originY: galleryPanY
         };
-        if (typeof zoomImage.setPointerCapture === "function") {
-          zoomImage.setPointerCapture(e.pointerId);
-        }
         updateGalleryLightboxTransform();
       });
 
-      zoomImage.addEventListener("pointermove", (e) => {
-        if (!galleryDragState) return;
+      content.addEventListener("pointermove", (e) => {
+        if (e.pointerType === "touch" && galleryActivePointers.has(e.pointerId)) {
+          galleryActivePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        }
+        if (galleryPinchState) {
+          const snapshot = getTouchPinchSnapshot();
+          if (!snapshot) return;
+          e.preventDefault();
+          const scale = snapshot.distance / Math.max(1, galleryPinchState.startDistance);
+          const nextZoom = Math.max(galleryMinZoom, Math.min(galleryMaxZoom, galleryPinchState.startZoom * scale));
+          galleryZoom = nextZoom;
+          if (galleryZoom <= galleryMinZoom) {
+            galleryPanX = 0;
+            galleryPanY = 0;
+            galleryDragState = null;
+            galleryPinchState = null;
+            updateGalleryLightboxTransform();
+            return;
+          }
+          galleryPanX = snapshot.centerX - galleryPinchState.imageCenterX - (galleryPinchState.localX * galleryZoom);
+          galleryPanY = snapshot.centerY - galleryPinchState.imageCenterY - (galleryPinchState.localY * galleryZoom);
+          updateGalleryLightboxTransform();
+          return;
+        }
+        if (
+          e.pointerType === "touch" &&
+          gallerySwipeState &&
+          gallerySwipeState.pointerId === e.pointerId &&
+          galleryActivePointers.size === 1 &&
+          galleryZoom <= galleryMinZoom
+        ) {
+          gallerySwipeState.lastX = e.clientX;
+          gallerySwipeState.lastY = e.clientY;
+          const dx = e.clientX - gallerySwipeState.startX;
+          const dy = e.clientY - gallerySwipeState.startY;
+          if (Math.abs(dx) > Math.abs(dy) * gallerySwipeAxisRatio && Math.abs(dx) > 10) {
+            e.preventDefault();
+          }
+          return;
+        }
+        if (!galleryDragState || galleryDragState.pointerId !== e.pointerId) return;
+        e.preventDefault();
         galleryPanX = galleryDragState.originX + (e.clientX - galleryDragState.startX);
         galleryPanY = galleryDragState.originY + (e.clientY - galleryDragState.startY);
         updateGalleryLightboxTransform();
       });
 
-      const finishDrag = () => {
-        if (!galleryDragState) return;
-        galleryDragState = null;
+      const finishDrag = (e) => {
+        if (e.pointerType === "touch") {
+          const activeSwipeState = gallerySwipeState && gallerySwipeState.pointerId === e.pointerId ? gallerySwipeState : null;
+          if (
+            activeSwipeState &&
+            !galleryPinchState &&
+            galleryZoom <= galleryMinZoom &&
+            galleryImageElements.length > 1
+          ) {
+            const dx = (Number.isFinite(e.clientX) ? e.clientX : activeSwipeState.lastX) - activeSwipeState.startX;
+            const dy = (Number.isFinite(e.clientY) ? e.clientY : activeSwipeState.lastY) - activeSwipeState.startY;
+            if (Math.abs(dx) >= gallerySwipeThresholdPx && Math.abs(dx) > Math.abs(dy) * gallerySwipeAxisRatio) {
+              gallerySwipeState = null;
+              galleryActivePointers.delete(e.pointerId);
+              openGalleryLightboxByIndex(galleryLightboxIndex + (dx < 0 ? 1 : -1));
+              return;
+            }
+          }
+          galleryActivePointers.delete(e.pointerId);
+          if (galleryActivePointers.size >= 2) {
+            gallerySwipeState = null;
+            beginTouchPinch(zoomImage);
+            return;
+          }
+          if (galleryPinchState) {
+            galleryPinchState = null;
+            const remainingEntry = galleryActivePointers.entries().next().value || [];
+            const remainingPointerId = remainingEntry[0] ?? null;
+            const remainingPointer = remainingEntry[1] ?? null;
+            if (remainingPointer && galleryZoom > galleryMinZoom) {
+              galleryDragState = {
+                pointerId: remainingPointerId,
+                startX: remainingPointer.x,
+                startY: remainingPointer.y,
+                originX: galleryPanX,
+                originY: galleryPanY
+              };
+            } else {
+              galleryDragState = null;
+            }
+            updateGalleryLightboxTransform();
+            return;
+          }
+          if (gallerySwipeState && gallerySwipeState.pointerId === e.pointerId) {
+            gallerySwipeState = null;
+          }
+        }
+        if (galleryDragState && (!e || galleryDragState.pointerId === e.pointerId)) {
+          galleryDragState = null;
+        }
         updateGalleryLightboxTransform();
       };
 
-      zoomImage.addEventListener("pointerup", finishDrag);
-      zoomImage.addEventListener("pointercancel", finishDrag);
-      zoomImage.addEventListener("pointerleave", finishDrag);
+      content.addEventListener("pointerup", finishDrag);
+      content.addEventListener("pointercancel", finishDrag);
+      content.addEventListener("pointerleave", (e) => {
+        if (e.pointerType === "touch") return;
+        finishDrag(e);
+      });
     }
 
     updateGalleryLightboxTransform();
@@ -540,7 +739,6 @@
       if (liked) return;
 
       likeBtn.setAttribute("disabled", "true");
-      likeBtn.textContent = "⏳";
       if (likeStatus) likeStatus.textContent = "Submitting your feedback...";
       likeBtn.textContent = submittingEmoji;
 
@@ -553,7 +751,6 @@
         likeBtn.classList.add("secondary");
         likeBtn.classList.add("is-hidden");
         if (likePrompt) likePrompt.classList.add("is-hidden");
-        likeBtn.textContent = "👍";
         likeBtn.setAttribute("title", "Feedback submitted");
         likeBtn.setAttribute("aria-label", "Feedback already submitted");
         likeBtn.textContent = likeEmoji;
@@ -561,7 +758,6 @@
         showThankYouOverlay();
       } catch (err) {
         likeBtn.removeAttribute("disabled");
-        likeBtn.textContent = "👍";
         if (likeStatus) likeStatus.textContent = "Could not submit right now. Please try again.";
         likeBtn.textContent = likeEmoji;
       }

@@ -8,7 +8,9 @@ function WinAnimationOverlay() {
       <div className="win-message-box animate-win-reveal">
         <span className="text-6xl animate-pulse-emoji">🎉</span>
         <h3 className="text-4xl font-extrabold text-blue-900 mt-4">You Won!</h3>
-        <p className="text-xl text-gray-700 mt-2">The path to knowledge is now open.</p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2 max-w-3xl mx-auto">
+          🎉 You've unlocked my life journey! Here's how I've navigated challenges and milestones — I hope it inspires you too.
+        </p>
         <span className="text-6xl animate-pulse-emoji">🎉</span>
       </div>
       {[1, 2, 3, 4, 5].map(i => (

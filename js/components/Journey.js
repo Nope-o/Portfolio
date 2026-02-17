@@ -91,7 +91,7 @@ function Journey({ setAppWinAnimation, isDark }) {
       setAppWinAnimation(false);
       setGameWon(true);
       winTimerRef.current = null;
-    }, 2000);
+    }, 4200);
   };
 
   return (
@@ -145,10 +145,7 @@ function Journey({ setAppWinAnimation, isDark }) {
       ) : (
         <>
           <h2 className={`text-3xl font-extrabold text-center mb-2 tracking-tight drop-shadow-sm ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>My Life Journey & Experiences</h2>
-          <p className={`text-center text-lg mb-6 font-semibold ${isDark ? 'text-slate-200' : 'text-gray-800'}`}>
-            "🎉 You've unlocked my life journey! Here's how I've navigated challenges and milestones — I hope it inspires you too."
-          </p>
-          <p className={`text-center mb-6 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
+          <p className={`journey-milestones-intro text-center mb-6 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>Explore the significant milestones, professional growth, and personal experiences that have shaped my journey.</p>
           <div className="mt-8 sm:mt-10 max-w-5xl mx-auto">
             <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-sky-200' : 'text-blue-950'}`}>Timeline</h3>
             <ol className="timeline-list">
