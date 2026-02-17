@@ -10,12 +10,24 @@ function Projects({ isDark }) {
   const [showThanksOverlay, setShowThanksOverlay] = React.useState(false);
   const [activeStack, setActiveStack] = React.useState("All");
   const [showFilters, setShowFilters] = React.useState(false);
+  const thanksOverlayTimerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (thanksOverlayTimerRef.current !== null) {
+        clearTimeout(thanksOverlayTimerRef.current);
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     if (!likesApiUrl) return;
 
     const slugs = projects.map((p) => p.slug).filter(Boolean);
     if (slugs.length === 0) return;
+    let isActive = true;
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const cacheBuster = Date.now();
 
     const likedMap = {};
     slugs.forEach((slug) => {
@@ -25,15 +37,20 @@ function Projects({ isDark }) {
         likedMap[slug] = false;
       }
     });
-    setLikedBySession(likedMap);
+    if (isActive) {
+      setLikedBySession(likedMap);
+    }
 
     const loadLikes = async () => {
       const entries = await Promise.all(
         slugs.map(async (slug) => {
           try {
             const response = await fetch(
-              `${likesApiUrl}?slug=${encodeURIComponent(slug)}&ts=${Date.now()}`,
-              { cache: "no-store" }
+              `${likesApiUrl}?slug=${encodeURIComponent(slug)}&ts=${cacheBuster}`,
+              {
+                cache: "no-store",
+                signal: controller ? controller.signal : undefined
+              }
             );
             const data = await response.json();
             const count = Number(data.count);
@@ -54,10 +71,19 @@ function Projects({ isDark }) {
         })
       );
 
+      if (!isActive) return;
       setLikesBySlug((prev) => ({ ...prev, ...Object.fromEntries(entries) }));
     };
 
-    loadLikes();
+    loadLikes().catch(() => {});
+    return () => {
+      isActive = false;
+      if (controller) {
+        try {
+          controller.abort();
+        } catch (err) {}
+      }
+    };
   }, [projects, likesApiUrl]);
 
   const incrementLike = async (slug) => {
@@ -93,12 +119,18 @@ function Projects({ isDark }) {
         source: "project_card"
       });
       setShowThanksOverlay(true);
-      setTimeout(() => setShowThanksOverlay(false), 1400);
+      if (thanksOverlayTimerRef.current !== null) {
+        clearTimeout(thanksOverlayTimerRef.current);
+      }
+      thanksOverlayTimerRef.current = setTimeout(() => {
+        setShowThanksOverlay(false);
+        thanksOverlayTimerRef.current = null;
+      }, 1400);
     } catch (err) {
+      // keep UI unchanged on failure; user can retry
+    } finally {
       setSubmittingBySlug((prev) => ({ ...prev, [slug]: false }));
-      return;
     }
-    setSubmittingBySlug((prev) => ({ ...prev, [slug]: false }));
   };
 
   const stackOptions = React.useMemo(() => {
@@ -107,6 +139,21 @@ function Projects({ isDark }) {
       (project.techStack || []).forEach((stack) => allStacks.add(stack));
     });
     return Array.from(allStacks);
+  }, [projects]);
+
+  const cachedLikesBySlug = React.useMemo(() => {
+    const cachedMap = {};
+    projects.forEach((project) => {
+      const slug = project.slug;
+      if (!slug) return;
+      try {
+        const cached = parseInt(localStorage.getItem(`projectRemoteLike:${slug}`) || "", 10);
+        cachedMap[slug] = Number.isNaN(cached) ? (project.likes || 0) : cached;
+      } catch (err) {
+        cachedMap[slug] = project.likes || 0;
+      }
+    });
+    return cachedMap;
   }, [projects]);
 
   const likeCountBySlug = React.useMemo(() => {
@@ -121,15 +168,10 @@ function Projects({ isDark }) {
         map[slug] = likesBySlug[slug];
         return;
       }
-      try {
-        const cached = parseInt(localStorage.getItem(`projectRemoteLike:${slug}`) || "", 10);
-        map[slug] = Number.isNaN(cached) ? (project.likes || 0) : cached;
-      } catch (err) {
-        map[slug] = project.likes || 0;
-      }
+      map[slug] = cachedLikesBySlug[slug] ?? (project.likes || 0);
     });
     return map;
-  }, [projects, likesBySlug]);
+  }, [projects, likesBySlug, cachedLikesBySlug]);
 
   const filteredAndSortedProjects = React.useMemo(() => {
     const filtered = activeStack === "All"
@@ -367,7 +409,7 @@ function Projects({ isDark }) {
         )}
         {filteredAndSortedProjects.map((p, i) => (
           <div
-            key={i}
+            key={p.slug || i}
             className={themeStyles.cardClass}
             onClick={(e) => {
               if (e.target.closest("a, button")) return;

@@ -30,6 +30,9 @@ window.applyPortfolioTheme = function applyPortfolioTheme(theme) {
   if (typeof document !== "undefined" && document.body) {
     document.body.dataset.theme = safeTheme;
   }
+  if (typeof document !== "undefined" && document.documentElement) {
+    document.documentElement.dataset.theme = safeTheme;
+  }
 
   return safeTheme;
 };

@@ -6,6 +6,15 @@ function Contact({ isDark }) {
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [showSuccessOverlay, setShowSuccessOverlay] = React.useState(false);
+  const successTimerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (successTimerRef.current !== null) {
+        clearTimeout(successTimerRef.current);
+      }
+    };
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -25,7 +34,13 @@ function Contact({ isDark }) {
       if (data.ok) {
         setSent(true);
         setShowSuccessOverlay(true);
-        setTimeout(() => setShowSuccessOverlay(false), 1800);
+        if (successTimerRef.current !== null) {
+          clearTimeout(successTimerRef.current);
+        }
+        successTimerRef.current = setTimeout(() => {
+          setShowSuccessOverlay(false);
+          successTimerRef.current = null;
+        }, 1800);
         form.reset();
       } else {
         setError(true);

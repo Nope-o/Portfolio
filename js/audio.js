@@ -3,6 +3,44 @@
 // ===========================
 let audioInitialized = false;
 let winSynth, loseSynth, moveSynth;
+let toneReadyPromise = null;
+const TONE_CDN_URL = "https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js";
+
+const ensureToneLoaded = async () => {
+  if (typeof Tone !== "undefined") return true;
+  if (typeof document === "undefined") return false;
+
+  if (!toneReadyPromise) {
+    toneReadyPromise = new Promise((resolve) => {
+      const existingScript = Array.from(document.querySelectorAll('script[src]')).find(
+        (scriptEl) => scriptEl.src === TONE_CDN_URL
+      );
+
+      if (existingScript) {
+        if (typeof Tone !== "undefined") {
+          resolve(true);
+          return;
+        }
+        existingScript.addEventListener("load", () => resolve(typeof Tone !== "undefined"), { once: true });
+        existingScript.addEventListener("error", () => resolve(false), { once: true });
+        return;
+      }
+
+      const toneScript = document.createElement("script");
+      toneScript.src = TONE_CDN_URL;
+      toneScript.defer = true;
+      toneScript.async = true;
+      toneScript.crossOrigin = "anonymous";
+      toneScript.addEventListener("load", () => resolve(typeof Tone !== "undefined"), { once: true });
+      toneScript.addEventListener("error", () => resolve(false), { once: true });
+      document.head.appendChild(toneScript);
+    });
+  }
+
+  const loaded = await toneReadyPromise;
+  if (!loaded) toneReadyPromise = null;
+  return loaded;
+};
 
 const initializeAudio = () => {
   if (audioInitialized || typeof Tone === 'undefined') return;
@@ -25,7 +63,11 @@ const initializeAudio = () => {
 };
 
 const playSound = async (type) => {
-  if (!audioInitialized) initializeAudio();
+  if (!audioInitialized) {
+    const toneLoaded = await ensureToneLoaded();
+    if (!toneLoaded) return;
+    initializeAudio();
+  }
   if (!audioInitialized || typeof Tone === 'undefined') return;
 
   try {

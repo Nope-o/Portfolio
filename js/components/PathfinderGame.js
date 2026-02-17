@@ -8,6 +8,7 @@ function PathfinderGame({ onGameWin, isDark }) {
   const [gameStatus, setGameStatus] = React.useState('loading');
   const [isBoardInitialized, setIsBoardInitialized] = React.useState(false);
   const [playerOrientation, setPlayerOrientation] = React.useState('right');
+  const [lastMoveDirection, setLastMoveDirection] = React.useState('right');
   const GAME_SWIPE_THRESHOLD = 30;
   const touchStartX = React.useRef(0);
   const touchStartY = React.useRef(0);
@@ -39,6 +40,7 @@ function PathfinderGame({ onGameWin, isDark }) {
         setGameStatus('lost');
         playSound('lose');
       } else {
+        setLastMoveDirection(direction);
         setPlayerPos({ row: newRow, col: newCol });
         setPlayerOrientation(currentOrientation);
         playSound('move');
@@ -92,6 +94,7 @@ function PathfinderGame({ onGameWin, isDark }) {
     setGameStatus('playing');
     setIsBoardInitialized(true);
     setPlayerOrientation('right');
+    setLastMoveDirection('right');
   }, []);
 
   React.useEffect(() => {
@@ -182,8 +185,8 @@ const handleTouchEnd = (e) => {
   const loadingTextClass = isDark ? "text-slate-300 mb-6" : "text-gray-700 mb-6";
   const introClass = isDark ? "text-slate-300 mb-4 max-w-2xl" : "text-slate-700 mb-4 max-w-2xl";
   const boardShellClass = isDark
-    ? "w-full max-w-[540px] rounded-2xl bg-transparent shadow-none p-0 mb-4"
-    : "w-full max-w-[540px] rounded-2xl border border-slate-300/70 bg-white/80 shadow-[0_10px_30px_rgba(30,41,59,0.12)] p-3 sm:p-4 mb-5";
+    ? "w-full max-w-[540px] rounded-2xl bg-transparent shadow-none p-0 mb-4 flex flex-col items-center"
+    : "w-full max-w-[540px] rounded-2xl border border-slate-300/70 bg-white/80 shadow-[0_10px_30px_rgba(30,41,59,0.12)] p-3 sm:p-4 mb-5 flex flex-col items-center";
   const tipClass = isDark ? "hidden md:block text-[12px] text-slate-400" : "hidden md:block text-[12px] text-slate-500";
   const mobileResetClass = isDark
     ? "absolute bottom-14 left-4 bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden"
@@ -194,19 +197,14 @@ const handleTouchEnd = (e) => {
   const desktopResetClass = isDark
     ? "mt-4 bg-slate-700 hover:bg-slate-600 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm"
     : "mt-4 bg-slate-800 hover:bg-slate-700 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm";
-  const winBoxClass = isDark
-    ? "bg-slate-900 text-slate-100 px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.5)] text-center text-xl font-bold"
-    : "bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.7)] text-center text-xl font-bold";
   const lostBoxClass = isDark
     ? "bg-slate-900 text-slate-100 px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.45)] text-center text-xl font-bold"
     : "bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold";
-  const statusOverlay = (gameStatus === 'won' || gameStatus === 'lost') && typeof document !== "undefined"
+  const statusOverlay = gameStatus === 'lost' && typeof document !== "undefined"
     ? ReactDOM.createPortal(
-      <div className={`fixed inset-0 z-[1200] flex items-center justify-center backdrop-blur-sm transition-all duration-700 ${gameStatus === 'won' ? 'bg-green-400/10' : 'bg-red-400/10'}`}>
-        <div className={gameStatus === 'won' ? winBoxClass : lostBoxClass}>
-          {gameStatus === 'won'
-            ? "🎉 Congratulations! You've found your path!"
-            : "❌ Oops! You hit an obstacle. Resetting..."}
+      <div className="fixed inset-0 z-[1200] flex items-center justify-center backdrop-blur-sm transition-all duration-700 bg-red-400/10">
+        <div className={lostBoxClass}>
+          ❌ Oops! You hit an obstacle. Resetting...
         </div>
       </div>,
       document.body
@@ -225,7 +223,14 @@ const handleTouchEnd = (e) => {
   return (
     <section className={sectionClass} style={{ minHeight: '620px' }}>
       <h2 className={titleClass}>Pathfinder's Puzzle</h2>
-      <p className={introClass}>Navigate the board to reach the destination. Use <strong>Arrow Keys</strong> or <strong>Swipe</strong> to move.</p>
+      <p className={introClass}>
+        Help reach your friendly ghost 👻 to his destination (
+        <span className="girl-ghost-inline" aria-label="girl ghost logo">
+          <span className="end-ghost-female" aria-hidden="true">👻</span>
+          <span className="end-bow" aria-hidden="true">🎀</span>
+        </span>
+        ). Use <strong>Arrow Keys</strong> or <strong>Swipe</strong> on <strong>board</strong> to help him move.
+      </p>
 
 
       <div className={boardShellClass}>
@@ -252,10 +257,23 @@ const handleTouchEnd = (e) => {
               return (
                 <div key={cIdx} className={cellClass}>
                   {isPlayer ? (
-                    <span className={playerOrientation === 'left' ? 'player-face-left' : ''}>
-                      👻
+                    <span className={`ghost-motion ghost-step-${lastMoveDirection}`}>
+                      <span className={`player-ghost ${playerOrientation === 'right' ? 'player-face-left' : ''}`}>
+                        👻
+                      </span>
                     </span>
-                  ) : (isStart ? '🏠' : (isEnd ? '🏁' : (isObstacle ? '🚧' : '')))}
+                  ) : (
+                    isStart ? "🏠" : (
+                      isEnd ? (
+                        <span className="end-destination">
+                          <span className="end-ghost-female" aria-hidden="true">👻</span>
+                          <span className="end-bow" aria-hidden="true">🎀</span>
+                        </span>
+                      ) : (
+                        isObstacle ? <span className="obstacle-cross">✖</span> : ""
+                      )
+                    )
+                  )}
                 </div>
               );
             })}
@@ -293,4 +311,3 @@ const handleTouchEnd = (e) => {
     </section>
   );
 }
-

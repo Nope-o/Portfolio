@@ -40,7 +40,6 @@ const STATIC_COPY_ITEMS = [
   { src: 'projects/ml/app.js', dest: 'projects/ml/app.js' },
   { src: 'Madhav_Kataria_Resume.pdf', dest: 'Madhav_Kataria_Resume.pdf' },
   { src: 'robots.txt', dest: 'robots.txt' },
-  { src: 'robots.text', dest: 'robots.text' },
   { src: 'BingSiteAuth.xml', dest: 'BingSiteAuth.xml' },
   { src: 'CNAME', dest: 'CNAME' }
 ];
@@ -111,6 +110,12 @@ function buildIndexableUrlList(routes) {
 }
 
 async function buildMainSiteLegacyEntry() {
+  const bootstrapModuleCode = [
+    `import React from 'react';`,
+    `import { createRoot } from 'react-dom/client';`,
+    `window.React = React;`,
+    `window.ReactDOM = { ...(window.ReactDOM || {}), createRoot };`
+  ].join('\n');
   const transformedParts = [];
 
   for (const rel of MAIN_SITE_SOURCE_SCRIPTS) {
@@ -130,17 +135,39 @@ async function buildMainSiteLegacyEntry() {
   }
 
   await fs.ensureDir(path.dirname(GENERATED_MAIN_ENTRY));
-  await fs.writeFile(GENERATED_MAIN_ENTRY, transformedParts.join('\n\n'), 'utf8');
+  await fs.writeFile(
+    GENERATED_MAIN_ENTRY,
+    `${bootstrapModuleCode}\n\n${transformedParts.join('\n\n')}`,
+    'utf8'
+  );
 }
 
 function transformMainIndexHtml(html) {
   let output = html;
   output = output.replace(
-    /<script\s+src=["']https:\/\/unpkg\.com\/@babel\/standalone\/babel\.min\.js["']><\/script>\s*/i,
+    /<script\b[^>]*src=["']https:\/\/unpkg\.com\/@babel\/standalone\/babel\.min\.js["'][^>]*><\/script>\s*/i,
     ''
   );
-  output = output.replace(/<script\s+type=["']text\/babel["']\s+src=["']js\/[^"']+["']><\/script>\s*/gi, '');
-  output = output.replace(/<script\s+src=["']js\/analytics\.js["']><\/script>\s*/i, '');
+  output = output.replace(
+    /<script\b[^>]*src=["']https:\/\/cdn\.tailwindcss\.com["'][^>]*><\/script>\s*/i,
+    ''
+  );
+  output = output.replace(
+    /<script\b[^>]*src=["']https:\/\/unpkg\.com\/react@[^"']*["'][^>]*><\/script>\s*/i,
+    ''
+  );
+  output = output.replace(
+    /<script\b[^>]*src=["']https:\/\/unpkg\.com\/react-dom@[^"']*["'][^>]*><\/script>\s*/i,
+    ''
+  );
+  output = output.replace(
+    /<script\b[^>]*src=["']https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/tone\/[^"']*["'][^>]*><\/script>\s*/i,
+    ''
+  );
+  output = output.replace(/<script\b[^>]*type=["']text\/babel["'][^>]*src=["']js\/[^"']+["'][^>]*><\/script>\s*/gi, '');
+  output = output.replace(/<script\b[^>]*src=["']js\/analytics\.js["'][^>]*><\/script>\s*/i, '');
+  output = output.replace(/<link\b[^>]*href=["']\/\/unpkg\.com["'][^>]*>\s*/i, '');
+  output = output.replace(/<link\b[^>]*href=["']\/\/cdnjs\.cloudflare\.com["'][^>]*>\s*/i, '');
 
   if (!new RegExp(`src=["']${GENERATED_MAIN_ENTRY_PUBLIC.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i').test(output)) {
     if (/<script>\s*\/\/ Security scripts/i.test(output)) {

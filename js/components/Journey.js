@@ -1,14 +1,78 @@
 // ===========================
 // Journey Component
 // ===========================
+const JOURNEY_TIMELINE_ITEMS = [
+  {
+    title: "Started Bachelor's Degree at IIT Guwahati",
+    time: "Year of Enrollment - Present",
+    desc: "Began my Bachelor's in Data Science and AI from IIT Guwahati, diving deep into cutting-edge technologies and foundational concepts.",
+    fullDesc: `Commenced a rigorous Bachelor's program in Data Science and AI at IIT Guwahati, one of India's premier technical institutions. This program has provided a strong foundation in algorithms, machine learning, artificial intelligence, and data analytics. Actively involved in various academic projects and research initiatives, exploring advanced topics and developing practical skills in data manipulation, model building, and system optimization. My coursework includes subjects like advanced statistics, deep learning, natural language processing, and big data technologies, preparing me for a career at the forefront of data innovation.`,
+    logoUrl: "assets/images/IITG_logo.webp",
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/4341/4341160.png"
+  },
+  {
+    title: "Training at HCL TechBee Program",
+    time: "Sept 2022 - Mar 2023",
+    desc: "Completed intensive 6-month training focusing on Data Centre Operations, Linux CLI, networking, AWS, and basic programming.",
+    fullDesc: `Underwent comprehensive 6-month training through the HCL TechBee Program, designed to equip me with essential IT skills. The curriculum covered Data Centre Operations, providing insights into managing and maintaining critical IT infrastructure. Gained practical experience with Linux CLI, network configuration, and DHCP/IP setup. Acquired fundamental knowledge in networking concepts using Cisco VLANs, routing protocols, and SSH. Understood Windows Server administration, including Active Directory and RAID setup. Received hands-on training in Amazon Web Services (AWS), focusing on cloud services like EC2, S3, and VPC, and Elastic Beanstalk. Additionally, I was introduced to basic programming concepts in Python, C, SQL, and Oracle, laying a strong foundation for future development roles. This program fostered a practical, problem-solving approach to IT challenges.`,
+    logoUrl: "assets/images/hcl.webp",
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/1376/1376421.png"
+  },
+  {
+    title: "Internship at HCL - Technical Support Engineer",
+    time: "Mar 2023 - Sept 2023",
+    desc: "Served as Technical Support Engineer for Ericsson Global Organization, achieving high resolve counts and contributing to knowledge base articles.",
+    fullDesc: `Worked as a Technical Support Engineer intern for Ericsson Global Organization, providing first-line and second-line support for complex technical issues. My responsibilities included diagnosing and resolving hardware and software problems, troubleshooting network connectivity, and assisting users with various IT-related queries. Consistently achieved high resolve count and received user satisfaction certificates, demonstrating effective problem-solving skills. Received recognition from the Global Quality and Process Head at Ericsson for contributions. Actively contributed to the internal knowledge base by drafting detailed technical articles for new technologies and solutions, improving efficiency for the support team and self-service options for users. Participated in the Skill India platform under managerial guidance, showcasing technical abilities in a competitive environment.`,
+    logoUrl: "assets/images/ericsson.webp",
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/10822/10822222.png"
+  },
+  {
+    title: "Full-Time Role & Automation Engineer",
+    time: "Sept 2023 - Present",
+    desc: "Transitioned to a full-time role, focusing on automation with Power Apps and Power Automate, and developing Power BI reports.",
+    fullDesc: `Transitioned into a full-time role as a Technical Support Engineer and Automation Specialist. A significant portion of my role involves developing and implementing automation solutions using Microsoft Power Platform. This includes creating robust applications with Power Apps to streamline business processes, automating repetitive tasks with Power Automate flows, and designing interactive Power BI reports to provide data-driven insights. I am responsible for identifying automation opportunities, gathering requirements from stakeholders, and delivering solutions that enhance operational efficiency, reduce manual effort, and improve accuracy across various IT infrastructure domains. I collaborate closely with cross-functional teams to ensure seamless integration and deployment of automation initiatives. Developed an attendance tracker application on the Power Apps platform to streamline project resource management. Implemented automated data archiving processes, including duplication removal, improving data integrity. Created a KBA-review application and Power BI reports to enhance knowledge management and data-driven insights. Developed scripts for browser cache and cookies management to improve system performance and user experience.`,
+    logoUrl: "assets/images/hcl.webp",
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/4300/4300059.png"
+  },
+  {
+    title: "Developed Key Power Platform Applications",
+    time: "Ongoing",
+    desc: "Successfully developed and deployed the Attendance Tracker and KBA Review applications, significantly improving operational efficiency.",
+    fullDesc: `Led the development and deployment of critical applications using the Microsoft Power Platform, resulting in significant operational improvements. The 'Attendance Tracker' application, built with Power Apps and Power Automate, centralized resource management, tracked daily attendance, calculated absenteeism percentage calculation by role/location/Manager, automated data archiving using Power Automate, automated correction of incorrect attendance records, and real-time Power BI reporting and analytics. Technologies used: Power Apps, Power BI, Power Automate, SharePoint.
+
+The 'KBA Review' application, also on Power Apps, transformed knowledge article quality management. It enabled structured reviews, integrated Gen-AI Bot optimization formatting, automated dynamic email notifications to L2 teams, and facilitated a ticketing tool-like workflow for knowledge base article updates. This includes a knowledge article quality review system, Gen-AI Bot optimization formatting, dashboards to track ongoing activities, automated dynamic email system to different L2 teams after KBA review, automated assignment to L2 groups, automated feedback to SD when changes are completed, and ticketing tool-like workflow management. Technologies used: Power Apps, Power BI, Power Automate, AI Integration.
+
+Both projects involved end-to-end development, from requirements gathering to deployment and post-launch support, demonstrating my ability to deliver high-impact solutions. Leveraging the Microsoft Power Platform to automate processes and provide data-driven solutions for HCL and Ericsson: developed tools for attendance tracking with role-based access and automated shift reminders; integrated Power Apps with ticketing systems to streamline workflows; created and delivered data reports using Power BI for Mondelez EUC and EUC Tech departments, providing valuable insights.`,
+    logoUrl: "assets/images/hcl.webp",
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/8899/8899687.png"
+  },
+  {
+    title: "Recognized for Automation & Quality",
+    time: "Ongoing",
+    desc: "Received multiple HCL certificates and client appreciation for automation, reports, highest resolve count and user satisfaction, with work recognized by Ericsson's Global Quality Head.",
+    fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
+    logoUrl: "assets/images/hcl.webp",
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/9961/9961540.png"
+  }
+];
+
 function Journey({ setAppWinAnimation, isDark }) {
   const [showDetails, setShowDetails] = React.useState({});
   const [gameWon, setGameWon] = React.useState(false);
   const [showGameIntro, setShowGameIntro] = React.useState(true);
+  const winTimerRef = React.useRef(null);
 
   React.useEffect(() => {
     setGameWon(false);
     setShowGameIntro(true);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (winTimerRef.current !== null) {
+        clearTimeout(winTimerRef.current);
+      }
+    };
   }, []);
 
   const toggleDetails = (index) => {
@@ -20,67 +84,15 @@ function Journey({ setAppWinAnimation, isDark }) {
 
   const handleGameWin = () => {
     setAppWinAnimation(true);
-    setTimeout(() => {
+    if (winTimerRef.current !== null) {
+      clearTimeout(winTimerRef.current);
+    }
+    winTimerRef.current = setTimeout(() => {
       setAppWinAnimation(false);
       setGameWon(true);
+      winTimerRef.current = null;
     }, 2000);
   };
-
-  // Timeline items data
-  const timelineItems = [
-    {
-      title: "Started Bachelor's Degree at IIT Guwahati",
-      time: "Year of Enrollment - Present",
-      desc: "Began my Bachelor's in Data Science and AI from IIT Guwahati, diving deep into cutting-edge technologies and foundational concepts.",
-      fullDesc: `Commenced a rigorous Bachelor's program in Data Science and AI at IIT Guwahati, one of India's premier technical institutions. This program has provided a strong foundation in algorithms, machine learning, artificial intelligence, and data analytics. Actively involved in various academic projects and research initiatives, exploring advanced topics and developing practical skills in data manipulation, model building, and system optimization. My coursework includes subjects like advanced statistics, deep learning, natural language processing, and big data technologies, preparing me for a career at the forefront of data innovation.`,
-      logoUrl: "assets/images/IITG_logo.webp",
-      iconUrl: "https://cdn-icons-png.flaticon.com/128/4341/4341160.png"
-    },
-    {
-      title: "Training at HCL TechBee Program",
-      time: "Sept 2022 - Mar 2023",
-      desc: "Completed intensive 6-month training focusing on Data Centre Operations, Linux CLI, networking, AWS, and basic programming.",
-      fullDesc: `Underwent comprehensive 6-month training through the HCL TechBee Program, designed to equip me with essential IT skills. The curriculum covered Data Centre Operations, providing insights into managing and maintaining critical IT infrastructure. Gained practical experience with Linux CLI, network configuration, and DHCP/IP setup. Acquired fundamental knowledge in networking concepts using Cisco VLANs, routing protocols, and SSH. Understood Windows Server administration, including Active Directory and RAID setup. Received hands-on training in Amazon Web Services (AWS), focusing on cloud services like EC2, S3, and VPC, and Elastic Beanstalk. Additionally, I was introduced to basic programming concepts in Python, C, SQL, and Oracle, laying a strong foundation for future development roles. This program fostered a practical, problem-solving approach to IT challenges.`,
-      logoUrl: "assets/images/hcl.webp",
-      iconUrl: "https://cdn-icons-png.flaticon.com/128/1376/1376421.png"
-    },
-    {
-      title: "Internship at HCL - Technical Support Engineer",
-      time: "Mar 2023 - Sept 2023",
-      desc: "Served as Technical Support Engineer for Ericsson Global Organization, achieving high resolve counts and contributing to knowledge base articles.",
-      fullDesc: `Worked as a Technical Support Engineer intern for Ericsson Global Organization, providing first-line and second-line support for complex technical issues. My responsibilities included diagnosing and resolving hardware and software problems, troubleshooting network connectivity, and assisting users with various IT-related queries. Consistently achieved high resolve count and received user satisfaction certificates, demonstrating effective problem-solving skills. Received recognition from the Global Quality and Process Head at Ericsson for contributions. Actively contributed to the internal knowledge base by drafting detailed technical articles for new technologies and solutions, improving efficiency for the support team and self-service options for users. Participated in the Skill India platform under managerial guidance, showcasing technical abilities in a competitive environment.`,
-      logoUrl: "assets/images/ericsson.webp",
-      iconUrl: "https://cdn-icons-png.flaticon.com/128/10822/10822222.png"
-    },
-    {
-      title: "Full-Time Role & Automation Engineer",
-      time: "Sept 2023 - Present",
-      desc: "Transitioned to a full-time role, focusing on automation with Power Apps and Power Automate, and developing Power BI reports.",
-      fullDesc: `Transitioned into a full-time role as a Technical Support Engineer and Automation Specialist. A significant portion of my role involves developing and implementing automation solutions using Microsoft Power Platform. This includes creating robust applications with Power Apps to streamline business processes, automating repetitive tasks with Power Automate flows, and designing interactive Power BI reports to provide data-driven insights. I am responsible for identifying automation opportunities, gathering requirements from stakeholders, and delivering solutions that enhance operational efficiency, reduce manual effort, and improve accuracy across various IT infrastructure domains. I collaborate closely with cross-functional teams to ensure seamless integration and deployment of automation initiatives. Developed an attendance tracker application on the Power Apps platform to streamline project resource management. Implemented automated data archiving processes, including duplication removal, improving data integrity. Created a KBA-review application and Power BI reports to enhance knowledge management and data-driven insights. Developed scripts for browser cache and cookies management to improve system performance and user experience.`,
-      logoUrl: "assets/images/hcl.webp",
-      iconUrl: "https://cdn-icons-png.flaticon.com/128/4300/4300059.png"
-    },
-    {
-      title: "Developed Key Power Platform Applications",
-      time: "Ongoing",
-      desc: "Successfully developed and deployed the Attendance Tracker and KBA Review applications, significantly improving operational efficiency.",
-      fullDesc: `Led the development and deployment of critical applications using the Microsoft Power Platform, resulting in significant operational improvements. The 'Attendance Tracker' application, built with Power Apps and Power Automate, centralized resource management, tracked daily attendance, calculated absenteeism percentage calculation by role/location/Manager, automated data archiving using Power Automate, automated correction of incorrect attendance records, and real-time Power BI reporting and analytics. Technologies used: Power Apps, Power BI, Power Automate, SharePoint.
-
-The 'KBA Review' application, also on Power Apps, transformed knowledge article quality management. It enabled structured reviews, integrated Gen-AI Bot optimization formatting, automated dynamic email notifications to L2 teams, and facilitated a ticketing tool-like workflow for knowledge base article updates. This includes a knowledge article quality review system, Gen-AI Bot optimization formatting, dashboards to track ongoing activities, automated dynamic email system to different L2 teams after KBA review, automated assignment to L2 groups, automated feedback to SD when changes are completed, and ticketing tool-like workflow management. Technologies used: Power Apps, Power BI, Power Automate, AI Integration.
-
-Both projects involved end-to-end development, from requirements gathering to deployment and post-launch support, demonstrating my ability to deliver high-impact solutions. Leveraging the Microsoft Power Platform to automate processes and provide data-driven solutions for HCL and Ericsson: developed tools for attendance tracking with role-based access and automated shift reminders; integrated Power Apps with ticketing systems to streamline workflows; created and delivered data reports using Power BI for Mondelez EUC and EUC Tech departments, providing valuable insights.`,
-      logoUrl: "assets/images/hcl.webp",
-      iconUrl: "https://cdn-icons-png.flaticon.com/128/8899/8899687.png"
-    },
-    {
-      title: "Recognized for Automation & Quality",
-      time: "Ongoing",
-      desc: "Received multiple HCL certificates and client appreciation for automation, reports, highest resolve count and user satisfaction, with work recognized by Ericsson's Global Quality Head.",
-      fullDesc: `Consistently recognized for outstanding contributions to automation and quality initiatives. Received various motivating certificates by HCL including the certificate for Automation and creating Power BI Reports, developing applications using Power Apps and USATs etc. Consistently achieved the highest resolve count among peers and garnered widespread user satisfaction, evidenced by over 50 positive client feedback instances. My work has been specifically acknowledged by the Global Quality and Process Head of Ericsson, highlighting the significant impact of my automation efforts on their global operations. Additionally, I contributed to drafting numerous useful Knowledge-Based Articles (KBAs), further enhancing knowledge management. I was also proud to represent at the State Level for Cloud Computing at Skill India in Bangalore, showcasing my technical expertise. Recognized Performing Artist on All India Radio (Nationally Broadcasted).`,
-      logoUrl: "assets/images/hcl.webp",
-      iconUrl: "https://cdn-icons-png.flaticon.com/128/9961/9961540.png"
-    }
-  ];
 
   return (
     <section className={`mx-auto max-w-6xl ${isDark ? 'journey-space-shell' : 'journey-light-shell'} p-5 sm:p-6 lg:p-7 rounded-3xl shadow-xl mb-10`}>
@@ -140,7 +152,7 @@ Both projects involved end-to-end development, from requirements gathering to de
           <div className="mt-8 sm:mt-10 max-w-5xl mx-auto">
             <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-sky-200' : 'text-blue-950'}`}>Timeline</h3>
             <ol className="timeline-list">
-              {timelineItems.map((item, i) => (
+              {JOURNEY_TIMELINE_ITEMS.map((item, i) => (
                 <li className="timeline-item" key={i}>
                   <span className="timeline-dot">
                     <img
