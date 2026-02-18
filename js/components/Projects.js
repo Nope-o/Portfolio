@@ -212,7 +212,7 @@ function Projects({ isDark }) {
         return `${actionBaseClass} bg-emerald-600 text-white hover:bg-emerald-500 transition`;
       }
       if (style === "ghost") {
-        return `${actionBaseClass} border border-slate-300 text-slate-700 hover:bg-slate-100 transition`;
+        return `${actionBaseClass} border border-blue-300 bg-gradient-to-r from-blue-100 to-slate-100 text-blue-900 hover:from-blue-200 hover:to-slate-100 transition`;
       }
       return `${actionBaseClass} bg-slate-200 text-slate-500 cursor-not-allowed`;
     }

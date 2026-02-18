@@ -137,6 +137,28 @@ function PathfinderGame({ onGameWin, isDark }) {
       return () => clearTimeout(timer);
     }
   }, [gameStatus, generateBoard]);
+
+  React.useEffect(() => {
+    if (gameStatus !== 'lost') return;
+    if (typeof window.showAppNotice === "function") {
+      window.showAppNotice({
+        variant: "error",
+        title: "Obstacle Hit",
+        message: "Oops! You hit an obstacle. Resetting...",
+        emoji: "\u274C",
+        durationMs: 1500
+      });
+      return;
+    }
+    if (typeof window.showLikeThankYouOverlay === "function") {
+      window.showLikeThankYouOverlay({
+        title: "Obstacle Hit",
+        message: "Oops! You hit an obstacle. Resetting...",
+        emoji: "\u274C",
+        durationMs: 1500
+      });
+    }
+  }, [gameStatus]);
   const handleTouchStart = (e) => {
     if (gameStatusRef.current !== 'playing') return;
     touchStartX.current = e.touches[0].clientX;
@@ -178,7 +200,7 @@ const handleTouchEnd = (e) => {
 
   const sectionClass = isDark
     ? "relative bg-transparent p-6 sm:p-8 rounded-3xl shadow-none mb-8 max-w-3xl mx-auto text-center flex flex-col items-center"
-    : "relative bg-gradient-to-br from-white via-slate-50 to-blue-50/90 p-6 sm:p-8 rounded-3xl shadow-xl mb-8 max-w-3xl mx-auto text-center flex flex-col items-center border border-slate-200/80";
+    : "pathfinder-light-shell relative bg-gradient-to-br from-white via-slate-50 to-blue-50/90 p-6 sm:p-8 rounded-3xl shadow-xl mb-8 max-w-3xl mx-auto text-center flex flex-col items-center border border-slate-200/80";
   const titleClass = isDark
     ? "text-3xl md:text-4xl font-extrabold text-slate-100 mb-4 tracking-tight"
     : "text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight";
@@ -186,7 +208,7 @@ const handleTouchEnd = (e) => {
   const introClass = isDark ? "text-slate-300 mb-4 max-w-2xl" : "text-slate-700 mb-4 max-w-2xl";
   const boardShellClass = isDark
     ? "w-full max-w-[540px] rounded-2xl bg-transparent shadow-none p-0 mb-4 flex flex-col items-center"
-    : "w-full max-w-[540px] rounded-2xl border border-slate-300/70 bg-white/80 shadow-[0_10px_30px_rgba(30,41,59,0.12)] p-3 sm:p-4 mb-5 flex flex-col items-center";
+    : "pathfinder-light-board-shell w-full max-w-[540px] rounded-2xl border border-slate-300/70 bg-white/80 shadow-[0_10px_30px_rgba(30,41,59,0.12)] p-3 sm:p-4 mb-5 flex flex-col items-center";
   const tipClass = isDark ? "hidden md:block text-[12px] text-slate-400" : "hidden md:block text-[12px] text-slate-500";
   const mobileResetClass = isDark
     ? "absolute bottom-14 left-4 bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-semibold shadow-md transition-all duration-300 md:hidden"
@@ -270,13 +292,6 @@ const handleTouchEnd = (e) => {
         <p className={tipClass}>Tip: Use arrow keys for precise movement.</p>
       </div>
 
-      {gameStatus === 'lost' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-red-400/10 backdrop-blur-sm transition-all duration-700">
-          <div className="bg-white text-black px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.7)] text-center text-xl font-bold">
-            ❌ Oops! You hit an obstacle. Resetting...
-          </div>
-        </div>
-      )}
       <button
         onClick={generateBoard}
         className={mobileResetClass}

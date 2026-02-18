@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite",
     "build": "vite build && node scripts/smoke-test.mjs",
     "build:safe": "SAFE_BUILD=true vite build && node scripts/smoke-test.mjs",
     "preview": "vite preview --host --port 4173",

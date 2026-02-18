@@ -145,7 +145,7 @@ function Journey({ setAppWinAnimation, isDark }) {
                   e.stopPropagation();
                   setShowGameIntro(false);
                 }}
-                className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-white font-extrabold text-sm sm:text-base transition ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15 shadow-[0_10px_22px_rgba(2,6,23,0.35)]' : 'bg-blue-600 hover:bg-blue-500 hover:scale-[1.03] active:scale-[0.98] shadow-[0_12px_28px_rgba(37,99,235,0.35)]'}`}
+                className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-white font-extrabold text-sm sm:text-base transition ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15 shadow-[0_10px_22px_rgba(2,6,23,0.35)]' : 'bg-slate-700 border border-slate-600 hover:bg-slate-600 shadow-[0_8px_18px_rgba(15,23,42,0.22)]'}`}
               >
                 <span className="text-base leading-none">▶</span>
                 <span>OK, Start Challenge</span>
