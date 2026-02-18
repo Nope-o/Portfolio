@@ -2,6 +2,10 @@
 // Resume Component
 // ===========================
 function Resume({ isDark }) {
+  const chipClass = "bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs";
+  const chipRowClass = "flex flex-wrap gap-2 mb-2";
+  const certLinkClass = "text-blue-900 hover:underline";
+
   return (
     <section className={`${isDark ? 'bg-transparent shadow-none' : 'resume-shell-light'} p-7 rounded-3xl shadow-2xl mb-10 relative`}>
       <h2 className={`text-3xl font-extrabold text-center mb-6 tracking-tight drop-shadow-sm ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Resume</h2>
@@ -22,24 +26,24 @@ function Resume({ isDark }) {
       </div>
 
       <div id="resume-content" className={`card-float-in mb-6 rounded-xl p-6 shadow-md ${isDark ? 'resume-content-dark' : 'bg-gradient-to-br from-slate-100 via-gray-50 to-white'}`}>
-        <div className="text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
-        <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong>Data Science and Artificial Intelligence from IIT Guwahati</strong>, , with a solid foundation in analytics, machine learning, and practical industry exposure. Possess <strong>3+ years</strong> of experience at <strong>HCL Technologies</strong>, including work as a supplier to <strong>Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong>Microsoft Power Automate</strong>, custom business applications via <strong>Power Apps</strong>, and enterprise-grade dashboards and reports with <strong>Power BI</strong>.</p>
+        <div className="resume-professional-heading text-lg font-semibold text-gray-800 mb-2">Professional Summary</div>
+        <p className="text-gray-700 mb-2">Currently pursuing a Bachelor’s in <strong className="resume-summary-accent">Data Science and Artificial Intelligence from IIT Guwahati</strong>, , with a solid foundation in analytics, machine learning, and practical industry exposure. Possess <strong className="resume-summary-accent">3+ years</strong> of experience at <strong className="resume-summary-accent">HCL Technologies</strong>, including work as a supplier to <strong className="resume-summary-accent">Ericsson Global</strong>, delivering end-to-end solutions in RPA using <strong className="resume-summary-accent">Microsoft Power Automate</strong>, custom business applications via <strong className="resume-summary-accent">Power Apps</strong>, and enterprise-grade dashboards and reports with <strong className="resume-summary-accent">Power BI</strong>.</p>
         <p className="text-gray-700 mb-2">Skilled in analyzing complex organizational data within IT Infrastructure, identifying patterns, optimizing processes, and monitoring SLA and KPI performance to drive operational excellence.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
-            <h3 className="font-bold text-lg text-blue-900 mb-2">Core Expertise</h3>
+            <h3 className={`resume-highlight-heading font-bold text-lg mb-2 ${isDark ? '' : 'text-blue-900'}`}>Core Expertise</h3>
             <ul className="list-disc ml-6 text-gray-700">
               <li>Experience in Developing RPA (Robotic Process Automation) using Microsoft Power Automate Platform</li>
               <li>Experience in Developing Custom Applications via Power Apps Platform to make the process efficient and reduce human errors</li>
               <li>Experience in Developing industry level Power BI Reports and Dashboards</li>
               <li>Experience in Analyzing and understanding Organizational Data specifically in IT Infra Domain and tracking trends affecting targets (SLAs, KPIs etc)</li>
             </ul>
-            <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Certifications</h3>
+            <h3 className={`resume-highlight-heading font-bold text-lg mt-5 mb-2 ${isDark ? '' : 'text-blue-900'}`}>Certifications</h3>
             <ul className="list-disc ml-6 text-gray-700">
-              <li><a href="https://www.credly.com/badges/513343d0-0d83-4761-9916-f6324436d81f/public_url" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Google Cloud Associate</a></li>
-              <li><a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/D68B6A617A2B34D0?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Power Automate RPA Developer</a></li>
-              <li><a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/94FFC17678CF74E8?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Power BI Data Analyst</a></li>
-              <li><a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria-2316/FBC420B1E155F51?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Azure Fundamentals</a></li>
+              <li><a href="https://www.credly.com/badges/513343d0-0d83-4761-9916-f6324436d81f/public_url" target="_blank" rel="noopener noreferrer" className={certLinkClass}>Google Cloud Associate</a></li>
+              <li><a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/D68B6A617A2B34D0?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className={certLinkClass}>Power Automate RPA Developer</a></li>
+              <li><a href="https://learn.microsoft.com/api/credentials/share/en-in/MadhavKataria-2316/94FFC17678CF74E8?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className={certLinkClass}>Power BI Data Analyst</a></li>
+              <li><a href="https://learn.microsoft.com/api/credentials/share/en-us/MadhavKataria-2316/FBC420B1E155F51?sharingId=D371C6433FF7895E" target="_blank" rel="noopener noreferrer" className={certLinkClass}>Azure Fundamentals</a></li>
 
               <li>Represented at State Level for Cloud Computing at Skill India competition (Bangalore)</li>
               <li>Participated in IIT Delhi Workshops and received certificates in AI, Cybersecurity, Machine Learning.</li>
@@ -49,47 +53,47 @@ function Resume({ isDark }) {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold text-lg text-blue-900 mb-2">Technical Skills</h3>
+            <h3 className={`resume-highlight-heading font-bold text-lg mb-2 ${isDark ? '' : 'text-blue-900'}`}>Technical Skills</h3>
             <div className="mb-4">
-              <div className="font-semibold">Machine Learning &amp; AI</div>
+              <div className="resume-purple-heading font-semibold">Machine Learning &amp; AI</div>
               <div className="text-gray-600 text-sm mb-1">Training ML models via Python libraries like "pandas", "Scikit-learn", and "NumPy". Building Custom AI bots using Different APIs.</div>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Pandas</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Netmiko</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Scikit-learn</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">NumPy</span>
+              <div className={chipRowClass}>
+                <span className={chipClass}>Pandas</span>
+                <span className={chipClass}>Netmiko</span>
+                <span className={chipClass}>Scikit-learn</span>
+                <span className={chipClass}>NumPy</span>
               </div>
-              <div className="font-semibold">Cloud Computing</div>
+              <div className="resume-purple-heading font-semibold">Cloud Computing</div>
               <div className="text-gray-600 text-sm mb-1">Skilled on Cloud Platforms like AWS, Azure and GCP (EC2, VPC, AWS Elastic Beanstalk, CloudWatch, EC2 Auto Scaling, Elastic Load Balancing, AWS IAM, LAMBDA, S3 buckets).</div>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">AWS</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Azure</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">GCP</span>
+              <div className={chipRowClass}>
+                <span className={chipClass}>AWS</span>
+                <span className={chipClass}>Azure</span>
+                <span className={chipClass}>GCP</span>
               </div>
-              <div className="font-semibold">Data Centre Operations</div>
+              <div className="resume-purple-heading font-semibold">Data Centre Operations</div>
               <div className="text-gray-600 text-sm mb-1">Switching-VLAN, trunking, inter VLAN routing, MLS-SVI, port security, VTP, STP, RSTP. Routing- static, Dynamic, RIP V2, OSPF, DHCP server, SSH, Telnet, CHAP, PAP, Access List.</div>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Cisco Packet Tracer</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Switching</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Routing</span>
+              <div className={chipRowClass}>
+                <span className={chipClass}>Cisco Packet Tracer</span>
+                <span className={chipClass}>Switching</span>
+                <span className={chipClass}>Routing</span>
               </div>
-              <div className="font-semibold">Microsoft Power Platform</div>
+              <div className="resume-purple-heading font-semibold">Microsoft Power Platform</div>
               <div className="text-gray-600 text-sm mb-1">Developing PowerApps, RPA automation flows via Power Automate and developing Reports and Dashboards via Power BI.</div>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Power BI</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">PowerApps</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Power Automate</span>
+              <div className={chipRowClass}>
+                <span className={chipClass}>Power BI</span>
+                <span className={chipClass}>PowerApps</span>
+                <span className={chipClass}>Power Automate</span>
               </div>            
-              <div className="font-semibold">System Administration</div>
+              <div className="resume-purple-heading font-semibold">System Administration</div>
               <div className="text-gray-600 text-sm mb-1">Skilled in Office 365, SharePoints, File systems, Citrix, MFA etc with OS including Linux, Windows and MAC OS.</div>
-              <div className="flex flex-wrap gap-2 mb-2">
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Office 365</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Linux</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">MacOS</span>
-                <span className="bg-blue-900 text-sky-100 px-2 py-0.5 rounded-full text-xs">Windows</span>
+              <div className={chipRowClass}>
+                <span className={chipClass}>Office 365</span>
+                <span className={chipClass}>Linux</span>
+                <span className={chipClass}>MacOS</span>
+                <span className={chipClass}>Windows</span>
               </div>
             </div>
-            <h3 className="font-bold text-lg text-blue-900 mt-5 mb-2">Achievements &amp; Recognition</h3>
+            <h3 className={`resume-highlight-heading font-bold text-lg mt-5 mb-2 ${isDark ? '' : 'text-blue-900'}`}>Achievements &amp; Recognition</h3>
             <ul className="list-disc ml-6 text-gray-700">
               <li>Developed Python automation scripts to identify switch vulnerabilities, collect configuration details and error logs via SSH, validate all ports, and accurately define trunk ports and VLAN assignments.</li>
               <li>Recognized by Ericsson’s Head of IT Support for designing technical processes that enhanced KBA activity, significantly improving the IT-Support Chatbot’s efficiency and user experience.</li>
@@ -104,3 +108,5 @@ function Resume({ isDark }) {
     </section>
   );
 }
+
+
