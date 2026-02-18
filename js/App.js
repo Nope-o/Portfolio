@@ -234,7 +234,7 @@ function App() {
       }
     }
 
-    const shouldAnimateThemeSwitch = !(isMobile && theme === "light");
+    const shouldAnimateThemeSwitch = true;
     let themeSwitchTimer = null;
     if (shouldAnimateThemeSwitch && typeof document !== "undefined" && document.body) {
       const bodyEl = document.body;
@@ -415,7 +415,8 @@ function App() {
           }
 
           style={{
-            transform: `translateX(${dragX}px)`,
+            transform: `translate3d(${dragX}px, 0, 0)`,
+            willChange: isDragging ? 'transform' : 'auto',
             opacity: isDragging && !(isMobile && !isDark) ? 1 - Math.abs(dragX) / 600 : 1,
             transition: isDragging
               ? 'none'
