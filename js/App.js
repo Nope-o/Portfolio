@@ -243,7 +243,7 @@ function App() {
       bodyEl.classList.add("theme-switching");
       themeSwitchTimer = window.setTimeout(() => {
         bodyEl.classList.remove("theme-switching");
-      }, 700);
+      }, 760);
     }
 
     return () => {

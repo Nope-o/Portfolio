@@ -2,6 +2,11 @@
 // About Component
 // ===========================
 function About({ showSection, isDark }) {
+  const ctaBaseClass = "font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-[1.03]";
+  const darkCtaClass = "bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white";
+  const lightPrimaryCtaClass = "about-cta-light about-cta-light-primary";
+  const lightSecondaryCtaClass = "about-cta-light about-cta-light-secondary";
+
   return (
     <section className={`${isDark ? 'about-bg' : 'about-light'} p-8 rounded-3xl shadow-2xl mb-10 relative overflow-hidden`} style={{ minHeight: '60vh' }}>
       <div className="relative z-10 flex about-flex-mobile md:flex-row flex-col items-center md:items-start space-y-6 md:space-y-0 md:space-x-10">
@@ -39,19 +44,19 @@ function About({ showSection, isDark }) {
       <div className="flex flex-wrap justify-center gap-4 mt-6">
         <button
           onClick={() => showSection('contact', 'click')}
-          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+          className={`${ctaBaseClass} ${isDark ? darkCtaClass : lightPrimaryCtaClass}`}
         >
           Get in Touch!
         </button>
         
         <button
           onClick={() => showSection('journey', 'click')}
-          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+          className={`${ctaBaseClass} ${isDark ? darkCtaClass : lightSecondaryCtaClass}`}
         >
           🚀 Explore My Journey
         </button>
       </div>
-      <p className={`text-center mt-4 text-sm italic ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+      <p className={`text-center mt-4 text-sm italic ${isDark ? 'text-gray-300' : 'text-slate-800 font-medium'}`}>
         "Driven by curiosity. Inspired by innovation. Always learning." ✨
       </p>
     </section>
