@@ -719,19 +719,20 @@ body[data-theme="light"] header.header-glass.backdrop-blur {
     background-image: none;
     -webkit-background-clip: border-box;
     background-clip: border-box;
-    -webkit-text-fill-color: currentColor;
-    color: #0b1220;
-    text-shadow: 0 1px 2px rgba(148, 163, 184, 0.25);
+    -webkit-text-fill-color: #ffffff;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(15, 23, 42, 0.52);
     background-size: auto;
     animation: none !important;
   }
 
   body[data-theme="light"] .mobile-brand-strip-logo {
-    background: transparent;
-    border: 0;
+    background: var(--color-primary);
+    border: 2px solid #ffffff;
     border-radius: 14px;
-    padding: 0.2rem 0.55rem 0.15rem;
-    box-shadow: none;
+    padding: 0.24rem 0.72rem 0.18rem;
+    box-shadow: 0 0 12px rgba(15, 23, 42, 0.42);
+    overflow: hidden;
   }
 
   body[data-theme="light"] .mobile-brand-strip-logo::after {
@@ -740,7 +741,6 @@ body[data-theme="light"] header.header-glass.backdrop-blur {
 
   /* Mobile light-mode performance: disable expensive glass blur stack */
   body[data-theme="light"] header.backdrop-blur,
-  body[data-theme="light"] .mobile-brand-strip,
   body[data-theme="light"] :is(
     .about-light,
     .timeline-content,
@@ -764,16 +764,30 @@ body[data-theme="light"] header.header-glass.backdrop-blur {
     -webkit-backdrop-filter: none !important;
   }
 
+  /* Keep mobile name strip clean in light mode (transparent, no divider line). */
+  body[data-theme="light"] .mobile-brand-strip {
+    background: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
   body[data-theme="light"]::before {
     will-change: opacity;
     background-image: url("./assets/images/sky.svg");
     background-size: cover;
     background-position: center top;
+    background-repeat: no-repeat;
     opacity: 0.95;
     position: fixed;
-    inset: 0;
-    min-height: 100dvh;
-    transform: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -18vh;
+    min-height: 0;
+    transform: translateZ(0);
   }
 
   body[data-theme="light"] {
@@ -970,10 +984,14 @@ body[data-theme="light"] .about-cta-light:hover {
   }
 
   body[data-theme="light"] .about-text-mobile {
-    width: calc(100% + 1.5rem);
-    max-width: none;
-    margin-left: -0.75rem;
-    margin-right: -0.75rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
 
   .resume-shell {
@@ -1928,9 +1946,9 @@ body[data-theme="dark"] .journey-space-shell > div[role="button"] > .pointer-eve
 }
 
 body[data-theme="dark"] .journey-space-shell > div[role="button"] > .relative.z-10 {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.44), rgba(15, 23, 42, 0.34)) !important;
+  background: transparent !important;
   border: 0 !important;
-  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.28) !important;
+  box-shadow: none !important;
 }
 
 body[data-theme="dark"] .journey-space-shell > h2,
@@ -2050,12 +2068,40 @@ body[data-theme="light"] :is(
   color: var(--light-link) !important;
 }
 
-body[data-theme="light"] footer {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
-}
+  body[data-theme="light"] footer {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    position: relative;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  body[data-theme="light"] footer::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 4px;
+    width: min(760px, 94vw);
+    height: 58px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.58) 0%,
+      rgba(219, 234, 254, 0.38) 44%,
+      rgba(186, 230, 253, 0.14) 70%,
+      rgba(186, 230, 253, 0) 100%
+    );
+    filter: blur(16px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body[data-theme="light"] footer > * {
+    position: relative;
+    z-index: 1;
+  }
 
 /* Theme-aware scrollbar */
 html,
@@ -2160,12 +2206,18 @@ body[data-theme="light"] .projects-light-hero {
 body[data-theme="light"] .projects-light-hero::after {
   content: "";
   position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: -22px;
-  height: 92px;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.54) 0%, rgba(255, 255, 255, 0.24) 46%, rgba(255, 255, 255, 0) 78%);
-  filter: blur(20px);
+  left: 6%;
+  right: 6%;
+  bottom: -28px;
+  height: 124px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(219, 234, 254, 0.48) 44%,
+    rgba(186, 230, 253, 0.16) 68%,
+    rgba(186, 230, 253, 0) 100%
+  );
+  filter: blur(24px);
   pointer-events: none;
   z-index: -1;
 }
@@ -2197,7 +2249,45 @@ body[data-theme="light"] .journey-light-shell > div[role="button"] > .pointer-ev
 }
 
 body[data-theme="light"] .journey-light-shell > div[role="button"] > .relative.z-10 {
-  background: var(--light-glass-bg) !important;
-  border: 1px solid var(--light-glass-border) !important;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  /* Mobile light mode: reduce harsh brightness on Privacy back button. */
+  body[data-theme="light"] .privacy-back-btn {
+    background: rgba(226, 232, 240, 0.9) !important;
+    color: #334155 !important;
+    border: 1px solid rgba(148, 163, 184, 0.5) !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14) !important;
+  }
+
+  body[data-theme="light"] .privacy-back-btn:hover {
+    background: rgba(203, 213, 225, 0.94) !important;
+  }
+
+  /* Mobile light mode: make About and Contact cards close to solid. */
+  body[data-theme="light"] .about-light,
+  body[data-theme="light"] .contact-shell-light {
+    background: linear-gradient(145deg, #ffffff, #f8fbff) !important;
+    border: 1px solid rgba(203, 213, 225, 0.98) !important;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Mobile light mode: darker blue emphasis text in About section. */
+  body[data-theme="light"] .about-strong {
+    color: #083b84 !important;
+  }
+
+  /* Mobile light mode: darker blue links in Contact section. */
+  body[data-theme="light"] .contact-shell-light a.text-blue-700 {
+    color: #0a3f8e !important;
+  }
+
+  body[data-theme="light"] .contact-shell-light a.text-blue-700:hover {
+    color: #072f6c !important;
+  }
 }

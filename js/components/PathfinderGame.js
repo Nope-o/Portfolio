@@ -223,7 +223,16 @@ const handleTouchEnd = (e) => {
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
       <section className={sectionClass} style={{ minHeight: '560px' }}>
-        <h2 className={titleClass}>Pathfinder's Puzzle</h2>
+        <div className="relative w-full max-w-2xl mb-2">
+          {!isDark && (
+            <div className="pointer-events-none absolute inset-0 -z-10">
+              <div className="absolute -top-3 left-1/2 h-14 w-44 -translate-x-1/2 rounded-full bg-white/82 blur-lg"></div>
+              <div className="absolute top-8 left-[28%] h-10 w-40 rounded-full bg-white/72 blur-lg"></div>
+              <div className="absolute top-10 right-[24%] h-10 w-44 rounded-full bg-white/68 blur-lg"></div>
+            </div>
+          )}
+          <h2 className={titleClass}>Pathfinder's Puzzle</h2>
+        </div>
         <p className={loadingTextClass}>Loading game... Please wait.</p>
       </section>
     );
@@ -231,15 +240,25 @@ const handleTouchEnd = (e) => {
 
   return (
     <section className={sectionClass} style={{ minHeight: '620px' }}>
-      <h2 className={titleClass}>Pathfinder's Puzzle</h2>
-      <p className={introClass}>
-        Help reach your friendly ghost 👻 to his destination (
-        <span className="girl-ghost-inline" aria-label="girl ghost logo">
-          <span className="end-ghost-female" aria-hidden="true">👻</span>
-          <span className="end-bow" aria-hidden="true">🎀</span>
-        </span>
-        ). Use <strong>Arrow Keys</strong> or <strong>Swipe</strong> on <strong>board</strong> to help him move.
-      </p>
+      <div className="relative w-full max-w-2xl mb-2">
+        {!isDark && (
+          <div className="pointer-events-none absolute inset-0 -z-10">
+            <div className="absolute -top-3 left-1/2 h-14 w-44 -translate-x-1/2 rounded-full bg-white/82 blur-lg"></div>
+            <div className="absolute top-8 left-[28%] h-10 w-40 rounded-full bg-white/72 blur-lg"></div>
+            <div className="absolute top-10 right-[24%] h-10 w-44 rounded-full bg-white/68 blur-lg"></div>
+            <div className="absolute top-20 left-1/2 h-10 w-56 -translate-x-1/2 rounded-full bg-white/64 blur-lg"></div>
+          </div>
+        )}
+        <h2 className={titleClass}>Pathfinder's Puzzle</h2>
+        <p className={introClass}>
+          Help reach your friendly ghost 👻 to his destination (
+          <span className="girl-ghost-inline" aria-label="girl ghost logo">
+            <span className="end-ghost-female" aria-hidden="true">👻</span>
+            <span className="end-bow" aria-hidden="true">🎀</span>
+          </span>
+          ). Use <strong>Arrow Keys</strong> or <strong>Swipe</strong> on <strong>board</strong> to help him move.
+        </p>
+      </div>
 
 
       <div className={boardShellClass}>

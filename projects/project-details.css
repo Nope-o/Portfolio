@@ -79,6 +79,21 @@ body:not([data-theme])::before {
   border-radius: 999px;
   font-weight: 700;
   justify-self: start;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  transition: box-shadow 180ms ease, transform 180ms ease, background-color 180ms ease;
+}
+
+.back-btn:focus,
+.back-btn:active {
+  outline: none;
+}
+
+.back-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.55);
 }
 
 .header-center {
@@ -757,6 +772,10 @@ body[data-theme="light"] .header {
 body[data-theme="light"] .back-btn {
   color: #1f4f8f;
   background: #eaf2ff;
+}
+
+body[data-theme="light"] .back-btn:focus-visible {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
 }
 
 body[data-theme="light"] .header-center h1 {

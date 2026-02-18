@@ -62,6 +62,9 @@ function Journey({ setAppWinAnimation, isDark }) {
   const [showGameIntro, setShowGameIntro] = React.useState(true);
   const winTimerRef = React.useRef(null);
   const timelineItemRefs = React.useRef({});
+  const startJourneyPuzzle = React.useCallback(() => {
+    setShowGameIntro(false);
+  }, []);
 
   React.useEffect(() => {
     setGameWon(false);
@@ -112,43 +115,46 @@ function Journey({ setAppWinAnimation, isDark }) {
       {!gameWon ? (
         showGameIntro ? (
           <div
-            className={`relative isolate overflow-hidden rounded-3xl border p-5 sm:p-10 text-center shadow-[0_24px_70px_rgba(15,23,42,0.35)] animate-section-in min-h-[380px] sm:min-h-[450px] flex items-center justify-center ${isDark ? 'border-sky-100/40 bg-[radial-gradient(circle_at_16%_14%,rgba(148,163,184,0.28),transparent_33%),radial-gradient(circle_at_86%_82%,rgba(96,165,250,0.16),transparent_36%),linear-gradient(120deg,#1e293b_60%,#0f172a_100%)] text-white' : 'border-blue-200/70 bg-[radial-gradient(circle_at_16%_14%,rgba(186,230,253,0.6),transparent_33%),radial-gradient(circle_at_86%_82%,rgba(147,197,253,0.4),transparent_36%),linear-gradient(120deg,#f8fbff_40%,#dbeafe_100%)] text-slate-900'}`}
-            onClick={() => setShowGameIntro(false)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setShowGameIntro(false);
-              }
-            }}
-            aria-label="Start life journey game"
+            className={`relative isolate overflow-hidden rounded-3xl p-6 sm:p-10 text-center animate-section-in min-h-[360px] sm:min-h-[420px] flex items-center justify-center select-none ${isDark ? 'text-slate-100' : 'text-slate-900'}`}
           >
-            <div className="pointer-events-none absolute -top-24 -left-20 h-60 w-60 rounded-full bg-sky-200/35 blur-3xl"></div>
-            <div className="pointer-events-none absolute -bottom-24 -right-14 h-64 w-64 rounded-full bg-blue-200/25 blur-3xl"></div>
-            <div className="pointer-events-none absolute top-6 left-8 text-xl sm:text-2xl text-yellow-200 animate-bounce">★</div>
-            <div className="pointer-events-none absolute top-10 right-10 text-lg sm:text-xl text-cyan-100 animate-pulse">✦</div>
-            <div className="pointer-events-none absolute bottom-10 left-10 text-base sm:text-lg text-blue-100 animate-pulse">✧</div>
-            <div className="pointer-events-none absolute bottom-8 right-8 text-xl sm:text-2xl text-yellow-100 animate-bounce">★</div>
-
-            <div className={`relative z-10 max-w-2xl mx-auto rounded-3xl backdrop-blur-md px-4 py-8 sm:px-8 sm:py-10 shadow-[0_18px_40px_rgba(15,23,42,0.25)] ${isDark ? 'border border-white/10 bg-white/5' : 'border border-white/65 bg-white/90'}`}>
-              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 ${isDark ? 'border border-white/15 bg-transparent' : 'border border-slate-300/70 bg-slate-100'}`}>
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-black text-white">!</span>
-                <p className={`text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Life Journey Challenge</p>
-              </div>
-              <h2 className={`text-3xl sm:text-5xl font-extrabold leading-tight mb-3 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Unlock My Journey</h2>
-              <p className={`text-sm sm:text-xl mb-5 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Solve the mini puzzle to reveal milestones, wins, and lessons from my path.</p>
-              <p className={`text-xs sm:text-sm mb-6 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Tap anywhere or press OK to begin.</p>
+            <button
+              type="button"
+              onClick={startJourneyPuzzle}
+              className={`absolute inset-0 z-20 rounded-3xl cursor-pointer touch-manipulation ${isDark ? 'focus-visible:ring-2 focus-visible:ring-emerald-300/70' : 'focus-visible:ring-2 focus-visible:ring-blue-400/70'}`}
+              aria-label="Start life journey game"
+            />
+            {isDark ? (
+              <>
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_22%,rgba(16,185,129,0.24),transparent_38%),radial-gradient(circle_at_78%_74%,rgba(34,197,94,0.2),transparent_42%),radial-gradient(circle_at_58%_42%,rgba(16,185,129,0.14),transparent_46%)]"></div>
+                <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/18 blur-3xl"></div>
+                <div className="pointer-events-none absolute -bottom-24 -right-20 h-72 w-72 rounded-full bg-green-300/16 blur-3xl"></div>
+              </>
+            ) : (
+              <>
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_25%_24%,rgba(255,255,255,0.86),transparent_42%),radial-gradient(ellipse_at_76%_68%,rgba(255,255,255,0.76),transparent_44%),linear-gradient(180deg,rgba(248,252,255,0.7),rgba(219,234,254,0.34))]"></div>
+                <div className="pointer-events-none absolute top-10 left-8 h-16 w-36 rounded-full bg-white/78 blur-xl"></div>
+                <div className="pointer-events-none absolute top-20 right-10 h-14 w-32 rounded-full bg-white/72 blur-xl"></div>
+                <div className="pointer-events-none absolute bottom-12 left-14 h-14 w-34 rounded-full bg-white/66 blur-xl"></div>
+              </>
+            )}
+            <div className="relative z-30 max-w-2xl mx-auto">
+              {!isDark && (
+                <div className="pointer-events-none absolute inset-0 -z-10">
+                  <div className="absolute -top-2 left-1/2 h-14 w-44 -translate-x-1/2 rounded-full bg-white/82 blur-lg"></div>
+                  <div className="absolute top-16 left-1/2 h-10 w-52 -translate-x-[60%] rounded-full bg-white/72 blur-lg"></div>
+                  <div className="absolute top-20 left-1/2 h-10 w-48 -translate-x-[8%] rounded-full bg-white/68 blur-lg"></div>
+                </div>
+              )}
+              <h2 className={`text-3xl sm:text-5xl font-extrabold leading-tight mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Start the Journey Puzzle</h2>
+              <p className={`text-sm sm:text-xl mb-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Guide the ghost from home to destination while avoiding obstacles.</p>
+              <p className={`text-xs sm:text-sm mb-7 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Tap anywhere on this panel, or press Start Puzzle. Use arrow keys on desktop or swipe on mobile.</p>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowGameIntro(false);
-                }}
-                className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-white font-extrabold text-sm sm:text-base transition ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15 shadow-[0_10px_22px_rgba(2,6,23,0.35)]' : 'bg-slate-700 border border-slate-600 hover:bg-slate-600 shadow-[0_8px_18px_rgba(15,23,42,0.22)]'}`}
+                onClick={startJourneyPuzzle}
+                className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-extrabold text-sm sm:text-base transition ${isDark ? 'bg-emerald-400/15 border border-emerald-200/30 text-emerald-100 hover:bg-emerald-400/25 shadow-[0_10px_22px_rgba(2,6,23,0.35)]' : 'bg-blue-100 border border-blue-300 text-blue-900 hover:bg-blue-200 shadow-[0_8px_18px_rgba(59,130,246,0.2)]'}`}
               >
                 <span className="text-base leading-none">▶</span>
-                <span>OK, Start Challenge</span>
+                <span>Start Puzzle</span>
               </button>
             </div>
           </div>

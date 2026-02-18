@@ -9,7 +9,7 @@ function PrivacyPolicy({ setActiveTab, isDark }) {
     <section className={`${isDark ? 'privacy-shell-dark text-slate-200 shadow-[0_20px_50px_rgba(2,6,23,0.45)]' : 'privacy-shell-light'} p-8 rounded-3xl shadow-2xl mb-10 mx-auto max-w-2xl relative`}>
       <button
         onClick={() => setActiveTab('about', 'click')}
-        className={`absolute top-4 left-4 z-20 inline-flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-200 cursor-pointer touch-manipulation select-none ${isDark ? 'bg-slate-900 hover:bg-slate-800 text-slate-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+        className={`privacy-back-btn absolute top-4 left-4 z-20 inline-flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-200 cursor-pointer touch-manipulation select-none ${isDark ? 'bg-slate-900 hover:bg-slate-800 text-slate-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
         aria-label="Go back to About section"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
