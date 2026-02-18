@@ -228,15 +228,16 @@ function App() {
       }
     }
 
+    const shouldAnimateThemeSwitch = !(isMobile && theme === "light");
     let themeSwitchTimer = null;
-    if (typeof document !== "undefined" && document.body) {
+    if (shouldAnimateThemeSwitch && typeof document !== "undefined" && document.body) {
       const bodyEl = document.body;
       bodyEl.classList.remove("theme-switching");
       void bodyEl.offsetWidth;
       bodyEl.classList.add("theme-switching");
       themeSwitchTimer = window.setTimeout(() => {
         bodyEl.classList.remove("theme-switching");
-      }, 1300);
+      }, 700);
     }
 
     return () => {
@@ -247,7 +248,7 @@ function App() {
         document.body.classList.remove("theme-switching");
       }
     };
-  }, [theme]);
+  }, [theme, isMobile]);
 
   const setActiveTab = (tabId, origin = 'click') => {
     const oldIndex = NAVIGABLE_TABS.findIndex(tab => tab.id === activeTab);
@@ -386,7 +387,7 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} isDark={isDark} onToggleTheme={toggleTheme} />
         <main
-          className="container mx-auto w-full overflow-hidden relative px-4 py-8 flex-1"
+          className="container mx-auto w-full overflow-x-hidden relative px-4 py-8 flex-1"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -414,7 +415,7 @@ function App() {
         </div>
       </main>
       
-      <footer className={`w-full text-center py-4 text-sm backdrop-blur shadow-inner mt-auto ${isDark ? 'bg-transparent text-slate-300' : 'bg-transparent text-gray-800'}`}>
+      <footer className={`w-full text-center py-4 text-sm mt-auto ${isDark ? 'backdrop-blur shadow-inner bg-transparent text-slate-300' : 'bg-transparent text-gray-800 shadow-none'}`}>
         <div className={`flex flex-col items-center ${!isMobile ? 'md:flex-row md:justify-center' : ''}`}>
           <span>© {currentYear} - Crafted with ❤️ and lots of ☕</span>
           <span className="hidden md:inline-block md:mx-2">|</span>
