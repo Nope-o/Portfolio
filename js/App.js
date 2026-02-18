@@ -200,9 +200,10 @@ function App() {
     return () => mediaQueryList.removeListener(handleChange);
   }, []);
 
-  React.useEffect(() => { 
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-  }, [activeTab]);
+  React.useEffect(() => {
+    const behavior = isMobile && !isDark ? 'auto' : 'smooth';
+    window.scrollTo({ top: 0, behavior });
+  }, [activeTab, isMobile, isDark]);
 
   React.useEffect(() => {
     const handleHashChange = () => {
@@ -384,7 +385,7 @@ function App() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col app-shell" style={{ minHeight: '100dvh' }}>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} isDark={isDark} onToggleTheme={toggleTheme} />
         <main
           className="container mx-auto w-full overflow-x-hidden relative px-4 py-8 flex-1"
@@ -402,7 +403,7 @@ function App() {
 
           style={{
             transform: `translateX(${dragX}px)`,
-            opacity: isDragging ? 1 - Math.abs(dragX) / 600 : 1,
+            opacity: isDragging && !(isMobile && !isDark) ? 1 - Math.abs(dragX) / 600 : 1,
             transition: isDragging
               ? 'none'
               : cancelSwipe
