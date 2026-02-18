@@ -7,7 +7,7 @@ function Resume({ isDark }) {
   const certLinkClass = "text-blue-900 hover:underline";
 
   return (
-    <section className={`${isDark ? 'bg-transparent shadow-none' : 'resume-shell-light'} p-7 rounded-3xl shadow-2xl mb-10 relative`}>
+    <section className={`resume-shell ${isDark ? 'bg-transparent shadow-none' : 'resume-shell-light'} p-7 rounded-3xl shadow-2xl mb-10 relative`}>
       <h2 className={`text-3xl font-extrabold text-center mb-6 tracking-tight drop-shadow-sm ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Resume</h2>
       
       <div className="absolute top-4 right-4">

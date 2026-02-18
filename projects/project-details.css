@@ -794,6 +794,11 @@ body[data-theme="light"] .tag {
   color: #1e3a8a;
 }
 
+body[data-theme="light"] .capability-card .subheading,
+body[data-theme="light"] .capability-card h2 {
+  color: #1e3a8a;
+}
+
 body[data-theme="light"] .gallery img {
   background: linear-gradient(145deg, rgba(236, 244, 255, 0.95), rgba(226, 237, 255, 0.9));
   border: 1px solid #d5e3ff;

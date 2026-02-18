@@ -12,7 +12,7 @@ function About({ showSection, isDark }) {
       <div className="relative z-10 flex about-flex-mobile md:flex-row flex-col items-center md:items-start space-y-6 md:space-y-0 md:space-x-10">
         <div className="flex-shrink-0 flex flex-col items-center md:items-start about-photo-mobile">
           <div className="about-photo-bg mb-3 mt-2 shadow-lg hover:scale-105 transition-transform duration-500">
-            <img src="assets/images/Madhav-kataria.webp" alt="Madhav Kataria" className="rounded-2xl w-36 h-44 sm:w-40 sm:h-48 md:w-44 md:h-52 object-cover shadow-xl border-4 border-white" />
+            <img src="assets/images/Madhav-kataria.webp" alt="Madhav Kataria" className="rounded-2xl w-44 h-56 sm:w-44 sm:h-56 md:w-44 md:h-52 object-cover shadow-xl border-4 border-white" />
           </div>
         </div>
 
