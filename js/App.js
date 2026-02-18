@@ -26,6 +26,8 @@ const VALID_TAB_IDS = new Set(NAV_TABS.map((tab) => tab.id));
 const NAVIGABLE_TABS = NAV_TABS.filter((tab) => tab.id !== "privacy");
 const IMAGE_ASSET_PATTERN = /\.(avif|webp|png|jpe?g|gif|svg)(\?.*)?$/i;
 const SWIPE_WARMUP_TRIGGER = 28;
+const DESKTOP_WARMUP_ASSET_LIMIT = 14;
+const MOBILE_WARMUP_ASSET_LIMIT = 5;
 
 function collectJourneyAssets() {
   if (typeof JOURNEY_TIMELINE_ITEMS === "undefined" || !Array.isArray(JOURNEY_TIMELINE_ITEMS)) {
@@ -109,10 +111,11 @@ function App() {
     document.head.appendChild(prefetchLink);
   }, []);
 
-  const warmTabAssets = React.useCallback((tabId) => {
+  const warmTabAssets = React.useCallback((tabId, limit = DESKTOP_WARMUP_ASSET_LIMIT) => {
     if (typeof tabId !== "string" || !tabId) return;
     const assets = Array.isArray(tabAssetMap[tabId]) ? tabAssetMap[tabId] : [];
-    assets.forEach(prefetchAsset);
+    const assetsToWarm = Number.isFinite(limit) ? assets.slice(0, Math.max(0, limit)) : assets;
+    assetsToWarm.forEach(prefetchAsset);
   }, [prefetchAsset, tabAssetMap]);
 
   const getWarmupTabs = React.useCallback((tabId) => {
@@ -139,10 +142,11 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    const tabsToWarm = getWarmupTabs(activeTab);
+    const tabsToWarm = isMobile ? [activeTab] : getWarmupTabs(activeTab);
+    const warmupLimit = isMobile ? MOBILE_WARMUP_ASSET_LIMIT : DESKTOP_WARMUP_ASSET_LIMIT;
     const warmAssets = () => {
       tabsToWarm.forEach((tabId) => {
-        warmTabAssets(tabId);
+        warmTabAssets(tabId, warmupLimit);
       });
     };
 
@@ -162,7 +166,7 @@ function App() {
       }
       warmupTaskRef.current = { type: "", id: null };
     };
-  }, [activeTab, getWarmupTabs, warmTabAssets]);
+  }, [activeTab, getWarmupTabs, isMobile, warmTabAssets]);
 
   const warmSwipeDirectionAssets = React.useCallback((dx) => {
     if (Math.abs(dx) < SWIPE_WARMUP_TRIGGER) return;
@@ -176,7 +180,7 @@ function App() {
     if (!targetTabId || swipeWarmupTargetRef.current === targetTabId) return;
 
     swipeWarmupTargetRef.current = targetTabId;
-    warmTabAssets(targetTabId);
+    warmTabAssets(targetTabId, MOBILE_WARMUP_ASSET_LIMIT);
   }, [activeTab, warmTabAssets]);
 
   React.useEffect(() => {
@@ -207,7 +211,8 @@ function App() {
 
   React.useEffect(() => {
     const handleHashChange = () => {
-      setActiveTabState(getInitialTab());
+      const nextTab = getInitialTab();
+      setActiveTabState((prevTab) => (prevTab === nextTab ? prevTab : nextTab));
     };
 
     window.addEventListener('hashchange', handleHashChange);
@@ -252,6 +257,8 @@ function App() {
   }, [theme, isMobile]);
 
   const setActiveTab = (tabId, origin = 'click') => {
+    if (typeof tabId !== "string" || !VALID_TAB_IDS.has(tabId)) return;
+    const isSameTab = tabId === activeTab;
     const oldIndex = NAVIGABLE_TABS.findIndex(tab => tab.id === activeTab);
     const newIndex = NAVIGABLE_TABS.findIndex(tab => tab.id === tabId);
 
@@ -261,11 +268,17 @@ function App() {
       } else if (newIndex < oldIndex) {
         setTransitionDirection('slide-in-left');
       }
-    } else {
+    } else if (!isSameTab) {
       setTransitionDirection('animate-section-in');
     }
-    setActiveTabState(tabId);
-    window.location.hash = tabId;
+
+    if (!isSameTab) {
+      setActiveTabState(tabId);
+    }
+
+    if (window.location.hash !== `#${tabId}`) {
+      window.location.hash = tabId;
+    }
   };
   const handleTouchStart = (e) => {
     if (e.target.closest('.game-grid')) {
