@@ -57,10 +57,11 @@ Both projects involved end-to-end development, from requirements gathering to de
 ];
 
 function Journey({ setAppWinAnimation, isDark }) {
-  const [showDetails, setShowDetails] = React.useState({});
+  const [openDetailIndex, setOpenDetailIndex] = React.useState(null);
   const [gameWon, setGameWon] = React.useState(false);
   const [showGameIntro, setShowGameIntro] = React.useState(true);
   const winTimerRef = React.useRef(null);
+  const timelineItemRefs = React.useRef({});
 
   React.useEffect(() => {
     setGameWon(false);
@@ -76,10 +77,22 @@ function Journey({ setAppWinAnimation, isDark }) {
   }, []);
 
   const toggleDetails = (index) => {
-    setShowDetails(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
+    const nextOpenIndex = openDetailIndex === index ? null : index;
+    const anchorEl = timelineItemRefs.current[index];
+    const previousTop = anchorEl ? anchorEl.getBoundingClientRect().top : null;
+
+    setOpenDetailIndex(nextOpenIndex);
+
+    if (previousTop === null) return;
+    requestAnimationFrame(() => {
+      const updatedAnchorEl = timelineItemRefs.current[index];
+      if (!updatedAnchorEl) return;
+      const newTop = updatedAnchorEl.getBoundingClientRect().top;
+      const delta = newTop - previousTop;
+      if (Math.abs(delta) > 1) {
+        window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
+      }
+    });
   };
 
   const handleGameWin = () => {
@@ -150,7 +163,17 @@ function Journey({ setAppWinAnimation, isDark }) {
             <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-sky-200' : 'text-blue-950'}`}>Timeline</h3>
             <ol className="timeline-list">
               {JOURNEY_TIMELINE_ITEMS.map((item, i) => (
-                <li className="timeline-item" key={i}>
+                <li
+                  className="timeline-item"
+                  key={i}
+                  ref={(el) => {
+                    if (el) {
+                      timelineItemRefs.current[i] = el;
+                    } else {
+                      delete timelineItemRefs.current[i];
+                    }
+                  }}
+                >
                   <span className="timeline-dot">
                     <img
                       src={item.iconUrl}
@@ -179,16 +202,19 @@ function Journey({ setAppWinAnimation, isDark }) {
                           loading="lazy"
                         />
                       )}
-                      {!showDetails[i] && (
+                      {openDetailIndex !== i && (
                         <div className="absolute bottom-2 right-2">
-                          <svg className={`w-6 h-6 animate-bounce-slow ${isDark ? 'text-slate-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className={`w-6 h-6 animate-bounce-slow ${isDark ? 'text-slate-500' : 'text-black'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7"></path>
                           </svg>
                         </div>
                       )}
                     </div>
-                    {showDetails[i] && (
-                      <div className={`journey-details-panel mt-2 ${isDark ? 'journey-space-panel' : 'journey-light-panel'}`}>
+                    {openDetailIndex === i && (
+                      <div
+                        className={`journey-details-panel mt-2 cursor-pointer ${isDark ? 'journey-space-panel' : 'journey-light-panel'}`}
+                        onClick={() => toggleDetails(i)}
+                      >
                         <p>{item.fullDesc}</p>
                       </div>
                     )}

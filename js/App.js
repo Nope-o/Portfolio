@@ -216,17 +216,37 @@ function App() {
   React.useEffect(() => {
     if (typeof window.applyPortfolioTheme === "function") {
       window.applyPortfolioTheme(theme);
-      return;
+    } else {
+      try {
+        localStorage.setItem(themeStorageKey, theme);
+      } catch (err) {}
+      if (typeof document !== "undefined" && document.body) {
+        document.body.dataset.theme = theme;
+      }
+      if (typeof document !== "undefined" && document.documentElement) {
+        document.documentElement.dataset.theme = theme;
+      }
     }
-    try {
-      localStorage.setItem(themeStorageKey, theme);
-    } catch (err) {}
+
+    let themeSwitchTimer = null;
     if (typeof document !== "undefined" && document.body) {
-      document.body.dataset.theme = theme;
+      const bodyEl = document.body;
+      bodyEl.classList.remove("theme-switching");
+      void bodyEl.offsetWidth;
+      bodyEl.classList.add("theme-switching");
+      themeSwitchTimer = window.setTimeout(() => {
+        bodyEl.classList.remove("theme-switching");
+      }, 1300);
     }
-    if (typeof document !== "undefined" && document.documentElement) {
-      document.documentElement.dataset.theme = theme;
-    }
+
+    return () => {
+      if (themeSwitchTimer !== null) {
+        clearTimeout(themeSwitchTimer);
+      }
+      if (typeof document !== "undefined" && document.body) {
+        document.body.classList.remove("theme-switching");
+      }
+    };
   }, [theme]);
 
   const setActiveTab = (tabId, origin = 'click') => {
@@ -394,13 +414,13 @@ function App() {
         </div>
       </main>
       
-      <footer className={`w-full text-center py-4 text-sm backdrop-blur shadow-inner mt-auto ${isDark ? 'bg-black/86 text-slate-300' : 'bg-white/75 text-gray-600'}`}>
+      <footer className={`w-full text-center py-4 text-sm backdrop-blur shadow-inner mt-auto ${isDark ? 'bg-transparent text-slate-300' : 'bg-transparent text-gray-800'}`}>
         <div className={`flex flex-col items-center ${!isMobile ? 'md:flex-row md:justify-center' : ''}`}>
           <span>© {currentYear} - Crafted with ❤️ and lots of ☕</span>
           <span className="hidden md:inline-block md:mx-2">|</span>
           <button
             onClick={() => setActiveTab('privacy', 'click')}
-            className={`font-semibold hover:underline mt-1 md:mt-0 ${isDark ? 'text-sky-300' : 'text-blue-700'}`}
+            className={`font-semibold underline underline-offset-2 hover:no-underline mt-1 md:mt-0 ${isDark ? 'text-sky-300' : 'text-blue-900'}`}
           >
             Privacy Policy
           </button>

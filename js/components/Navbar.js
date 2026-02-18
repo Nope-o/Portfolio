@@ -223,7 +223,7 @@ function Navbar({ activeTab, setActiveTab, isDark, onToggleTheme }) {
             <span className={logoTextClasses}>Madhav Kataria</span>
           </span>
           <nav className={isMobile ? 'w-auto' : 'w-full md:w-auto'}>
-            <ul className={`flex flex-row items-center ${isMobile ? 'gap-0.5 justify-end' : 'gap-1 w-full justify-center'}`}>
+            <ul className={`flex flex-row items-center ${isMobile ? 'gap-0.5 justify-end pr-1' : 'gap-1 w-full justify-center'}`}>
               {isMobile && activeTab !== 'about' && (
                 <li className="relative">
                   <button
@@ -253,17 +253,17 @@ function Navbar({ activeTab, setActiveTab, isDark, onToggleTheme }) {
               ))}
               <li className="relative">
                 <button
-                  className={`inline-flex items-center justify-center ${themeButtonSizeClass} rounded-full transition-all duration-300 ${isDark ? 'text-amber-200 hover:text-amber-100 hover:bg-slate-900' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'}`}
+                  className={`inline-flex items-center justify-center overflow-visible ${themeButtonSizeClass} rounded-full transition-all duration-300 ${isDark ? 'text-amber-200 hover:text-amber-100 hover:bg-slate-900' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'}`}
                   onClick={onToggleTheme}
                   aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
                   title={isDark ? "Switch to light mode" : "Switch to dark mode"}
                 >
                   {isDark ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true">
                       <path d="M12 4.75a.75.75 0 0 1 .75.75v1.2a.75.75 0 0 1-1.5 0V5.5a.75.75 0 0 1 .75-.75Zm0 12.55a.75.75 0 0 1 .75.75v1.2a.75.75 0 0 1-1.5 0v-1.2a.75.75 0 0 1 .75-.75Zm7.25-5.3a.75.75 0 0 1 .75.75.75.75 0 0 1-.75.75h-1.2a.75.75 0 0 1 0-1.5h1.2ZM5.95 12a.75.75 0 0 1 0 1.5h-1.2a.75.75 0 0 1 0-1.5h1.2Zm10.11-5.36a.75.75 0 0 1 1.06 0l.85.85a.75.75 0 0 1-1.06 1.06l-.85-.85a.75.75 0 0 1 0-1.06Zm-9.19 9.19a.75.75 0 0 1 1.06 0l.85.85a.75.75 0 0 1-1.06 1.06l-.85-.85a.75.75 0 0 1 0-1.06Zm10.04 1.91a.75.75 0 0 1-1.06 0 .75.75 0 0 1 0-1.06l.85-.85a.75.75 0 1 1 1.06 1.06l-.85.85ZM7.72 7.49a.75.75 0 1 1-1.06-1.06l.85-.85a.75.75 0 0 1 1.06 1.06l-.85.85ZM12 8.25A3.75 3.75 0 1 1 8.25 12 3.75 3.75 0 0 1 12 8.25Z"/>
                     </svg>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true">
                       <path d="M14.7 3.3a.75.75 0 0 1 .9.95 8.24 8.24 0 0 0 10.15 10.15.75.75 0 0 1 .95.9 9.76 9.76 0 1 1-11.99-11.99Z"/>
                     </svg>
                   )}

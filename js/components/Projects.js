@@ -2,6 +2,9 @@
 // PROJECT COMPONENT
 // ===========================
 function Projects({ isDark }) {
+  const badgeBaseClass = "text-[11px] font-semibold px-2.5 py-0.5 rounded-full";
+  const actionBaseClass = "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full text-sm sm:text-base font-semibold";
+  const likeButtonBaseClass = "text-[11px] sm:text-xs px-2 py-0.5 rounded-full font-semibold transition";
   const projects = Array.isArray(window.PROJECTS_DATA) ? window.PROJECTS_DATA : [];
   const likesApiUrl = window.LIKES_API_URL;
   const [likesBySlug, setLikesBySlug] = React.useState({});
@@ -203,26 +206,26 @@ function Projects({ isDark }) {
   const getActionClasses = (style) => {
     if (!isDark) {
       if (style === "primary") {
-        return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-blue-700 text-white text-sm sm:text-base font-semibold hover:bg-blue-600 transition";
+        return `${actionBaseClass} bg-blue-700 text-white hover:bg-blue-600 transition`;
       }
       if (style === "success") {
-        return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-emerald-600 text-white text-sm sm:text-base font-semibold hover:bg-emerald-500 transition";
+        return `${actionBaseClass} bg-emerald-600 text-white hover:bg-emerald-500 transition`;
       }
       if (style === "ghost") {
-        return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full border border-slate-300 text-slate-700 text-sm sm:text-base font-semibold hover:bg-slate-100 transition";
+        return `${actionBaseClass} border border-slate-300 text-slate-700 hover:bg-slate-100 transition`;
       }
-      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-slate-200 text-slate-500 text-sm sm:text-base font-semibold cursor-not-allowed";
+      return `${actionBaseClass} bg-slate-200 text-slate-500 cursor-not-allowed`;
     }
     if (style === "primary") {
-      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-blue-800 text-white text-sm sm:text-base font-semibold hover:bg-blue-700 transition";
+      return `${actionBaseClass} bg-blue-800 text-white hover:bg-blue-700 transition`;
     }
     if (style === "success") {
-      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-emerald-600 text-white text-sm sm:text-base font-semibold hover:bg-emerald-500 transition";
+      return `${actionBaseClass} bg-emerald-600 text-white hover:bg-emerald-500 transition`;
     }
     if (style === "ghost") {
-      return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-slate-700/50 text-slate-100 text-sm sm:text-base font-semibold hover:bg-slate-600/60 transition";
+      return `${actionBaseClass} bg-slate-700/50 text-slate-100 hover:bg-slate-600/60 transition`;
     }
-    return "inline-flex w-auto items-center justify-center whitespace-nowrap px-3.5 py-2 rounded-full bg-slate-200 text-slate-500 text-sm sm:text-base font-semibold cursor-not-allowed";
+    return `${actionBaseClass} bg-slate-200 text-slate-500 cursor-not-allowed`;
   };
 
   const getLikeButtonClasses = (slug) => {
@@ -297,23 +300,23 @@ function Projects({ isDark }) {
     }
     : {
       sectionClass: "mx-auto max-w-6xl bg-transparent p-5 sm:p-7 rounded-3xl mb-10",
-      heroPanelClass: "rounded-2xl bg-white/55 p-3 sm:p-4 mb-4 sm:mb-5 relative",
+      heroPanelClass: "projects-light-hero rounded-2xl bg-white/55 p-3 sm:p-4 mb-4 sm:mb-5 relative",
       headingClass: "text-2xl sm:text-2xl font-extrabold text-slate-900 leading-tight",
-      introClass: "text-sm sm:text-sm text-slate-700 mt-1",
-      filterBtnClass: "inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full border border-slate-300 bg-white/85 text-slate-700 hover:bg-white transition",
-      filterPanelClass: "mt-2.5 p-2.5 sm:p-3 rounded-xl bg-white/80 border border-slate-200 shadow-sm",
-      inactiveFilterClass: "bg-white text-slate-700 border-slate-300 hover:bg-slate-100",
-      activeLabelClass: "text-[11px] sm:text-xs text-slate-600 mt-2",
-      activeValueClass: "font-semibold text-slate-800",
-      cardClass: "group bg-gradient-to-br from-white via-slate-50 to-slate-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-0.5 transition duration-300 h-full flex flex-col cursor-pointer",
-      cardTitleClass: "px-3.5 sm:px-4 pt-3 pb-2 bg-gradient-to-r from-white to-slate-100 text-center",
+      introClass: "text-sm sm:text-sm text-slate-800 mt-1",
+      filterBtnClass: "projects-light-filter-btn inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full border border-slate-400 bg-white/85 text-slate-800 hover:bg-white transition",
+      filterPanelClass: "projects-light-filter-panel mt-2.5 p-2.5 sm:p-3 rounded-xl bg-white/80 border border-slate-200 shadow-sm",
+      inactiveFilterClass: "bg-white text-slate-800 border-slate-400 hover:bg-slate-100",
+      activeLabelClass: "text-[11px] sm:text-xs text-slate-700 mt-2",
+      activeValueClass: "font-semibold text-slate-900",
+      cardClass: "projects-light-card group bg-gradient-to-br from-white via-slate-50 to-slate-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-0.5 transition duration-300 h-full flex flex-col cursor-pointer",
+      cardTitleClass: "projects-light-card-title px-3.5 sm:px-4 pt-3 pb-2 bg-gradient-to-r from-white to-slate-100 text-center",
       cardTitleTextClass: "text-lg sm:text-xl font-bold text-slate-900 leading-tight",
-      metaDateClass: "text-[11px] sm:text-xs font-medium text-slate-500 shrink-0",
-      summaryClass: "text-slate-600 mb-3 text-base sm:text-sm leading-relaxed",
-      techChipClass: "text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-100 border border-slate-300 text-slate-700",
-      likeBarClass: "flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-50 border border-slate-300 mb-2.5",
-      likeCountClass: "text-xs font-semibold text-blue-700",
-      emptyStateClass: "text-slate-600"
+      metaDateClass: "text-[11px] sm:text-xs font-medium text-slate-700 shrink-0",
+      summaryClass: "text-slate-800 mb-3 text-base sm:text-sm leading-relaxed",
+      techChipClass: "projects-light-tech-chip text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-100 border border-slate-400 text-slate-800",
+      likeBarClass: "projects-light-likebar flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-50 border border-slate-300 mb-2.5",
+      likeCountClass: "text-xs font-semibold text-blue-900",
+      emptyStateClass: "text-slate-800"
     };
 
   return (
@@ -414,11 +417,11 @@ function Projects({ isDark }) {
             <div className="p-3.5 sm:p-4 min-h-[208px] flex flex-col">
               <div className="flex items-start justify-between gap-2.5 mb-2.5">
                 <div className="flex flex-wrap gap-1.5">
-                  <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${getVisibilityClasses(p.visibility)}`}>
+                  <span className={`${badgeBaseClass} ${getVisibilityClasses(p.visibility)}`}>
                     {p.visibility}
                   </span>
                   {!!p.status && (
-                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${getStatusClasses(p.status)}`}>
+                    <span className={`${badgeBaseClass} ${getStatusClasses(p.status)}`}>
                       {p.status}
                     </span>
                   )}
@@ -446,7 +449,7 @@ function Projects({ isDark }) {
                     type="button"
                     onClick={() => handleCardLike(p.slug)}
                     disabled={!likesApiUrl || !!likedBySession[p.slug] || !!submittingBySlug[p.slug]}
-                    className={`text-[11px] sm:text-xs px-2 py-0.5 rounded-full font-semibold transition ${getLikeButtonClasses(p.slug)}`}
+                    className={`${likeButtonBaseClass} ${getLikeButtonClasses(p.slug)}`}
                     aria-label={`Like ${p.title}`}
                   >
                     {!likesApiUrl
@@ -493,3 +496,6 @@ function Projects({ isDark }) {
     </section>
   );
 }
+
+
+
