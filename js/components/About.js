@@ -39,14 +39,18 @@ function About({ showSection, isDark }) {
       <div className="flex flex-wrap justify-center gap-4 mt-6">
         <button
           onClick={() => showSection('contact', 'click')}
-          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+          className={`${isDark
+            ? 'bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900'
+            : 'bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-[0_10px_22px_rgba(37,99,235,0.28)]'} text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105`}
         >
           Get in Touch!
         </button>
         
         <button
           onClick={() => showSection('journey', 'click')}
-          className="bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+          className={`${isDark
+            ? 'bg-gradient-to-r from-sky-900 to-blue-950 hover:from-blue-800 hover:to-blue-900'
+            : 'bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-[0_10px_22px_rgba(37,99,235,0.28)]'} text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105`}
         >
           🚀 Explore My Journey
         </button>

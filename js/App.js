@@ -414,7 +414,7 @@ function App() {
         </div>
       </main>
       
-      <footer className={`w-full text-center py-4 text-sm backdrop-blur shadow-inner mt-auto ${isDark ? 'bg-transparent text-slate-300' : 'bg-transparent text-gray-800'}`}>
+      <footer className={`w-full text-center py-4 text-sm mt-auto ${isDark ? 'backdrop-blur shadow-inner bg-transparent text-slate-300' : 'bg-transparent text-gray-800 shadow-none'}`}>
         <div className={`flex flex-col items-center ${!isMobile ? 'md:flex-row md:justify-center' : ''}`}>
           <span>© {currentYear} - Crafted with ❤️ and lots of ☕</span>
           <span className="hidden md:inline-block md:mx-2">|</span>

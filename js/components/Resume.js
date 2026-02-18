@@ -16,7 +16,7 @@ function Resume({ isDark }) {
           download="Madhav_Kataria_Resume.pdf"
           target="_blank" 
           rel="noopener noreferrer"
-          className={`font-semibold text-sm hover:underline flex items-center ${isDark ? 'text-sky-300' : 'text-blue-700'}`}
+          className={`resume-download-link font-semibold text-sm hover:underline flex items-center ${isDark ? 'text-sky-300' : 'text-blue-950 bg-white/75 border border-slate-300 rounded-md px-2 py-1 shadow-sm'}`}
         >
           Download
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
