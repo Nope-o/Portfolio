@@ -201,9 +201,9 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    const behavior = isMobile && !isDark ? 'auto' : 'smooth';
+    const behavior = isMobile && theme === "light" ? "auto" : "smooth";
     window.scrollTo({ top: 0, behavior });
-  }, [activeTab, isMobile, isDark]);
+  }, [activeTab, isMobile, theme]);
 
   React.useEffect(() => {
     const handleHashChange = () => {
