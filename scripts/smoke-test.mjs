@@ -51,7 +51,7 @@ async function run() {
   ];
   const staticFiles = [
     'assets/images/logoo.webp',
-    'assets/images/pitch1.webp',
+    'assets/images/projects/sursight-studio/hero.webp',
     'projects/project-protection.js',
     'projects/ml/app.js',
     'Madhav_Kataria_Resume.pdf',

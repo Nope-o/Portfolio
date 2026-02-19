@@ -27,7 +27,9 @@ const SITEMAP_ROUTES = [
   { path: '/projects/sursight-studio/', changefreq: 'monthly', priority: '0.8' },
   { path: '/projects/liteedit/', changefreq: 'monthly', priority: '0.8' },
   { path: '/projects/AutomationDashboard/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/projects/mondelez-operational-dashboard/', changefreq: 'monthly', priority: '0.7' },
   { path: '/projects/AttendanceTracker/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/projects/nac-script/', changefreq: 'monthly', priority: '0.7' },
   { path: '/projects/LLM/', changefreq: 'monthly', priority: '0.7' },
   { path: '/projects/ml/', changefreq: 'monthly', priority: '0.7' }
 ];
@@ -300,7 +302,9 @@ export default defineConfig({
         sursightDetail: path.resolve(ROOT, 'projects/sursight-studio/index.html'),
         liteeditDetail: path.resolve(ROOT, 'projects/liteedit/index.html'),
         automationDetail: path.resolve(ROOT, 'projects/AutomationDashboard/index.html'),
+        mondelezOpsDetail: path.resolve(ROOT, 'projects/mondelez-operational-dashboard/index.html'),
         attendanceDetail: path.resolve(ROOT, 'projects/AttendanceTracker/index.html'),
+        nacDetail: path.resolve(ROOT, 'projects/nac-script/index.html'),
         llm: path.resolve(ROOT, 'projects/LLM/index.html'),
         ml: path.resolve(ROOT, 'projects/ml/index.html')
       },
