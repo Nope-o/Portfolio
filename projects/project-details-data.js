@@ -2,8 +2,8 @@
 // Add new entries here using the folder name as the key.
 window.PROJECT_DETAILS = {
   AutomationDashboard: {
-    title: "Automation Dashboard",
-    subtitle: "Power BI reporting suite for IT infrastructure health, SLA trends, and operational KPIs.",
+    title: "Employee Details",
+    subtitle: "Demo Power BI dashboard for employee profile, workforce distribution, and staffing insights.",
     createdOn: "November 2025",
     visibility: "Internal",
     status: "Active",
@@ -11,27 +11,30 @@ window.PROJECT_DETAILS = {
     heroImage: "../../assets/images/projects/automation-dashboard/hero.png",
     heroFit: "contain",
     logoImage: "../../assets/images/projects/automation-dashboard/logo.webp",
-    overview:
-      "This dashboard centralizes operational metrics and highlights trends that help teams take faster, data-driven decisions.",
+    overview: [
+      "This is a demo project used to present an Employee Details reporting experience in a clear, executive-friendly layout.",
+      "The page showcases sample views for headcount, department split, role mix, location distribution, and employee data completeness.",
+      "All metrics shown here are demo placeholders for presentation and design validation."
+    ],
     requirements: [
       "Power BI access with workspace permissions",
-      "Structured KPI source data (Excel/SharePoint/API)",
-      "Defined SLA/KPI definitions for each team"
+      "Structured employee source data (Excel/SharePoint/API)",
+      "Defined fields such as employee ID, department, role, manager, and location"
     ],
     highlights: [
-      "Unified KPI view for performance and SLA adherence",
-      "Trend analysis to identify recurring operational bottlenecks",
-      "Interactive filtering by process, team, and timeline",
-      "Executive-friendly snapshots for quick decision-making"
+      "Unified employee snapshot with searchable profile-level details.",
+      "Interactive filters by team, department, location, and reporting manager.",
+      "Quick visual breakdowns to support staffing and planning reviews.",
+      "Demo narrative sections to explain each KPI block for first-time viewers."
     ],
     mvp: [
-      "One-screen visibility of SLA health and risk trends for faster leadership decisions",
-      "Operational bottlenecks become action-ready with interactive drilldowns"
+      "One-screen visibility of workforce information for faster leadership review.",
+      "Demo-ready dashboard structure that can be connected to live employee datasets."
     ],
     techStack: ["Power BI", "Power Query", "DAX", "Excel", "SharePoint"],
     gallery: [
-      { src: "../../assets/images/projects/automation-dashboard/hero.png", alt: "Automation dashboard overview" },
-      { src: "../../assets/images/projects/automation-dashboard/gallery-context.webp", alt: "Operational context visual" }
+      { src: "../../assets/images/projects/automation-dashboard/hero.png", alt: "Employee Details dashboard demo overview" },
+      { src: "../../assets/images/projects/automation-dashboard/gallery-context.webp", alt: "Employee Details demo context view" }
     ],
     links: [
       { label: "Back to Projects", href: "../../#projects", external: false }
@@ -189,7 +192,7 @@ window.PROJECT_DETAILS = {
     visibility: "Public",
     status: "Under Development",
     likes: 32,
-    heroImage: "../../assets/images/projects/liteedit/hero.png",
+    heroImage: "../../assets/images/projects/liteedit/Liteimg1.webp",
     heroFit: "contain",
     headerIcon: "../../assets/images/projects/liteedit/icon.svg",
     headerHighlights: ["Local Edit", "Compress", "Change Type", "Export"],
@@ -216,8 +219,7 @@ window.PROJECT_DETAILS = {
     ],
     techStack: ["HTML", "CSS", "JavaScript", "Canvas API", "Web APIs", "JSZip", "FileSaver.js", "jsPDF"],
     gallery: [
-      { src: "../../assets/images/projects/liteedit/hero.png", alt: "LiteEdit bulk-ready workspace and export controls" },
-      { src: "../../assets/images/projects/liteedit/gallery-context.webp", alt: "LiteEdit editing panel and output workflow context" }
+      { src: "../../assets/images/projects/liteedit/Liteimg1.webp", alt: "LiteEdit preview 1" }
     ],
     links: [
       { label: "Open", href: "../liteedit-app/", style: "success", external: false },
@@ -282,7 +284,7 @@ window.PROJECT_DETAILS = {
     visibility: "Internal",
     status: "Active",
     likes: 29,
-    heroImage: "../../assets/images/projects/ai-knowledge-portal/hero.png",
+    heroImage: "../../assets/images/projects/ai-knowledge-portal/KBA1.webp",
     heroFit: "contain",
     headerIcon: "../../assets/images/projects/ai-knowledge-portal/icon.svg",
     headerHighlights: ["Search", "Filter", "Read PDF", "Track Quality"],
@@ -319,8 +321,10 @@ window.PROJECT_DETAILS = {
     ],
     techStack: ["Power Apps", "SharePoint", "Power BI", "Power Fx", "Knowledge Management", "ITSM"],
     gallery: [
-      { src: "../../assets/images/projects/ai-knowledge-portal/hero.png", alt: "AI Knowledge Portal dashboard placeholder" },
-      { src: "../../assets/images/projects/ai-knowledge-portal/gallery-context.webp", alt: "AI Knowledge Portal detail view placeholder" }
+      { src: "../../assets/images/projects/ai-knowledge-portal/KBA1.webp", alt: "AI Knowledge Portal preview 1" },
+      { src: "../../assets/images/projects/ai-knowledge-portal/KBA2.webp", alt: "AI Knowledge Portal preview 2" },
+      { src: "../../assets/images/projects/ai-knowledge-portal/KBA3.webp", alt: "AI Knowledge Portal preview 3" },
+      { src: "../../assets/images/projects/ai-knowledge-portal/KBA4.webp", alt: "AI Knowledge Portal preview 4" }
     ],
     links: [
       { label: "Back to Projects", href: "../../#projects", external: false }
@@ -334,7 +338,7 @@ window.PROJECT_DETAILS = {
     visibility: "Internal",
     status: "Active",
     likes: 26,
-    heroImage: "../../assets/images/projects/my-apps-dashboards/hero.png",
+    heroImage: "../../assets/images/projects/my-apps-dashboards/MyApps1.webp",
     heroFit: "contain",
     headerIcon: "../../assets/images/projects/my-apps-dashboards/icon.svg",
     headerHighlights: ["Role-Based Access", "Smart Launch", "Favorites", "Usage Insights"],
@@ -371,8 +375,8 @@ window.PROJECT_DETAILS = {
     ],
     techStack: ["Power Apps", "SharePoint", "Power BI", "Power Fx", "Role-Based Access", "Knowledge Management"],
     gallery: [
-      { src: "../../assets/images/projects/my-apps-dashboards/hero.png", alt: "My Apps & Dashboards catalog placeholder" },
-      { src: "../../assets/images/projects/my-apps-dashboards/gallery-context.webp", alt: "My Apps & Dashboards role-based view placeholder" }
+      { src: "../../assets/images/projects/my-apps-dashboards/MyApps1.webp", alt: "My Apps & Dashboards preview 1" },
+      { src: "../../assets/images/projects/my-apps-dashboards/MyApps2.webp", alt: "My Apps & Dashboards preview 2" }
     ],
     links: [
       { label: "Back to Projects", href: "../../#projects", external: false }

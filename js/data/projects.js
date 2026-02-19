@@ -26,7 +26,7 @@ window.PROJECTS_DATA = [
     status: "Under Development",
     likes: 32,
     techStack: ["JavaScript", "Canvas API", "JSZip", "jsPDF"],
-    image: "assets/images/projects/liteedit/hero.png",
+    image: "assets/images/projects/liteedit/Liteimg1.webp",
     actions: [
       { label: "Open", href: "projects/liteedit-app/", style: "success", external: false },
       { label: "Know More", href: "projects/liteedit/", style: "ghost", external: false }
@@ -34,8 +34,8 @@ window.PROJECTS_DATA = [
   },
   {
     slug: "AutomationDashboard",
-    title: "Automation Dashboard",
-    summary: "Power BI dashboard for IT infrastructure analytics with SLA/KPI visibility.",
+    title: "Employee Details",
+    summary: "Demo Power BI dashboard showing employee profiles, team distribution, and workforce insights in one consolidated view.",
     createdOn: "November 2025",
     visibility: "Internal",
     likes: 28,
@@ -96,7 +96,7 @@ window.PROJECTS_DATA = [
     status: "Active",
     likes: 29,
     techStack: ["Power Apps", "SharePoint", "Power BI", "Knowledge Management", "ITSM"],
-    image: "assets/images/projects/ai-knowledge-portal/hero.png",
+    image: "assets/images/projects/ai-knowledge-portal/KBA1.webp",
     actions: [
       { label: "Know More", href: "projects/ai-knowledge-portal/", style: "ghost", external: false }
     ]
@@ -110,7 +110,7 @@ window.PROJECTS_DATA = [
     status: "Active",
     likes: 26,
     techStack: ["Power Apps", "SharePoint", "Knowledge Management", "Role-Based Access", "Productivity"],
-    image: "assets/images/projects/my-apps-dashboards/hero.png",
+    image: "assets/images/projects/my-apps-dashboards/MyApps1.webp",
     actions: [
       { label: "Know More", href: "projects/my-apps-dashboards/", style: "ghost", external: false }
     ]

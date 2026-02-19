@@ -512,6 +512,17 @@
       box-shadow: var(--shadow-sm);
     }
 
+    /* Desktop only: keep on-screen control containers transparent in both themes. */
+    @media (min-width: 901px) {
+      .zoom-controls,
+      .history-fab {
+        background: transparent;
+        border-color: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+      }
+    }
+
     .zoom-readout {
       border: 1px solid var(--border);
       background: var(--surface);
