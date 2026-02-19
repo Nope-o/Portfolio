@@ -9,9 +9,11 @@ function PathfinderGame({ onGameWin, isDark }) {
   const [isBoardInitialized, setIsBoardInitialized] = React.useState(false);
   const [playerOrientation, setPlayerOrientation] = React.useState('right');
   const [lastMoveDirection, setLastMoveDirection] = React.useState('right');
+  const [isResetAnimating, setIsResetAnimating] = React.useState(false);
   const GAME_SWIPE_THRESHOLD = 30;
   const touchStartX = React.useRef(0);
   const touchStartY = React.useRef(0);
+  const resetAnimationTimerRef = React.useRef(null);
   const playerPosRef = React.useRef(playerPos);
   const boardRef = React.useRef(board);
   const gameStatusRef = React.useRef(gameStatus);
@@ -19,6 +21,11 @@ function PathfinderGame({ onGameWin, isDark }) {
   React.useEffect(() => { playerPosRef.current = playerPos; }, [playerPos]);
   React.useEffect(() => { boardRef.current = board; }, [board]);
   React.useEffect(() => { gameStatusRef.current = gameStatus; }, [gameStatus]);
+  React.useEffect(() => () => {
+    if (resetAnimationTimerRef.current) {
+      clearTimeout(resetAnimationTimerRef.current);
+    }
+  }, []);
 
   const movePlayer = React.useCallback((direction) => {
     if (gameStatusRef.current !== 'playing') return;
@@ -159,6 +166,18 @@ function PathfinderGame({ onGameWin, isDark }) {
       });
     }
   }, [gameStatus]);
+  const handleManualReset = React.useCallback(() => {
+    if (resetAnimationTimerRef.current) {
+      clearTimeout(resetAnimationTimerRef.current);
+    }
+    setIsResetAnimating(true);
+    generateBoard();
+    resetAnimationTimerRef.current = setTimeout(() => {
+      setIsResetAnimating(false);
+      resetAnimationTimerRef.current = null;
+    }, 560);
+  }, [generateBoard]);
+
   const handleTouchStart = (e) => {
     if (gameStatusRef.current !== 'playing') return;
     touchStartX.current = e.touches[0].clientX;
@@ -217,8 +236,16 @@ const handleTouchEnd = (e) => {
     ? "control-button-directional bg-slate-800 hover:bg-slate-700 text-white p-2 rounded-lg"
     : "control-button-directional bg-gray-700 hover:bg-gray-800 text-white p-2 rounded-lg";
   const desktopResetClass = isDark
-    ? "mt-4 bg-slate-700 hover:bg-slate-600 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm"
-    : "mt-4 bg-slate-800 hover:bg-slate-700 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 hidden md:block shadow-sm";
+    ? "bg-slate-700 hover:bg-slate-600 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 shadow-sm md:mb-4"
+    : "bg-slate-800 hover:bg-slate-700 text-white py-2.5 px-7 rounded-xl font-semibold transition-all duration-300 shadow-sm md:mb-4";
+  const desktopControlPanelClass = "hidden md:flex items-end justify-center gap-4 mt-4 p-3 rounded-2xl border border-transparent bg-transparent shadow-none";
+  const desktopControlButtonClass = isDark
+    ? "h-11 w-11 rounded-xl border border-slate-500/70 bg-slate-800 text-slate-100 text-lg font-bold transition-all duration-200 hover:bg-slate-700 active:scale-95"
+    : "h-11 w-11 rounded-xl border border-slate-300 bg-slate-100 text-slate-800 text-lg font-bold transition-all duration-200 hover:bg-slate-200 active:scale-95";
+  const boardResetAnimationClass = isResetAnimating
+    ? (isDark ? "pathfinder-reset-anim-dark" : "pathfinder-reset-anim-light")
+    : "";
+  const resetButtonAnimationClass = isResetAnimating ? "pathfinder-reset-btn-pulse" : "";
 
   if (gameStatus === 'loading' || !isBoardInitialized) {
     return (
@@ -261,7 +288,7 @@ const handleTouchEnd = (e) => {
       </div>
 
 
-      <div className={boardShellClass}>
+      <div className={`${boardShellClass} ${boardResetAnimationClass}`.trim()}>
       <div 
         className="game-grid mb-3 mx-auto"
         onTouchStart={handleTouchStart}
@@ -309,11 +336,26 @@ const handleTouchEnd = (e) => {
         ))}
       </div>
         <p className={tipClass}>Tip: Use arrow keys for precise movement.</p>
+        <div className={desktopControlPanelClass}>
+          <button type="button" onClick={handleManualReset} className={`${desktopResetClass} ${resetButtonAnimationClass}`.trim()}>
+            {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
+          </button>
+          <div className="flex flex-col items-center">
+            <div className="grid grid-rows-2 grid-cols-3 gap-1.5 w-[160px]">
+            <div></div>
+            <button type="button" onClick={() => movePlayer('up')} className={desktopControlButtonClass} aria-label="Move up">↑</button>
+            <div></div>
+            <button type="button" onClick={() => movePlayer('left')} className={desktopControlButtonClass} aria-label="Move left">←</button>
+            <button type="button" onClick={() => movePlayer('down')} className={desktopControlButtonClass} aria-label="Move down">↓</button>
+            <button type="button" onClick={() => movePlayer('right')} className={desktopControlButtonClass} aria-label="Move right">→</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <button
-        onClick={generateBoard}
-        className={mobileResetClass}
+        onClick={handleManualReset}
+        className={`${mobileResetClass} ${resetButtonAnimationClass}`.trim()}
       >
         {gameStatus === 'playing' ? 'Reset' : 'Play Again'}
       </button>
@@ -329,12 +371,6 @@ const handleTouchEnd = (e) => {
         </div>
       </div>
 
-      <button
-        onClick={generateBoard}
-        className={desktopResetClass}
-      >
-        {gameStatus === 'playing' ? 'Reset Game' : 'Play Again'}
-      </button>
     </section>
   );
 }
