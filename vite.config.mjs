@@ -13,6 +13,7 @@ const GENERATED_MAIN_ENTRY = path.join(ROOT, '.vite-temp', 'main-site-entry.gene
 const RAW_BASE = process.env.VITE_BASE_PATH || '/';
 const BASE_PATH = RAW_BASE.startsWith('/') ? RAW_BASE : `/${RAW_BASE}`;
 const NORMALIZED_BASE = BASE_PATH.endsWith('/') ? BASE_PATH : `${BASE_PATH}/`;
+const SHOULD_COPY_CNAME = NORMALIZED_BASE === '/';
 const GENERATED_MAIN_ENTRY_PUBLIC = '/.vite-temp/main-site-entry.generated.js';
 const ROOT_INDEX_FILE = path.resolve(ROOT, 'index.html').replace(/\\/g, '/');
 
@@ -43,7 +44,7 @@ const STATIC_COPY_ITEMS = [
   { src: 'Madhav_Kataria_Resume.pdf', dest: 'Madhav_Kataria_Resume.pdf' },
   { src: 'robots.txt', dest: 'robots.txt' },
   { src: 'BingSiteAuth.xml', dest: 'BingSiteAuth.xml' },
-  { src: 'CNAME', dest: 'CNAME' }
+  ...(SHOULD_COPY_CNAME ? [{ src: 'CNAME', dest: 'CNAME' }] : [])
 ];
 
 const MAIN_SITE_SOURCE_SCRIPTS = [

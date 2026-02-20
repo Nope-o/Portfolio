@@ -3039,7 +3039,7 @@
       requestThumbnailsRender(true);
       syncInputsFromImage();
       updateUndoRedoState();
-      setStatus('Redo complete');
+      setStatus('Redo complete');c
       updateExportSizeEstimate();
     }
 
