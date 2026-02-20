@@ -30,7 +30,7 @@ const PATHFINDER_DIRECTION_BY_KEYCODE = Object.freeze({
   39: 'right'
 });
 
-const PATHFINDER_KEYBOARD_MOVE_INTERVAL_MS = 54;
+const PATHFINDER_KEYBOARD_REPEAT_INTERVAL_MS = 34;
 
 function PathfinderGame({ onGameWin, isDark }) {
   const [board, setBoard] = React.useState([]);
@@ -46,6 +46,7 @@ function PathfinderGame({ onGameWin, isDark }) {
   const touchStartY = React.useRef(0);
   const resetAnimationTimerRef = React.useRef(null);
   const lastKeyboardMoveAtRef = React.useRef(0);
+  const lastKeyboardDirectionRef = React.useRef('');
   const playerPosRef = React.useRef(playerPos);
   const boardRef = React.useRef(board);
   const gameStatusRef = React.useRef(gameStatus);
@@ -155,10 +156,14 @@ function PathfinderGame({ onGameWin, isDark }) {
       }
 
       const keyCode = Number.isFinite(e.keyCode) ? e.keyCode : 0;
-      const direction =
-        PATHFINDER_DIRECTION_BY_CODE[e.code]
-        || PATHFINDER_DIRECTION_BY_KEY[e.key]
-        || PATHFINDER_DIRECTION_BY_KEYCODE[keyCode];
+      const directionFromKey = PATHFINDER_DIRECTION_BY_KEY[e.key] || '';
+      const directionFromCode = PATHFINDER_DIRECTION_BY_CODE[e.code] || '';
+      const directionFromKeyCode = PATHFINDER_DIRECTION_BY_KEYCODE[keyCode] || '';
+      let direction = directionFromKey || directionFromCode || directionFromKeyCode;
+      if (directionFromKey && directionFromCode && directionFromKey !== directionFromCode) {
+        // Prefer semantic key meaning if device/browser reports mismatched physical code.
+        direction = directionFromKey;
+      }
       if (!direction) return;
 
       if (e.cancelable) e.preventDefault();
@@ -166,10 +171,13 @@ function PathfinderGame({ onGameWin, isDark }) {
       const now = (typeof performance !== 'undefined' && typeof performance.now === 'function')
         ? performance.now()
         : Date.now();
-      if ((now - lastKeyboardMoveAtRef.current) < PATHFINDER_KEYBOARD_MOVE_INTERVAL_MS) {
-        return;
+      if (e.repeat === true && direction === lastKeyboardDirectionRef.current) {
+        if ((now - lastKeyboardMoveAtRef.current) < PATHFINDER_KEYBOARD_REPEAT_INTERVAL_MS) {
+          return;
+        }
       }
       lastKeyboardMoveAtRef.current = now;
+      lastKeyboardDirectionRef.current = direction;
 
       movePlayer(direction);
     };
