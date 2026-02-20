@@ -37,6 +37,8 @@ jobs:
           # Override with repository variable PAGES_BASE_PATH when explicitly set.
           # Fallback: custom-domain repo "Portfolio" uses "/", others use "/<repo>/".
           VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || (github.event.repository.name == 'Portfolio' && '/' || format('/{0}/', github.event.repository.name)) }}
+          # Only Portfolio should emit CNAME in build output.
+          PAGES_CNAME: ${{ github.event.repository.name == 'Portfolio' && 'madhav-kataria.com' || '' }}
           SAFE_BUILD: 'true'
 
       - name: Setup Pages
