@@ -155,15 +155,7 @@ function PathfinderGame({ onGameWin, isDark }) {
         return;
       }
 
-      const keyCode = Number.isFinite(e.keyCode) ? e.keyCode : 0;
-      const directionFromKey = PATHFINDER_DIRECTION_BY_KEY[e.key] || '';
-      const directionFromCode = PATHFINDER_DIRECTION_BY_CODE[e.code] || '';
-      const directionFromKeyCode = PATHFINDER_DIRECTION_BY_KEYCODE[keyCode] || '';
-      let direction = directionFromKey || directionFromCode || directionFromKeyCode;
-      if (directionFromKey && directionFromCode && directionFromKey !== directionFromCode) {
-        // Prefer semantic key meaning if device/browser reports mismatched physical code.
-        direction = directionFromKey;
-      }
+      const direction = PATHFINDER_DIRECTION_BY_CODE[e.code];
       if (!direction) return;
 
       if (e.cancelable) e.preventDefault();
