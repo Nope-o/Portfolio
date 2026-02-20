@@ -34,11 +34,10 @@ jobs:
       - name: Build with Vite
         run: npm run build
         env:
-          # Override with repository variable PAGES_BASE_PATH when explicitly set.
-          # Fallback: custom-domain repo "Portfolio" uses "/", others use "/<repo>/".
-          VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || (github.event.repository.name == 'Portfolio' && '/' || format('/{0}/', github.event.repository.name)) }}
-          # Only Portfolio should emit CNAME in build output.
-          PAGES_CNAME: ${{ github.event.repository.name == 'Portfolio' && 'madhav-kataria.com' || '' }}
+          # Default GitHub Pages path is "/<repo>/". Override only when needed (for example, custom domain with "/").
+          VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || format('/{0}/', github.event.repository.name) }}
+          # Optional custom domain. Set repo variable PAGES_CNAME when required.
+          PAGES_CNAME: ${{ vars.PAGES_CNAME || '' }}
           SAFE_BUILD: 'true'
 
       - name: Setup Pages
