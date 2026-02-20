@@ -1,6 +1,37 @@
 // ===========================
 // PathfinderGame Component
 // ===========================
+const PATHFINDER_DIRECTION_BY_CODE = Object.freeze({
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
+  Numpad8: 'up',
+  Numpad2: 'down',
+  Numpad4: 'left',
+  Numpad6: 'right'
+});
+
+const PATHFINDER_DIRECTION_BY_KEY = Object.freeze({
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
+  Up: 'up',
+  Down: 'down',
+  Left: 'left',
+  Right: 'right'
+});
+
+const PATHFINDER_DIRECTION_BY_KEYCODE = Object.freeze({
+  38: 'up',
+  40: 'down',
+  37: 'left',
+  39: 'right'
+});
+
+const PATHFINDER_KEYBOARD_MOVE_INTERVAL_MS = 54;
+
 function PathfinderGame({ onGameWin, isDark }) {
   const [board, setBoard] = React.useState([]);
   const [playerPos, setPlayerPos] = React.useState({ row: 0, col: 0 });
@@ -14,6 +45,7 @@ function PathfinderGame({ onGameWin, isDark }) {
   const touchStartX = React.useRef(0);
   const touchStartY = React.useRef(0);
   const resetAnimationTimerRef = React.useRef(null);
+  const lastKeyboardMoveAtRef = React.useRef(0);
   const playerPosRef = React.useRef(playerPos);
   const boardRef = React.useRef(board);
   const gameStatusRef = React.useRef(gameStatus);
@@ -111,14 +143,35 @@ function PathfinderGame({ onGameWin, isDark }) {
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if (!isBoardInitialized || gameStatusRef.current !== 'playing') return;
-      
-      switch (e.key) {
-        case 'ArrowUp': movePlayer('up'); break;
-        case 'ArrowDown': movePlayer('down'); break;
-        case 'ArrowLeft': movePlayer('left'); break;
-        case 'ArrowRight': movePlayer('right'); break;
-        default: return;
+
+      const target = e.target;
+      if (target && (
+        target.isContentEditable
+        || target.tagName === 'INPUT'
+        || target.tagName === 'TEXTAREA'
+        || target.tagName === 'SELECT'
+      )) {
+        return;
       }
+
+      const keyCode = Number.isFinite(e.keyCode) ? e.keyCode : 0;
+      const direction =
+        PATHFINDER_DIRECTION_BY_CODE[e.code]
+        || PATHFINDER_DIRECTION_BY_KEY[e.key]
+        || PATHFINDER_DIRECTION_BY_KEYCODE[keyCode];
+      if (!direction) return;
+
+      if (e.cancelable) e.preventDefault();
+
+      const now = (typeof performance !== 'undefined' && typeof performance.now === 'function')
+        ? performance.now()
+        : Date.now();
+      if ((now - lastKeyboardMoveAtRef.current) < PATHFINDER_KEYBOARD_MOVE_INTERVAL_MS) {
+        return;
+      }
+      lastKeyboardMoveAtRef.current = now;
+
+      movePlayer(direction);
     };
 
     window.addEventListener('keydown', handleKeyDown);
