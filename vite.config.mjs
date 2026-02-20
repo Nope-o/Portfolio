@@ -309,7 +309,7 @@ export default defineConfig({
         ml: path.resolve(ROOT, 'projects/ml/index.html')
       },
       output: {
-        entryFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name].bundle.js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash][extname]'
       }
